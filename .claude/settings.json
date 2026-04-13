@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(command -v mkdir)",
+      "Bash(/c/Windows/System32/cmd.exe //c \"mkdir .claude\\\\skills & mkdir docs\\\\reference & mkdir src\")",
+      "Bash(/c/Windows/System32/cmd.exe //c \"dir /ad /b /s\")",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --no-git --import-alias \"@/*\" --use-npm)",
+      "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")",
+      "Bash(npx --version)",
+      "Read(//tmp/next-init/**)",
+      "Read(//c/Users/KIYOS_~1/AppData/Local/Temp/next-init/**)",
+      "Bash(/c/Windows/System32/cmd.exe //c \"dir C:\\\\Users\\\\KIYOS_~1\\\\AppData\\\\Local\\\\Temp\\\\next-init\\\\package.json 2>nul && echo DONE || echo STILL_RUNNING\")",
+      "Bash(/c/Windows/System32/cmd.exe //c \"if exist C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\package.json \\(echo DONE\\) else \\(echo WAITING\\)\")",
+      "Bash(/c/Windows/System32/cmd.exe //c \"dir /s /b C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\src 2>&1\")",
+      "Bash(/c/Windows/System32/cmd.exe //c \"dir /s /b C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\src\\\\app 2>&1\")",
+      "Bash(/c/Windows/System32/cmd.exe //c \"dir /s /b C:\\\\Users\\\\KIYOS_~1\\\\AppData\\\\Local\\\\Temp\\\\next-init\\\\src 2>&1\")",
+      "Bash(/c/Windows/System32/cmd.exe //c \"mkdir C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\src\\\\lib & mkdir C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\src\\\\hooks & mkdir C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\src\\\\components\\\\layout & mkdir C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\src\\\\components\\\\tabs & mkdir C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\src\\\\components\\\\preview & mkdir C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\src\\\\components\\\\modals & mkdir C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\src\\\\components\\\\ui\")",
+      "Bash(/c/Windows/System32/cmd.exe //c \"del C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\AGENTS.md 2>nul & del C:\\\\Users\\\\kiyos_000\\\\Desktop\\\\proposal-builder\\\\public\\\\*.svg 2>nul\")",
+      "Bash(/c/Windows/System32/cmd.exe //c \"curl -s -o nul -w \\\\\"%{http_code}\\\\\" http://localhost:3000\")",
+      "Bash(/c/Windows/System32/cmd.exe //c \"taskkill /F /IM node.exe 2>nul & echo DONE\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\kiyos_000\\Desktop\\proposal-builder\\.claude"
+    ]
+  }
+}
