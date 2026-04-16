@@ -33,7 +33,7 @@ export default function Home() {
         </div>
       ) : (
         /* タブ1〜5: 左=入力フォーム、右=縮小ライブプレビュー */
-        <div className="grid grid-cols-2 max-w-[1400px] mx-auto flex-1 min-h-0 w-full">
+        <div className="grid grid-cols-2 flex-1 min-h-0 w-full">
           {/* 左側: 入力フォーム */}
           <div className="p-[18px_22px] overflow-y-auto max-h-[calc(100vh-105px)]">
             {activeTab === 'basic' && (
