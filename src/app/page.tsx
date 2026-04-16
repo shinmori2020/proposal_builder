@@ -4,18 +4,45 @@ import { useState } from 'react';
 import { ProposalForm, TabId } from '@/lib/types';
 import { getTheme } from '@/lib/themes';
 import { defaultForm } from '@/lib/defaults';
+import { TEMPLATES } from '@/lib/templates';
 import Header from '@/components/layout/Header';
 import TabNav from '@/components/layout/TabNav';
+import BasicInfoTab from '@/components/tabs/BasicInfoTab';
 import ProposalPreview from '@/components/preview/ProposalPreview';
+import TemplateSelector from '@/components/modals/TemplateSelector';
 import { Link } from 'lucide-react';
 
 export default function Home() {
   const [form, setForm] = useState<ProposalForm>(defaultForm());
   const [activeTab, setActiveTab] = useState<TabId>('basic');
+  const [showTemplate, setShowTemplate] = useState(true);
   const theme = getTheme(form.themeId);
+
+  const applyTemplate = (id: string) => {
+    const t = TEMPLATES.find((x) => x.id === id);
+    if (!t) return;
+    setForm((prev) => ({
+      ...prev,
+      siteType: t.siteType,
+      overview: t.overview,
+      purpose: t.purpose,
+      features: [...t.features],
+      pages: t.pages.map((p) => ({ ...p, children: [...p.children] })),
+      plans: JSON.parse(JSON.stringify(t.plans)),
+      schedule: t.schedule.map((s) => ({ ...s })),
+    }));
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
+      {showTemplate && (
+        <TemplateSelector
+          onSelect={applyTemplate}
+          onClose={() => setShowTemplate(false)}
+          theme={theme}
+        />
+      )}
+
       <Header
         form={form}
         setForm={setForm}
@@ -27,19 +54,20 @@ export default function Home() {
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} theme={theme} />
 
       {activeTab === 'preview' ? (
-        /* プレビュータブ: フルサイズプレビュー中央表示 */
         <div className="max-w-[800px] mx-auto py-5 px-3.5 flex-1">
           <ProposalPreview form={form} theme={theme} />
         </div>
       ) : (
-        /* タブ1〜5: 左=入力フォーム、右=縮小ライブプレビュー */
         <div className="grid grid-cols-2 flex-1 min-h-0 w-full">
           {/* 左側: 入力フォーム */}
           <div className="p-[18px_22px] overflow-y-auto max-h-[calc(100vh-105px)]">
             {activeTab === 'basic' && (
-              <div className="text-sm text-[#999] py-8 text-center">
-                基本情報タブは Step 2 で実装されます
-              </div>
+              <BasicInfoTab
+                form={form}
+                setForm={setForm}
+                theme={theme}
+                onOpenTemplate={() => setShowTemplate(true)}
+              />
             )}
             {activeTab === 'pages' && (
               <div className="text-sm text-[#999] py-8 text-center">
