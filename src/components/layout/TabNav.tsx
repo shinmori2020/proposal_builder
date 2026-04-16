@@ -40,7 +40,7 @@ export default function TabNav({ activeTab, onTabChange, theme }: Props) {
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className="px-3 py-2.5 border-none bg-transparent text-xs cursor-pointer font-inherit whitespace-nowrap flex items-center gap-1.5"
+            className="px-3.5 py-3 border-none bg-transparent text-sm cursor-pointer font-inherit whitespace-nowrap flex items-center gap-1.5"
             style={{
               borderBottom: isActive
                 ? `3px solid ${theme.primary}`
@@ -51,7 +51,7 @@ export default function TabNav({ activeTab, onTabChange, theme }: Props) {
           >
             {IconComponent && (
               <IconComponent
-                size={15}
+                size={17}
                 color={isActive ? theme.primary : '#aaa'}
               />
             )}

@@ -55,30 +55,30 @@ export default function Header({ form, setForm, theme, onOpenSave }: Props) {
       <div className="flex gap-1.5">
         <button
           onClick={toggleHidePrices}
-          className="px-3.5 py-1.5 rounded-[7px] text-white text-xs font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
+          className="px-3.5 py-1.5 rounded-[7px] text-white text-[13px] font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
           style={{
             background: form.hidePrices
               ? 'rgba(255,255,255,0.25)'
               : 'rgba(255,255,255,0.08)',
           }}
         >
-          {form.hidePrices ? <EyeOff size={14} /> : <Coins size={14} />}
+          {form.hidePrices ? <EyeOff size={15} /> : <Coins size={15} />}
           {form.hidePrices ? '金額非表示中' : '金額表示中'}
         </button>
         <button
           onClick={onOpenSave}
-          className="px-3.5 py-1.5 rounded-[7px] text-white text-xs font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
+          className="px-3.5 py-1.5 rounded-[7px] text-white text-[13px] font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
           style={{ background: 'rgba(255,255,255,0.08)' }}
         >
-          <Save size={14} />
+          <Save size={15} />
           保存
         </button>
         <button
           onClick={handlePrint}
-          className="px-3.5 py-1.5 rounded-[7px] text-white text-xs font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
+          className="px-3.5 py-1.5 rounded-[7px] text-white text-[13px] font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
           style={{ background: 'rgba(255,255,255,0.08)' }}
         >
-          <Printer size={14} />
+          <Printer size={15} />
           PDF
         </button>
       </div>
