@@ -37,10 +37,10 @@ export default function Header({ form, setForm, theme, onOpenSave }: Props) {
     >
       <div className="flex items-center gap-2.5">
         <div
-          className="w-[38px] h-[38px] rounded-lg flex items-center justify-center"
+          className="w-[44px] h-[44px] rounded-lg flex items-center justify-center"
           style={{ background: 'rgba(255,255,255,0.15)' }}
         >
-          <FileText size={22} color="#fff" />
+          <FileText size={26} color="#fff" />
         </div>
         <div>
           <h1 className="text-[22px] font-extrabold text-white m-0 leading-tight">
