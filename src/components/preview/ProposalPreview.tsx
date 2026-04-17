@@ -3,6 +3,7 @@
 import { ProposalForm } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import SitemapSection from './SitemapSection';
+import EstimateSection from './EstimateSection';
 
 interface Props {
   form: ProposalForm;
@@ -55,6 +56,7 @@ export default function ProposalPreview({ form, theme }: Props) {
       {/* コンテンツ（Step 7で全セクション統合予定） */}
       <div className="p-6 flex flex-col gap-6">
         <SitemapSection form={form} theme={theme} />
+        <EstimateSection form={form} theme={theme} />
       </div>
     </div>
   );

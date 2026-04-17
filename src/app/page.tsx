@@ -9,6 +9,7 @@ import Header from '@/components/layout/Header';
 import TabNav from '@/components/layout/TabNav';
 import BasicInfoTab from '@/components/tabs/BasicInfoTab';
 import PagesTab from '@/components/tabs/PagesTab';
+import EstimateTab from '@/components/tabs/EstimateTab';
 import ProposalPreview from '@/components/preview/ProposalPreview';
 import TemplateSelector from '@/components/modals/TemplateSelector';
 import { Link } from 'lucide-react';
@@ -74,9 +75,7 @@ export default function Home() {
               <PagesTab form={form} setForm={setForm} theme={theme} />
             )}
             {activeTab === 'estimate' && (
-              <div className="text-sm text-[#999] py-8 text-center">
-                見積もりタブは Step 4 で実装されます
-              </div>
+              <EstimateTab form={form} setForm={setForm} theme={theme} />
             )}
             {activeTab === 'schedule' && (
               <div className="text-sm text-[#999] py-8 text-center">
