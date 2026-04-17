@@ -8,6 +8,7 @@ import { TEMPLATES } from '@/lib/templates';
 import Header from '@/components/layout/Header';
 import TabNav from '@/components/layout/TabNav';
 import BasicInfoTab from '@/components/tabs/BasicInfoTab';
+import PagesTab from '@/components/tabs/PagesTab';
 import ProposalPreview from '@/components/preview/ProposalPreview';
 import TemplateSelector from '@/components/modals/TemplateSelector';
 import { Link } from 'lucide-react';
@@ -70,9 +71,7 @@ export default function Home() {
               />
             )}
             {activeTab === 'pages' && (
-              <div className="text-sm text-[#999] py-8 text-center">
-                ページ構成タブは Step 3 で実装されます
-              </div>
+              <PagesTab form={form} setForm={setForm} theme={theme} />
             )}
             {activeTab === 'estimate' && (
               <div className="text-sm text-[#999] py-8 text-center">

@@ -2,6 +2,7 @@
 
 import { ProposalForm } from '@/lib/types';
 import { Theme } from '@/lib/themes';
+import SitemapSection from './SitemapSection';
 
 interface Props {
   form: ProposalForm;
@@ -51,11 +52,9 @@ export default function ProposalPreview({ form, theme }: Props) {
         )}
       </div>
 
-      {/* コンテンツ（Step 7で詳細実装） */}
+      {/* コンテンツ（Step 7で全セクション統合予定） */}
       <div className="p-6 flex flex-col gap-6">
-        <div className="text-center text-sm text-[#999] py-12">
-          プレビューの詳細セクションは順次実装されます
-        </div>
+        <SitemapSection form={form} theme={theme} />
       </div>
     </div>
   );
