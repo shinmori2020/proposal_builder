@@ -58,7 +58,7 @@ export default function Home() {
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} theme={theme} />
 
       {activeTab === 'preview' ? (
-        <div className="max-w-[800px] mx-auto py-5 px-3.5 flex-1">
+        <div className="max-w-[1200px] mx-auto py-5 px-5 flex-1 w-full">
           <ProposalPreview form={form} theme={theme} />
         </div>
       ) : (
