@@ -11,6 +11,7 @@ import BasicInfoTab from '@/components/tabs/BasicInfoTab';
 import PagesTab from '@/components/tabs/PagesTab';
 import EstimateTab from '@/components/tabs/EstimateTab';
 import ScheduleTab from '@/components/tabs/ScheduleTab';
+import TermsTab from '@/components/tabs/TermsTab';
 import ProposalPreview from '@/components/preview/ProposalPreview';
 import TemplateSelector from '@/components/modals/TemplateSelector';
 import { Link } from 'lucide-react';
@@ -82,9 +83,7 @@ export default function Home() {
               <ScheduleTab form={form} setForm={setForm} theme={theme} />
             )}
             {activeTab === 'terms' && (
-              <div className="text-sm text-[#999] py-8 text-center">
-                契約条件タブは Step 6 で実装されます
-              </div>
+              <TermsTab form={form} setForm={setForm} theme={theme} />
             )}
           </div>
 

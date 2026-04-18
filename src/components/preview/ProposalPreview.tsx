@@ -6,6 +6,7 @@ import SitemapSection from './SitemapSection';
 import EstimateSection from './EstimateSection';
 import FlowSection from './FlowSection';
 import ScheduleSection from './ScheduleSection';
+import TermsSection from './TermsSection';
 
 interface Props {
   form: ProposalForm;
@@ -61,6 +62,7 @@ export default function ProposalPreview({ form, theme }: Props) {
         <SitemapSection form={form} theme={theme} />
         <EstimateSection form={form} theme={theme} />
         <ScheduleSection form={form} theme={theme} />
+        <TermsSection form={form} theme={theme} />
       </div>
     </div>
   );
