@@ -33,3 +33,15 @@ body {
   background: var(--color-surface-app);
   color: #333;
 }
+
+@media print {
+  body {
+    background: #fff;
+  }
+  @page {
+    margin: 12mm;
+  }
+  #proposal-preview {
+    break-inside: avoid;
+  }
+}

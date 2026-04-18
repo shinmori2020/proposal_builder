@@ -32,7 +32,7 @@ interface Props {
 
 export default function TabNav({ activeTab, onTabChange, theme }: Props) {
   return (
-    <nav className="flex bg-white border-b-2 border-line-faint px-2.5 overflow-x-auto">
+    <nav className="flex bg-white border-b-2 border-line-faint px-2.5 overflow-x-auto print:hidden">
       {TABS.map((tab) => {
         const IconComponent = ICON_MAP[tab.icon];
         const isActive = activeTab === tab.id;

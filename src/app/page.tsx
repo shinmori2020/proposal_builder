@@ -14,13 +14,20 @@ import ScheduleTab from '@/components/tabs/ScheduleTab';
 import TermsTab from '@/components/tabs/TermsTab';
 import ProposalPreview from '@/components/preview/ProposalPreview';
 import TemplateSelector from '@/components/modals/TemplateSelector';
+import SaveLoadPanel from '@/components/modals/SaveLoadPanel';
 import { Link } from 'lucide-react';
 
 export default function Home() {
   const [form, setForm] = useState<ProposalForm>(defaultForm());
   const [activeTab, setActiveTab] = useState<TabId>('basic');
   const [showTemplate, setShowTemplate] = useState(true);
+  const [showSave, setShowSave] = useState(false);
   const theme = getTheme(form.themeId);
+
+  const handlePrint = () => {
+    setActiveTab('preview');
+    setTimeout(() => window.print(), 200);
+  };
 
   const applyTemplate = (id: string) => {
     const t = TEMPLATES.find((x) => x.id === id);
@@ -47,13 +54,21 @@ export default function Home() {
         />
       )}
 
+      {showSave && (
+        <SaveLoadPanel
+          form={form}
+          setForm={setForm}
+          theme={theme}
+          onClose={() => setShowSave(false)}
+        />
+      )}
+
       <Header
         form={form}
         setForm={setForm}
         theme={theme}
-        onOpenSave={() => {
-          /* Step 8 で実装 */
-        }}
+        onOpenSave={() => setShowSave(true)}
+        onPrint={handlePrint}
       />
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} theme={theme} />
 
@@ -62,7 +77,7 @@ export default function Home() {
           <ProposalPreview form={form} theme={theme} />
         </div>
       ) : (
-        <div className="grid grid-cols-2 flex-1 min-h-0 w-full">
+        <div className="grid grid-cols-2 flex-1 min-h-0 w-full print:hidden">
           {/* 左側: 入力フォーム */}
           <div className="p-[18px_22px] overflow-y-auto max-h-[calc(100vh-105px)]">
             {activeTab === 'basic' && (

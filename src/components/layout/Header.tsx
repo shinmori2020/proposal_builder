@@ -9,28 +9,17 @@ interface Props {
   setForm: React.Dispatch<React.SetStateAction<ProposalForm>>;
   theme: Theme;
   onOpenSave: () => void;
+  onPrint: () => void;
 }
 
-export default function Header({ form, setForm, theme, onOpenSave }: Props) {
+export default function Header({ form, setForm, theme, onOpenSave, onPrint }: Props) {
   const toggleHidePrices = () => {
     setForm((prev) => ({ ...prev, hidePrices: !prev.hidePrices }));
   };
 
-  const handlePrint = () => {
-    const el = document.getElementById('proposal-preview');
-    if (!el) return;
-    const w = window.open('', '_blank');
-    if (!w) return;
-    w.document.write(
-      `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${form.projectName || '提案書'}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>body{margin:0;padding:20px;font-family:'Noto Sans JP',sans-serif}@media print{body{padding:0}}</style></head><body>${el.outerHTML}</body></html>`
-    );
-    w.document.close();
-    setTimeout(() => w.print(), 500);
-  };
-
   return (
     <header
-      className="px-5 py-3 flex justify-between items-center"
+      className="px-5 py-3 flex justify-between items-center print:hidden"
       style={{
         background: `linear-gradient(135deg, ${theme.primary} 0%, ${theme.dark} 100%)`,
       }}
@@ -74,7 +63,7 @@ export default function Header({ form, setForm, theme, onOpenSave }: Props) {
           保存
         </button>
         <button
-          onClick={handlePrint}
+          onClick={onPrint}
           className="px-3.5 py-1.5 rounded-[7px] text-white text-[17px] font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
           style={{ background: 'rgba(255,255,255,0.08)' }}
         >
