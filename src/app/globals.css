@@ -35,13 +35,57 @@ body {
 }
 
 @media print {
-  body {
-    background: #fff;
-  }
   @page {
+    size: A4;
     margin: 12mm;
   }
+
+  /* 背景色とグラデーションを確実に印刷する */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* プレビューコンテナの余白をリセット */
+  body > div > div:last-child {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+  }
+
+  /* プレビュー本体：角丸と影を削除 */
   #proposal-preview {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* 表紙：次ページ開始 */
+  #proposal-preview > div:first-child {
+    break-after: page;
+    page-break-after: always;
+    border-radius: 0 !important;
+  }
+
+  /* 各セクション：ページ途中で分断しない */
+  #proposal-preview > div:last-child > * {
     break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* 見出しがページ末尾で孤立しないように */
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+    page-break-after: avoid;
   }
 }
