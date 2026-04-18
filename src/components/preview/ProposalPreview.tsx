@@ -2,11 +2,16 @@
 
 import { ProposalForm } from '@/lib/types';
 import { Theme } from '@/lib/themes';
+import OverviewSection from './OverviewSection';
+import SummarySection from './SummarySection';
+import FlowSection from './FlowSection';
+import FeaturesSection from './FeaturesSection';
 import SitemapSection from './SitemapSection';
 import EstimateSection from './EstimateSection';
-import FlowSection from './FlowSection';
 import ScheduleSection from './ScheduleSection';
 import TermsSection from './TermsSection';
+import NotesSection from './NotesSection';
+import FooterSection from './FooterSection';
 
 interface Props {
   form: ProposalForm;
@@ -56,13 +61,18 @@ export default function ProposalPreview({ form, theme }: Props) {
         )}
       </div>
 
-      {/* コンテンツ（Step 7で全セクション統合予定） */}
+      {/* コンテンツ */}
       <div className="p-6 flex flex-col gap-6">
+        <OverviewSection form={form} theme={theme} />
+        <SummarySection form={form} theme={theme} />
         <FlowSection form={form} theme={theme} />
+        <FeaturesSection form={form} theme={theme} />
         <SitemapSection form={form} theme={theme} />
         <EstimateSection form={form} theme={theme} />
         <ScheduleSection form={form} theme={theme} />
         <TermsSection form={form} theme={theme} />
+        <NotesSection form={form} theme={theme} />
+        <FooterSection form={form} theme={theme} />
       </div>
     </div>
   );
