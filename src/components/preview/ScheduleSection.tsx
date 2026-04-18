@@ -51,12 +51,12 @@ export default function ScheduleSection({ form, theme }: Props) {
             return (
               <div key={i} className="flex items-center gap-2 h-[22px]">
                 <span
-                  className="text-[10px] text-[#555] text-right"
+                  className="text-[10px] text-ink-body text-right"
                   style={{ minWidth: 100 }}
                 >
                   {item.phase || '—'}
                 </span>
-                <div className="flex-1 relative h-[15px] bg-[#f0f4f2] rounded-[3px]">
+                <div className="flex-1 relative h-[15px] bg-surface-track rounded-[3px]">
                   <div
                     className="absolute h-full rounded-[3px] flex items-center justify-center text-white font-semibold whitespace-nowrap overflow-hidden text-[8px]"
                     style={{
@@ -75,7 +75,7 @@ export default function ScheduleSection({ form, theme }: Props) {
           });
         })()}
       </div>
-      <p className="text-right text-[10px] text-[#888] mt-1">
+      <p className="text-right text-[10px] text-ink-soft mt-1">
         {hasStart && startD
           ? `${formatDateFull(startD)}〜${formatDateFull(
               addDaysToDate(startD, td)

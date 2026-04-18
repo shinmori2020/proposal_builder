@@ -3,6 +3,7 @@
 import { TabId } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { TABS } from '@/lib/constants';
+import { C } from '@/lib/colors';
 import {
   ClipboardList,
   Folder,
@@ -31,7 +32,7 @@ interface Props {
 
 export default function TabNav({ activeTab, onTabChange, theme }: Props) {
   return (
-    <nav className="flex bg-white border-b-2 border-[#e0e8e4] px-2.5 overflow-x-auto">
+    <nav className="flex bg-white border-b-2 border-line-faint px-2.5 overflow-x-auto">
       {TABS.map((tab) => {
         const IconComponent = ICON_MAP[tab.icon];
         const isActive = activeTab === tab.id;
@@ -45,14 +46,14 @@ export default function TabNav({ activeTab, onTabChange, theme }: Props) {
               borderBottom: isActive
                 ? `3px solid ${theme.primary}`
                 : '3px solid transparent',
-              color: isActive ? theme.primary : '#888',
+              color: isActive ? theme.primary : C.ink.soft,
               fontWeight: isActive ? 700 : 400,
             }}
           >
             {IconComponent && (
               <IconComponent
                 size={21}
-                color={isActive ? theme.primary : '#aaa'}
+                color={isActive ? theme.primary : C.ink.softer}
               />
             )}
             {tab.label}

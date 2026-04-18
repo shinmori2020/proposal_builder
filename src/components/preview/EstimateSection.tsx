@@ -1,5 +1,6 @@
 import { ProposalForm } from '@/lib/types';
 import { Theme } from '@/lib/themes';
+import { C } from '@/lib/colors';
 import { calcPlan, formatPrice } from '@/lib/calculations';
 
 interface Props {
@@ -27,10 +28,9 @@ export default function EstimateSection({ form, theme }: Props) {
       {/* 金額非表示モード */}
       {hp ? (
         <div
-          className="text-center py-6 px-4 rounded-[10px] border-[1.5px] border-[#e0e4e2]"
-          style={{ background: '#f8faf9' }}
+          className="text-center py-6 px-4 rounded-[10px] border-[1.5px] border-line-subtle bg-surface-panel"
         >
-          <div className="text-[13px] text-[#555] mb-1.5">
+          <div className="text-[13px] text-ink-body mb-1.5">
             お見積もり金額につきましては、別途ご案内させていただきます。
           </div>
           <div className="text-[11px] text-[#999]">
@@ -38,7 +38,7 @@ export default function EstimateSection({ form, theme }: Props) {
           </div>
           {plans.length > 0 && (
             <div className="mt-3.5 flex flex-col gap-1.5 text-left">
-              <div className="text-[11px] font-semibold text-[#777] mb-0.5">
+              <div className="text-[11px] font-semibold text-[#666] mb-0.5">
                 含まれる作業項目：
               </div>
               {plans.map((plan, pi) => (
@@ -83,7 +83,7 @@ export default function EstimateSection({ form, theme }: Props) {
                 style={{
                   border: plan.recommended
                     ? `2.5px solid ${P}`
-                    : '1.5px solid #ddd',
+                    : `1.5px solid ${C.line.soft}`,
                 }}
               >
                 {plan.recommended && (
@@ -105,9 +105,9 @@ export default function EstimateSection({ form, theme }: Props) {
                     {plan.items.map((it, i) => (
                       <div
                         key={i}
-                        className="flex justify-between text-[10px] border-b border-[#f0f0f0] py-0.5"
+                        className="flex justify-between text-[10px] border-b border-line-divider py-0.5"
                       >
-                        <span className="text-[#555]">{it.name}</span>
+                        <span className="text-ink-body">{it.name}</span>
                         <span className="font-semibold">
                           ¥{formatPrice(it.qty * it.price)}
                         </span>
@@ -118,15 +118,15 @@ export default function EstimateSection({ form, theme }: Props) {
                     className="mt-2 pt-2 text-right"
                     style={{ borderTop: `2px solid ${P}` }}
                   >
-                    <div className="text-[10px] text-[#888]">
+                    <div className="text-[10px] text-ink-soft">
                       小計: ¥{formatPrice(sub)}
                     </div>
                     {disc > 0 && (
-                      <div className="text-[10px] text-[#c33]">
+                      <div className="text-[10px]" style={{ color: C.delete }}>
                         {plan.discount?.label || '割引'}: -¥{formatPrice(disc)}
                       </div>
                     )}
-                    <div className="text-[10px] text-[#888]">税込</div>
+                    <div className="text-[10px] text-ink-soft">税込</div>
                     <div
                       className="text-[18px] font-extrabold mt-0.5"
                       style={{ color: P }}
@@ -159,7 +159,7 @@ function SinglePlanTable({
   const L = theme.light;
 
   const th = 'py-1.5 px-1.5 text-left text-[10px] font-semibold';
-  const td = 'py-1 px-1.5 border-b border-[#e8ece9]';
+  const td = 'py-1 px-1.5 border-b border-line-muted';
 
   return (
     <table className="w-full border-collapse text-[11px]">
@@ -182,7 +182,7 @@ function SinglePlanTable({
       </thead>
       <tbody>
         {plan.items.map((it, i) => (
-          <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f8faf9' }}>
+          <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : C.surface.panel }}>
             <td className={td}>{it.name || '—'}</td>
             <td className={`${td} text-center`}>{it.unit}</td>
             <td className={`${td} text-center`}>{it.qty}</td>
@@ -201,7 +201,7 @@ function SinglePlanTable({
           <td className={`${td} text-right`}>¥{formatPrice(sub)}</td>
         </tr>
         {disc > 0 && (
-          <tr style={{ color: '#c33' }}>
+          <tr style={{ color: C.delete }}>
             <td colSpan={4} className={`${td} text-right font-semibold`}>
               {plan.discount?.label || '割引'}
             </td>

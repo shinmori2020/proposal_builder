@@ -2,6 +2,7 @@
 
 import { ProposalForm, SchedulePhase } from '@/lib/types';
 import { Theme, shades } from '@/lib/themes';
+import { C } from '@/lib/colors';
 import {
   itemDays,
   totalDays,
@@ -27,9 +28,11 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
   const hasStart = !!form.scheduleStart;
   const startD = hasStart ? new Date(form.scheduleStart) : null;
 
-  const setItems = (newItems: SchedulePhase[]) => {
-    setForm((f) => ({ ...f, schedule: newItems }));
+  const update = <K extends keyof ProposalForm>(key: K, value: ProposalForm[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
   };
+
+  const setItems = (newItems: SchedulePhase[]) => update('schedule', newItems);
 
   const updateItem = <K extends keyof SchedulePhase>(
     i: number,
@@ -40,31 +43,30 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
   };
 
   const inputClass =
-    'px-3 py-2 border-[1.5px] border-[#d0d8d4] rounded-md text-sm font-inherit outline-none box-border';
+    'px-3 py-2 border-[1.5px] border-line-input rounded-md text-sm font-inherit outline-none box-border';
 
   return (
     <div className="flex flex-col gap-3.5">
       {/* 制作開始日 */}
       <div>
-        <label className="block text-[13px] font-semibold text-[#444] mb-1">
+        <label className="block text-[13px] font-semibold text-ink-label mb-1">
           制作開始日（任意）
         </label>
         <div className="flex items-center gap-2.5 mt-1">
           <input
             type="date"
             value={form.scheduleStart || ''}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, scheduleStart: e.target.value }))
-            }
+            onChange={(e) => update('scheduleStart', e.target.value)}
             className={inputClass}
             style={{ width: 180 }}
           />
           {hasStart && (
             <button
-              onClick={() => setForm((f) => ({ ...f, scheduleStart: '' }))}
-              className="px-2.5 py-1 rounded-md border-[1.5px] border-[#c33] text-[#c33] bg-transparent text-[11px] cursor-pointer font-semibold flex items-center gap-1"
+              onClick={() => update('scheduleStart', '')}
+              className="px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-[11px] cursor-pointer font-semibold flex items-center gap-1"
+              style={{ borderColor: C.delete, color: C.delete }}
             >
-              <X size={12} color="#c33" />
+              <X size={12} color={C.delete} />
               クリア
             </button>
           )}
@@ -88,7 +90,7 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
         return (
           <div
             key={i}
-            className="bg-[#f8faf9] rounded-[9px] py-2.5 px-3 border border-[#e8ece9]"
+            className="bg-surface-panel rounded-[9px] py-2.5 px-3 border border-line-muted"
           >
             <div className="flex gap-2 items-center">
               <input
@@ -130,9 +132,10 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
               </div>
               <button
                 onClick={() => setItems(items.filter((_, idx) => idx !== i))}
-                className="rounded-md border-[1.5px] border-[#c33] text-[#c33] bg-transparent cursor-pointer flex items-center justify-center py-1 px-2"
+                className="rounded-md border-[1.5px] bg-transparent cursor-pointer flex items-center justify-center py-1 px-2"
+                style={{ borderColor: C.delete, color: C.delete }}
               >
-                <X size={12} color="#c33" />
+                <X size={12} color={C.delete} />
               </button>
             </div>
             <div className="flex justify-between mt-1 pl-1">
@@ -163,7 +166,7 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
 
       {/* ガントチャート */}
       <div className="mt-1.5">
-        <p className="font-semibold text-[13px] text-[#555] mb-1.5">
+        <p className="font-semibold text-[13px] text-ink-body mb-1.5">
           ガントチャート（{totalWeeksLabel(items)}
           {hasStart && startD
             ? ` ・ ${formatDateFull(startD)}〜${formatDateFull(
@@ -190,12 +193,12 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
                   className="flex items-center gap-2 h-[26px]"
                 >
                   <span
-                    className="text-[11px] text-[#555] text-right"
+                    className="text-[11px] text-ink-body text-right"
                     style={{ minWidth: 120 }}
                   >
                     {item.phase || '—'}
                   </span>
-                  <div className="flex-1 relative h-[19px] bg-[#f0f4f2] rounded">
+                  <div className="flex-1 relative h-[19px] bg-surface-track rounded">
                     <div
                       className="absolute h-full rounded flex items-center justify-center text-white font-semibold whitespace-nowrap overflow-hidden"
                       style={{

@@ -88,9 +88,9 @@ export default function Home() {
           </div>
 
           {/* 右側: 縮小ライブプレビュー */}
-          <div className="border-l-2 border-[#e0e8e4] bg-[#eef2f0] p-3.5 overflow-hidden max-h-[calc(100vh-105px)]">
-            <span className="text-xs font-semibold text-[#888] flex items-center gap-1.5">
-              <Link size={14} color="#aaa" />
+          <div className="border-l-2 border-line-faint bg-surface-preview p-3.5 overflow-hidden max-h-[calc(100vh-105px)]">
+            <span className="text-xs font-semibold text-ink-soft flex items-center gap-1.5">
+              <Link size={14} color="#999" />
               ライブプレビュー
             </span>
             <div

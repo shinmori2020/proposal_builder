@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { EstimateItem } from '@/lib/types';
 import { Theme } from '@/lib/themes';
+import { C } from '@/lib/colors';
 import { ESTIMATE_PRESETS } from '@/lib/presets';
 import { formatPrice } from '@/lib/calculations';
 import {
@@ -54,20 +55,20 @@ export default function PresetDrawer({ onAdd, onClose, theme }: Props) {
         style={{ boxShadow: '-8px 0 30px rgba(0,0,0,0.15)' }}
       >
         {/* ヘッダー */}
-        <div className="px-5 py-4 border-b-2 border-[#e8ece9] flex justify-between items-center">
+        <div className="px-5 py-4 border-b-2 border-line-muted flex justify-between items-center">
           <h2 className="m-0 text-[17px] font-extrabold" style={{ color: P }}>
             項目プリセット
           </h2>
           <button
             onClick={onClose}
-            className="w-[30px] h-[30px] border-none bg-[#f0f0f0] rounded-lg cursor-pointer flex items-center justify-center"
+            className="w-[30px] h-[30px] border-none bg-line-divider rounded-lg cursor-pointer flex items-center justify-center"
           >
             <X size={14} color="#666" />
           </button>
         </div>
 
         {/* カテゴリタブ */}
-        <div className="flex flex-wrap gap-1.5 px-[18px] py-2.5 border-b border-[#eee] bg-[#fafbfa]">
+        <div className="flex flex-wrap gap-1.5 px-[18px] py-2.5 border-b border-line-divider bg-surface-faint">
           {ESTIMATE_PRESETS.map((c) => {
             const IconComponent = ICON_MAP[c.icon];
             const isActive = activeCategory === c.category;
@@ -78,7 +79,7 @@ export default function PresetDrawer({ onAdd, onClose, theme }: Props) {
                 onClick={() => setActiveCategory(c.category)}
                 className="py-1 px-2.5 rounded-[14px] text-[11px] cursor-pointer flex items-center gap-1 border-[1.5px]"
                 style={{
-                  borderColor: isActive ? P : '#ddd',
+                  borderColor: isActive ? P : C.line.soft,
                   background: isActive ? theme.light : '#fff',
                   color: isActive ? P : '#666',
                   fontWeight: isActive ? 700 : 400,
@@ -106,7 +107,7 @@ export default function PresetDrawer({ onAdd, onClose, theme }: Props) {
                     onClick={() => handleAdd(item)}
                     className="flex justify-between items-center py-2.5 px-3.5 rounded-[9px] cursor-pointer text-left border-[1.5px]"
                     style={{
-                      borderColor: isAdded ? P : '#e0e4e2',
+                      borderColor: isAdded ? P : C.line.subtle,
                       background: isAdded ? theme.light : '#fff',
                     }}
                   >
@@ -114,7 +115,7 @@ export default function PresetDrawer({ onAdd, onClose, theme }: Props) {
                       <div className="font-semibold text-[13px] text-[#333]">
                         {item.name}
                       </div>
-                      <div className="text-[11px] text-[#888] mt-px">
+                      <div className="text-[11px] text-ink-soft mt-px">
                         {item.qty}
                         {item.unit} × ¥{formatPrice(item.price)} ={' '}
                         <strong style={{ color: P }}>
@@ -124,7 +125,7 @@ export default function PresetDrawer({ onAdd, onClose, theme }: Props) {
                     </div>
                     <span
                       className="text-[11px] font-bold flex items-center gap-0.5"
-                      style={{ color: isAdded ? P : '#aaa' }}
+                      style={{ color: isAdded ? P : C.ink.softer }}
                     >
                       {isAdded ? (
                         <>
@@ -132,7 +133,7 @@ export default function PresetDrawer({ onAdd, onClose, theme }: Props) {
                         </>
                       ) : (
                         <>
-                          <Plus size={13} color="#aaa" /> 追加
+                          <Plus size={13} color={C.ink.softer} /> 追加
                         </>
                       )}
                     </span>

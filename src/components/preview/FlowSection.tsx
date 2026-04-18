@@ -48,7 +48,7 @@ export default function FlowSection({ form, theme }: Props) {
                     {i + 1}
                   </div>
                   <div
-                    className="text-[9px] font-semibold text-[#444] text-center leading-tight"
+                    className="text-[9px] font-semibold text-ink-label text-center leading-tight"
                     style={{ maxWidth: 65 }}
                   >
                     {s.phase}

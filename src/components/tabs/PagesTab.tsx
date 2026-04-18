@@ -2,6 +2,7 @@
 
 import { ProposalForm, Page } from '@/lib/types';
 import { Theme } from '@/lib/themes';
+import { C } from '@/lib/colors';
 import { Plus, X } from 'lucide-react';
 
 interface Props {
@@ -14,7 +15,11 @@ export default function PagesTab({ form, setForm, theme }: Props) {
   const P = theme.primary;
   const pages = form.pages;
 
-  const setPages = (p: Page[]) => setForm((f) => ({ ...f, pages: p }));
+  const update = <K extends keyof ProposalForm>(key: K, value: ProposalForm[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const setPages = (p: Page[]) => update('pages', p);
 
   const updatePageName = (i: number, name: string) => {
     setPages(pages.map((p, idx) => (idx === i ? { ...p, name } : p)));
@@ -57,7 +62,7 @@ export default function PagesTab({ form, setForm, theme }: Props) {
   };
 
   const inputClass =
-    'w-full px-3 py-2 border-[1.5px] border-[#d0d8d4] rounded-md text-sm font-inherit outline-none box-border';
+    'w-full px-3 py-2 border-[1.5px] border-line-input rounded-md text-sm font-inherit outline-none box-border';
 
   return (
     <div className="flex flex-col gap-3.5">
@@ -68,7 +73,7 @@ export default function PagesTab({ form, setForm, theme }: Props) {
       {pages.map((pg, i) => (
         <div
           key={i}
-          className="bg-[#f8faf9] rounded-[10px] p-3 border border-[#e0e8e4]"
+          className="bg-surface-panel rounded-[10px] p-3 border border-line-faint"
         >
           <div className="flex gap-2 items-center">
             <span
@@ -93,15 +98,16 @@ export default function PagesTab({ form, setForm, theme }: Props) {
             </button>
             <button
               onClick={() => removePage(i)}
-              className="px-2.5 py-1 rounded-md border-[1.5px] border-[#c33] text-[#c33] bg-transparent text-xs cursor-pointer font-semibold flex items-center"
+              className="px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-xs cursor-pointer font-semibold flex items-center"
+              style={{ borderColor: C.delete, color: C.delete }}
             >
-              <X size={12} color="#c33" />
+              <X size={12} color={C.delete} />
             </button>
           </div>
 
           {pg.children.map((c, ci) => (
             <div key={ci} className="flex gap-2 items-center mt-2 ml-7">
-              <span className="text-[#bbb]">└</span>
+              <span className="text-ink-softest">└</span>
               <input
                 value={c}
                 onChange={(e) => updateChild(i, ci, e.target.value)}
@@ -110,9 +116,10 @@ export default function PagesTab({ form, setForm, theme }: Props) {
               />
               <button
                 onClick={() => removeChild(i, ci)}
-                className="px-2 py-0.5 rounded-md border-[1.5px] border-[#c33] text-[#c33] bg-transparent text-xs cursor-pointer font-semibold flex items-center"
+                className="px-2 py-0.5 rounded-md border-[1.5px] bg-transparent text-xs cursor-pointer font-semibold flex items-center"
+                style={{ borderColor: C.delete, color: C.delete }}
               >
-                <X size={11} color="#c33" />
+                <X size={11} color={C.delete} />
               </button>
             </div>
           ))}

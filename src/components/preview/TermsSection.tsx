@@ -70,7 +70,7 @@ function TermsBlock({
 }) {
   return (
     <div
-      className="py-2 px-3 rounded-[7px] bg-[#f8faf9]"
+      className="py-2 px-3 rounded-[7px] bg-surface-panel"
       style={{ borderLeft: `3px solid ${color}` }}
     >
       <div
@@ -79,7 +79,7 @@ function TermsBlock({
       >
         {label}
       </div>
-      <div className="text-[11px] text-[#444] leading-[1.6]">{text}</div>
+      <div className="text-[11px] text-ink-label leading-[1.6]">{text}</div>
     </div>
   );
 }

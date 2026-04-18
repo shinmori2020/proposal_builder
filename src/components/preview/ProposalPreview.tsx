@@ -24,7 +24,7 @@ export default function ProposalPreview({ form, theme }: Props) {
   return (
     <div
       id="proposal-preview"
-      className="bg-white text-[#222] text-[13px] leading-[1.8]"
+      className="bg-white text-[#333] text-[13px] leading-[1.8]"
       style={{ fontFamily: "'Noto Sans JP', 'Hiragino Sans', sans-serif" }}
     >
       {/* 表紙 */}

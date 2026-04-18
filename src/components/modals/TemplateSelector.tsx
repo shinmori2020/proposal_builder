@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Theme } from '@/lib/themes';
 import { TEMPLATES } from '@/lib/templates';
+import { C } from '@/lib/colors';
 import {
   FileText, Building2, UtensilsCrossed, Scissors,
   Hospital, Scale, Hammer, Users, Check,
@@ -35,7 +36,7 @@ export default function TemplateSelector({ onSelect, onClose, theme }: Props) {
         onClick={(e) => e.stopPropagation()}
         className="bg-white rounded-2xl max-w-[700px] w-full max-h-[85vh] overflow-auto shadow-2xl"
       >
-        <div className="p-5 pb-3.5 border-b-2 border-[#e8ece9]">
+        <div className="p-5 pb-3.5 border-b-2 border-line-muted">
           <h2 className="m-0 text-xl font-extrabold" style={{ color: P }}>
             業種テンプレートを選択
           </h2>
@@ -52,14 +53,14 @@ export default function TemplateSelector({ onSelect, onClose, theme }: Props) {
                 onClick={() => setSelected(t.id)}
                 className="p-3.5 rounded-xl cursor-pointer text-left flex gap-3 items-center"
                 style={{
-                  border: isSelected ? `2.5px solid ${P}` : '1.5px solid #ddd',
+                  border: isSelected ? `2.5px solid ${P}` : `1.5px solid ${C.line.soft}`,
                   background: isSelected ? theme.bg : '#fff',
                 }}
               >
                 <div
                   className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
                   style={{
-                    background: isSelected ? P : '#f0f4f2',
+                    background: isSelected ? P : C.surface.track,
                   }}
                 >
                   {IconComponent && (
@@ -76,7 +77,7 @@ export default function TemplateSelector({ onSelect, onClose, theme }: Props) {
                   >
                     {t.label}
                   </div>
-                  <div className="text-xs text-[#888]">{t.desc}</div>
+                  <div className="text-xs text-ink-soft">{t.desc}</div>
                 </div>
                 {isSelected && (
                   <Check size={18} color={P} className="ml-auto shrink-0" />
@@ -86,10 +87,10 @@ export default function TemplateSelector({ onSelect, onClose, theme }: Props) {
           })}
         </div>
 
-        <div className="p-3.5 pt-3 flex justify-end gap-3 border-t border-[#eee]">
+        <div className="p-3.5 pt-3 flex justify-end gap-3 border-t border-line-divider">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-lg border-[1.5px] border-[#ccc] bg-white text-[#666] text-sm cursor-pointer"
+            className="px-6 py-2.5 rounded-lg border-[1.5px] border-line-default bg-white text-[#666] text-sm cursor-pointer"
           >
             キャンセル
           </button>
@@ -103,7 +104,7 @@ export default function TemplateSelector({ onSelect, onClose, theme }: Props) {
             disabled={!selected}
             className="px-7 py-2.5 rounded-lg border-none text-sm font-bold text-white"
             style={{
-              background: selected ? P : '#ccc',
+              background: selected ? P : C.line.default,
               cursor: selected ? 'pointer' : 'not-allowed',
             }}
           >

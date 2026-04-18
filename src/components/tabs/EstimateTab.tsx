@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ProposalForm, Plan, EstimateItem } from '@/lib/types';
 import { Theme } from '@/lib/themes';
+import { C } from '@/lib/colors';
 import { calcPlan, formatPrice, makePlan } from '@/lib/calculations';
 import PresetDrawer from '@/components/modals/PresetDrawer';
 import { Star, Copy, X, Plus, Package, Percent } from 'lucide-react';
@@ -26,9 +27,11 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
   const disc = plan.discount;
   const { sub, disc: discAmt, tax } = calcPlan(plan);
 
-  const setPlans = (newPlans: Plan[]) => {
-    setForm((f) => ({ ...f, plans: newPlans }));
+  const update = <K extends keyof ProposalForm>(key: K, value: ProposalForm[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
   };
+
+  const setPlans = (newPlans: Plan[]) => update('plans', newPlans);
 
   const updatePlan = (updated: Plan) => {
     setPlans(plans.map((p, i) => (i === activePlanIdx ? updated : p)));
@@ -82,10 +85,10 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
   };
 
   const inputClass =
-    'w-full px-3 py-2 border-[1.5px] border-[#d0d8d4] rounded-md text-sm font-inherit outline-none box-border';
+    'w-full px-3 py-2 border-[1.5px] border-line-input rounded-md text-sm font-inherit outline-none box-border';
 
-  const smallBtn = (color: string) =>
-    `px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-[11px] cursor-pointer font-semibold flex items-center gap-1`;
+  const smallBtn =
+    'px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-[11px] cursor-pointer font-semibold flex items-center gap-1';
 
   return (
     <div className="flex flex-col gap-2.5">
@@ -107,14 +110,14 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
               onClick={() => setActivePlanIdx(i)}
               className="py-1.5 px-3.5 rounded-lg text-[13px] cursor-pointer flex items-center gap-1"
               style={{
-                border: isActive ? `2px solid ${P}` : '1.5px solid #ddd',
+                border: isActive ? `2px solid ${P}` : `1.5px solid ${C.line.soft}`,
                 background: isActive ? theme.light : '#fff',
                 color: isActive ? P : '#666',
                 fontWeight: isActive ? 700 : 400,
               }}
             >
               {p.recommended && (
-                <Star size={13} color={isActive ? P : '#ccc'} />
+                <Star size={13} color={isActive ? P : C.line.default} />
               )}
               {p.name || `プラン${i + 1}`}
             </button>
@@ -122,14 +125,14 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
         })}
         <button
           onClick={addPlan}
-          className="w-8 h-8 rounded-lg border-[1.5px] border-dashed border-[#bbb] bg-[#fafafa] cursor-pointer flex items-center justify-center"
+          className="w-8 h-8 rounded-lg border-[1.5px] border-dashed border-ink-softest bg-surface-subtle cursor-pointer flex items-center justify-center"
         >
           <Plus size={15} color="#999" />
         </button>
       </div>
 
       {/* プランヘッダー */}
-      <div className="flex gap-2 items-center bg-[#f8f9fa] rounded-[10px] py-2.5 px-3.5">
+      <div className="flex gap-2 items-center bg-surface-muted rounded-[10px] py-2.5 px-3.5">
         <input
           value={plan.name}
           onChange={(e) => updatePlan({ ...plan, name: e.target.value })}
@@ -140,17 +143,17 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
           onClick={toggleRecommended}
           className="py-1 px-2.5 rounded-md text-[11px] cursor-pointer font-semibold flex items-center gap-1 whitespace-nowrap border-[1.5px]"
           style={{
-            borderColor: plan.recommended ? P : '#ccc',
+            borderColor: plan.recommended ? P : C.line.default,
             background: plan.recommended ? theme.light : '#fff',
             color: plan.recommended ? P : '#999',
           }}
         >
-          <Star size={13} color={plan.recommended ? P : '#ccc'} />
+          <Star size={13} color={plan.recommended ? P : C.line.default} />
           おすすめ
         </button>
         <button
           onClick={() => duplicatePlan(activePlanIdx)}
-          className={smallBtn(P) + ' whitespace-nowrap'}
+          className={smallBtn + ' whitespace-nowrap'}
           style={{ borderColor: P, color: P }}
         >
           <Copy size={13} color={P} />
@@ -159,10 +162,10 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
         {plans.length > 1 && (
           <button
             onClick={() => removePlan(activePlanIdx)}
-            className={smallBtn('#c33') + ' whitespace-nowrap'}
-            style={{ borderColor: '#c33', color: '#c33' }}
+            className={smallBtn + ' whitespace-nowrap'}
+            style={{ borderColor: C.delete, color: C.delete }}
           >
-            <X size={13} color="#c33" />
+            <X size={13} color={C.delete} />
             削除
           </button>
         )}
@@ -180,7 +183,7 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
 
       {/* 見積もり項目 */}
       <div
-        className="grid gap-[7px] font-semibold text-xs text-[#555] px-1"
+        className="grid gap-[7px] font-semibold text-xs text-ink-body px-1"
         style={{ gridTemplateColumns: '2fr 65px 55px 95px 32px' }}
       >
         <span>項目名</span>
@@ -228,9 +231,10 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
           />
           <button
             onClick={() => setItems(items.filter((_, idx) => idx !== i))}
-            className="rounded-md border-[1.5px] border-[#c33] text-[#c33] bg-transparent cursor-pointer flex items-center justify-center py-1"
+            className="rounded-md border-[1.5px] bg-transparent cursor-pointer flex items-center justify-center py-1"
+            style={{ borderColor: C.delete, color: C.delete }}
           >
-            <X size={12} color="#c33" />
+            <X size={12} color={C.delete} />
           </button>
         </div>
       ))}
@@ -247,9 +251,9 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
       </button>
 
       {/* 割引・値引き */}
-      <div className="bg-[#f8f9fa] rounded-[10px] p-3 border border-[#e0e4e2]">
+      <div className="bg-surface-muted rounded-[10px] p-3 border border-line-subtle">
         <label
-          className="block text-[13px] font-semibold text-[#444] mb-2 flex items-center gap-1"
+          className="block text-[13px] font-semibold text-ink-label mb-2 flex items-center gap-1"
         >
           <Percent size={15} color={P} />
           割引・値引き
@@ -295,15 +299,15 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
         className="mt-1 pt-2.5 flex flex-col gap-1 items-end"
         style={{ borderTop: `2px solid ${P}` }}
       >
-        <div className="text-[13px] text-[#555]">
+        <div className="text-[13px] text-ink-body">
           小計: <strong>¥{formatPrice(sub)}</strong>
         </div>
         {discAmt > 0 && (
-          <div className="text-[13px] text-[#c33]">
+          <div className="text-[13px]" style={{ color: C.delete }}>
             {disc.label || '割引'}: <strong>-¥{formatPrice(discAmt)}</strong>
           </div>
         )}
-        <div className="text-[13px] text-[#555]">
+        <div className="text-[13px] text-ink-body">
           消費税: <strong>¥{formatPrice(tax)}</strong>
         </div>
         <div

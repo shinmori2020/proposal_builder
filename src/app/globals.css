@@ -2,9 +2,34 @@
 
 @theme inline {
   --font-sans: var(--font-noto-sans-jp);
+
+  /* テキスト階層 */
+  --color-ink-label: #444;
+  --color-ink-body: #555;
+  --color-ink-soft: #888;
+  --color-ink-softer: #aaa;
+  --color-ink-softest: #bbb;
+
+  /* ボーダー */
+  --color-line-input: #d0d8d4;
+  --color-line-default: #ccc;
+  --color-line-soft: #ddd;
+  --color-line-subtle: #e0e4e2;
+  --color-line-muted: #e8ece9;
+  --color-line-faint: #e0e8e4;
+  --color-line-divider: #f0f0f0;
+
+  /* 背景 */
+  --color-surface-app: #f4f7f5;
+  --color-surface-panel: #f8faf9;
+  --color-surface-muted: #f8f9fa;
+  --color-surface-subtle: #fafafa;
+  --color-surface-faint: #fafbfa;
+  --color-surface-track: #f0f4f2;
+  --color-surface-preview: #eef2f0;
 }
 
 body {
-  background: #f4f7f5;
-  color: #222;
+  background: var(--color-surface-app);
+  color: #333;
 }

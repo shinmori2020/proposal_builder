@@ -2,6 +2,7 @@
 
 import { ProposalForm, ContractTerms } from '@/lib/types';
 import { Theme } from '@/lib/themes';
+import { C } from '@/lib/colors';
 import {
   CONTRACT_PRESETS,
   ContractPreset,
@@ -28,9 +29,11 @@ export default function TermsTab({ form, setForm, theme }: Props) {
   const P = theme.primary;
   const terms = form.contractTerms;
 
-  const setTerms = (newTerms: ContractTerms) => {
-    setForm((f) => ({ ...f, contractTerms: newTerms }));
+  const update = <K extends keyof ProposalForm>(key: K, value: ProposalForm[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
   };
+
+  const setTerms = (newTerms: ContractTerms) => update('contractTerms', newTerms);
 
   const selectPreset = (cat: SingleCategory, item: ContractPreset) => {
     setTerms({
@@ -59,7 +62,7 @@ export default function TermsTab({ form, setForm, theme }: Props) {
     return (
       <div className="mb-[18px]">
         <label
-          className="block text-[13px] font-semibold text-[#444] mb-2 flex items-center gap-1"
+          className="block text-[13px] font-semibold text-ink-label mb-2 flex items-center gap-1"
         >
           {IconComponent && <IconComponent size={15} color={P} />}
           {title}
@@ -73,7 +76,7 @@ export default function TermsTab({ form, setForm, theme }: Props) {
                 onClick={() => selectPreset(cat, item)}
                 className="py-2.5 px-3.5 rounded-[9px] cursor-pointer text-left border-[1.5px]"
                 style={{
-                  borderColor: isSelected ? P : '#e0e4e2',
+                  borderColor: isSelected ? P : C.line.subtle,
                   borderWidth: isSelected ? 2 : 1.5,
                   background: isSelected ? theme.bg : '#fff',
                 }}
@@ -82,7 +85,7 @@ export default function TermsTab({ form, setForm, theme }: Props) {
                   <div
                     className="w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0"
                     style={{
-                      border: `2px solid ${isSelected ? P : '#ccc'}`,
+                      border: `2px solid ${isSelected ? P : C.line.default}`,
                       background: isSelected ? P : '#fff',
                     }}
                   >
@@ -92,7 +95,7 @@ export default function TermsTab({ form, setForm, theme }: Props) {
                     <div className="font-semibold text-[13px]">
                       {item.label}
                     </div>
-                    <div className="text-[11px] text-[#777] mt-0.5 leading-[1.5]">
+                    <div className="text-[11px] text-[#666] mt-0.5 leading-[1.5]">
                       {item.text}
                     </div>
                   </div>
@@ -119,7 +122,7 @@ export default function TermsTab({ form, setForm, theme }: Props) {
       {/* その他（複数選択可） */}
       <div className="mb-[18px]">
         <label
-          className="block text-[13px] font-semibold text-[#444] mb-2 flex items-center gap-1"
+          className="block text-[13px] font-semibold text-ink-label mb-2 flex items-center gap-1"
         >
           <FileText size={15} color={P} />
           その他（複数選択可）
@@ -133,7 +136,7 @@ export default function TermsTab({ form, setForm, theme }: Props) {
                 onClick={() => toggleNote(item.id)}
                 className="py-2.5 px-3.5 rounded-[9px] cursor-pointer text-left border-[1.5px]"
                 style={{
-                  borderColor: isActive ? P : '#e0e4e2',
+                  borderColor: isActive ? P : C.line.subtle,
                   borderWidth: isActive ? 2 : 1.5,
                   background: isActive ? theme.bg : '#fff',
                 }}
@@ -142,7 +145,7 @@ export default function TermsTab({ form, setForm, theme }: Props) {
                   <div
                     className="w-[18px] h-[18px] rounded-[3px] flex items-center justify-center shrink-0"
                     style={{
-                      border: `2px solid ${isActive ? P : '#ccc'}`,
+                      border: `2px solid ${isActive ? P : C.line.default}`,
                       background: isActive ? P : '#fff',
                     }}
                   >
@@ -152,7 +155,7 @@ export default function TermsTab({ form, setForm, theme }: Props) {
                     <div className="font-semibold text-[13px]">
                       {item.label}
                     </div>
-                    <div className="text-[11px] text-[#777] mt-0.5">
+                    <div className="text-[11px] text-[#666] mt-0.5">
                       {item.text}
                     </div>
                   </div>

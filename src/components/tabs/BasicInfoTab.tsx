@@ -3,6 +3,7 @@
 import { ProposalForm } from '@/lib/types';
 import { Theme, THEMES } from '@/lib/themes';
 import { SITE_TYPES, FEATURES_ALL } from '@/lib/constants';
+import { C } from '@/lib/colors';
 import { Tag, FileText, Check } from 'lucide-react';
 
 interface Props {
@@ -37,9 +38,9 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
     }
   };
 
-  const labelClass = 'block text-[13px] font-semibold text-[#444] mb-1';
+  const labelClass = 'block text-[13px] font-semibold text-ink-label mb-1';
   const inputClass =
-    'w-full px-3 py-2 border-[1.5px] border-[#d0d8d4] rounded-md text-sm font-inherit outline-none box-border';
+    'w-full px-3 py-2 border-[1.5px] border-line-input rounded-md text-sm font-inherit outline-none box-border';
 
   return (
     <div className="flex flex-col gap-5">
@@ -156,7 +157,7 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
                 onClick={() => toggleFeature(f)}
                 className="py-1.5 px-3 rounded-[18px] text-xs cursor-pointer flex items-center gap-1"
                 style={{
-                  border: `1.5px solid ${isActive ? P : '#ccc'}`,
+                  border: `1.5px solid ${isActive ? P : C.line.default}`,
                   background: isActive ? theme.light : '#fff',
                   color: isActive ? P : '#666',
                   fontWeight: isActive ? 600 : 400,
@@ -201,11 +202,12 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
               <img
                 src={form.companyLogo}
                 alt="logo"
-                className="max-h-12 max-w-[160px] object-contain rounded-md border border-[#e0e4e2] p-1 bg-white"
+                className="max-h-12 max-w-[160px] object-contain rounded-md border border-line-subtle p-1 bg-white"
               />
               <button
                 onClick={() => update('companyLogo', '')}
-                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full border-none bg-[#c33] text-white cursor-pointer flex items-center justify-center text-xs"
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full border-none text-white cursor-pointer flex items-center justify-center text-xs"
+                style={{ background: C.delete }}
               >
                 ×
               </button>
