@@ -10,6 +10,7 @@ import TabNav from '@/components/layout/TabNav';
 import BasicInfoTab from '@/components/tabs/BasicInfoTab';
 import PagesTab from '@/components/tabs/PagesTab';
 import EstimateTab from '@/components/tabs/EstimateTab';
+import ScheduleTab from '@/components/tabs/ScheduleTab';
 import ProposalPreview from '@/components/preview/ProposalPreview';
 import TemplateSelector from '@/components/modals/TemplateSelector';
 import { Link } from 'lucide-react';
@@ -78,9 +79,7 @@ export default function Home() {
               <EstimateTab form={form} setForm={setForm} theme={theme} />
             )}
             {activeTab === 'schedule' && (
-              <div className="text-sm text-[#999] py-8 text-center">
-                スケジュールタブは Step 5 で実装されます
-              </div>
+              <ScheduleTab form={form} setForm={setForm} theme={theme} />
             )}
             {activeTab === 'terms' && (
               <div className="text-sm text-[#999] py-8 text-center">
