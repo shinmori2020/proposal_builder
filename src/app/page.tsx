@@ -26,17 +26,13 @@ export default function Home() {
   const theme = getTheme(form.themeId);
 
   const handlePrint = async () => {
-    // プレビュータブに切り替えて DOM を描画
-    setActiveTab('preview');
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
     const filename =
       form.projectName ||
       form.clientName ||
       `提案書_${new Date().toLocaleDateString('ja-JP').replace(/\//g, '-')}`;
 
     try {
-      await exportPreviewToPdf(filename);
+      await exportPreviewToPdf(form, theme, filename);
     } catch (err) {
       console.error('PDF 出力エラー:', err);
       alert('PDF の生成に失敗しました。ブラウザをリロードしてお試しください。');
