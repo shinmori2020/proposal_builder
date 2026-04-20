@@ -15,6 +15,7 @@ import TermsTab from '@/components/tabs/TermsTab';
 import ProposalPreview from '@/components/preview/ProposalPreview';
 import TemplateSelector from '@/components/modals/TemplateSelector';
 import SaveLoadPanel from '@/components/modals/SaveLoadPanel';
+import { exportPreviewToPdf } from '@/lib/pdfExport';
 import { Link } from 'lucide-react';
 
 export default function Home() {
@@ -24,9 +25,22 @@ export default function Home() {
   const [showSave, setShowSave] = useState(false);
   const theme = getTheme(form.themeId);
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
+    // プレビュータブに切り替えて DOM を描画
     setActiveTab('preview');
-    setTimeout(() => window.print(), 200);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const filename =
+      form.projectName ||
+      form.clientName ||
+      `提案書_${new Date().toLocaleDateString('ja-JP').replace(/\//g, '-')}`;
+
+    try {
+      await exportPreviewToPdf(filename);
+    } catch (err) {
+      console.error('PDF 出力エラー:', err);
+      alert('PDF の生成に失敗しました。ブラウザをリロードしてお試しください。');
+    }
   };
 
   const applyTemplate = (id: string) => {
