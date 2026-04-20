@@ -42,7 +42,7 @@ export default function FlowSection({ form, theme }: Props) {
               <div key={i} className="flex items-center">
                 <div className="flex flex-col items-center gap-1">
                   <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-extrabold text-sm"
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-extrabold text-sm leading-none"
                     style={{ background: cl[i % cl.length] }}
                   >
                     {i + 1}

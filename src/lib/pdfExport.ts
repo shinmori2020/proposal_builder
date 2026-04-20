@@ -17,6 +17,27 @@ export async function exportPreviewToPdf(filename: string): Promise<void> {
     useCORS: true,
     backgroundColor: '#ffffff',
     logging: false,
+    onclone: (clonedDoc) => {
+      // html2canvas は line-height 1.8 を継承した短いテキストを
+      // 誤って下寄せにしてしまうため、中央寄せ要素と小さいバッジ類の
+      // line-height を正規化する
+      const style = clonedDoc.createElement('style');
+      style.textContent = `
+        #proposal-preview,
+        #proposal-preview * {
+          line-height: 1.5;
+        }
+        #proposal-preview p,
+        #proposal-preview textarea {
+          line-height: 1.7;
+        }
+        #proposal-preview [class*="rounded-full"],
+        #proposal-preview [class*="rounded-"][class*="px-"][class*="py-"] {
+          line-height: 1 !important;
+        }
+      `;
+      clonedDoc.head.appendChild(style);
+    },
   });
 
   // A4 サイズ (mm)
