@@ -15,9 +15,9 @@ export function registerPdfFonts() {
   Font.register({
     family: 'Noto Sans JP',
     fonts: [
-      { src: `${base}/NotoSansJP-Regular.woff2`, fontWeight: 400 },
-      { src: `${base}/NotoSansJP-SemiBold.woff2`, fontWeight: 600 },
-      { src: `${base}/NotoSansJP-ExtraBold.woff2`, fontWeight: 800 },
+      { src: `${base}/NotoSansJP-Regular.otf`, fontWeight: 400 },
+      { src: `${base}/NotoSansJP-Bold.otf`, fontWeight: 600 },
+      { src: `${base}/NotoSansJP-Black.otf`, fontWeight: 800 },
     ],
   });
 
