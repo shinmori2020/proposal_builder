@@ -13,121 +13,149 @@ interface Props {
 const styles = StyleSheet.create({
   cover: {
     flex: 1,
-    paddingVertical: 60,
-    paddingHorizontal: 55,
+    paddingVertical: 45,
+    paddingHorizontal: 50,
     backgroundColor: PC.white,
   },
 
   /* ヘッダー */
   topBar: {
     height: 2,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   subtitle: {
-    fontSize: 9,
+    fontSize: 8,
     letterSpacing: 5,
     color: PC.ink.faint,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 800,
     color: PC.ink.primary,
-    marginBottom: 14,
+    marginBottom: 10,
   },
   bottomBar: {
     height: 0.8,
-    marginBottom: 40,
+    marginBottom: 22,
   },
 
   /* 提出先情報 */
   metaRow: {
     flexDirection: 'row',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   metaLabel: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: 600,
     color: PC.ink.muted,
-    width: 90,
+    width: 80,
     letterSpacing: 2,
   },
   metaValue: {
-    fontSize: 11,
+    fontSize: 10,
     color: PC.ink.primary,
     flex: 1,
   },
-  metaGap: {
-    marginBottom: 40,
+
+  /* セクション */
+  section: {
+    marginTop: 20,
+  },
+  sectionHeading: {
+    fontSize: 11,
+    fontWeight: 800,
+    marginBottom: 6,
+    paddingBottom: 3,
+    borderBottomWidth: 1.5,
+    borderBottomStyle: 'solid',
+    letterSpacing: 1,
+  },
+  paragraph: {
+    fontSize: 10,
+    color: PC.ink.label,
+    lineHeight: 1.7,
+    marginBottom: 3,
+  },
+  purposeLabel: {
+    fontSize: 10,
+    fontWeight: 600,
+    marginTop: 6,
   },
 
-  /* 見積もり情報ボックス */
-  infoBox: {
-    paddingVertical: 20,
-    paddingHorizontal: 28,
+  /* 制作概要 - 2カラム */
+  summaryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  summaryItem: {
+    width: '50%',
+    flexDirection: 'row',
+    paddingVertical: 3,
+  },
+  summaryLabel: {
+    fontSize: 9,
+    fontWeight: 600,
+    color: PC.ink.muted,
+    width: 70,
+  },
+  summaryValue: {
+    fontSize: 10,
+    color: PC.ink.primary,
+    flex: 1,
+  },
+
+  /* 見積もり */
+  estimateBox: {
+    marginTop: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
     borderWidth: 1.5,
     borderStyle: 'solid',
     borderRadius: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   totalLabel: {
-    fontSize: 9,
-    letterSpacing: 3,
-    textAlign: 'center',
-    marginBottom: 6,
+    fontSize: 10,
+    letterSpacing: 2,
     fontWeight: 600,
   },
+  totalValueWrap: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
   totalValue: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: 800,
-    textAlign: 'center',
   },
   totalNote: {
     fontSize: 9,
-    textAlign: 'center',
-    marginTop: 2,
+    marginLeft: 4,
     color: PC.ink.soft,
   },
   hidePriceText: {
-    fontSize: 12,
-    textAlign: 'center',
+    fontSize: 11,
     color: PC.ink.body,
-    paddingVertical: 8,
-  },
-  divider: {
-    height: 0.8,
-    backgroundColor: PC.line.subtle,
-    marginVertical: 14,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 3,
-  },
-  infoLabel: {
-    fontSize: 10,
-    color: PC.ink.muted,
-    fontWeight: 600,
-  },
-  infoValue: {
-    fontSize: 10,
-    color: PC.ink.primary,
-    fontWeight: 600,
+    textAlign: 'center',
+    flex: 1,
   },
 
   /* フッター */
   footerWrap: {
     marginTop: 'auto',
-    paddingTop: 30,
+    paddingTop: 20,
     borderTopWidth: 0.8,
     borderTopStyle: 'solid',
     borderTopColor: PC.line.subtle,
     alignItems: 'flex-end',
   },
   logo: {
-    maxHeight: 36,
-    maxWidth: 140,
+    maxHeight: 32,
+    maxWidth: 130,
     objectFit: 'contain',
-    marginBottom: 5,
+    marginBottom: 4,
   },
   company: {
     fontSize: 10,
@@ -135,7 +163,7 @@ const styles = StyleSheet.create({
     fontWeight: 600,
   },
   companyUrl: {
-    fontSize: 9,
+    fontSize: 8,
     color: PC.ink.soft,
     marginTop: 1,
   },
@@ -188,10 +216,65 @@ export default function CoverPdf({ form, theme }: Props) {
         )}
       </View>
 
-      <View style={styles.metaGap} />
+      {/* 提案概要 */}
+      {(form.overview || form.purpose) && (
+        <View style={styles.section}>
+          <Text
+            style={[
+              styles.sectionHeading,
+              { color: P, borderBottomColor: P },
+            ]}
+          >
+            提案概要
+          </Text>
+          {form.overview && (
+            <Text style={styles.paragraph}>{form.overview}</Text>
+          )}
+          {form.purpose && (
+            <>
+              <Text style={[styles.purposeLabel, { color: P }]}>
+                制作方針
+              </Text>
+              <Text style={styles.paragraph}>{form.purpose}</Text>
+            </>
+          )}
+        </View>
+      )}
 
-      {/* 見積もり情報ボックス */}
-      <View style={[styles.infoBox, { borderColor: P }]}>
+      {/* 制作概要 */}
+      <View style={styles.section}>
+        <Text
+          style={[
+            styles.sectionHeading,
+            { color: P, borderBottomColor: P },
+          ]}
+        >
+          制作概要
+        </Text>
+        <View style={styles.summaryGrid}>
+          <View style={styles.summaryItem}>
+            <Text style={styles.summaryLabel}>サイト種別</Text>
+            <Text style={styles.summaryValue}>{form.siteType}</Text>
+          </View>
+          <View style={styles.summaryItem}>
+            <Text style={styles.summaryLabel}>総ページ数</Text>
+            <Text style={styles.summaryValue}>{totalPages}ページ</Text>
+          </View>
+          <View style={styles.summaryItem}>
+            <Text style={styles.summaryLabel}>制作期間</Text>
+            <Text style={styles.summaryValue}>{period}</Text>
+          </View>
+          {form.deliveryDate && (
+            <View style={styles.summaryItem}>
+              <Text style={styles.summaryLabel}>納品希望日</Text>
+              <Text style={styles.summaryValue}>{form.deliveryDate}</Text>
+            </View>
+          )}
+        </View>
+      </View>
+
+      {/* 見積もり総額 */}
+      <View style={[styles.estimateBox, { borderColor: P }]}>
         {hp ? (
           <Text style={styles.hidePriceText}>
             お見積もり総額は別途ご案内いたします
@@ -201,32 +284,17 @@ export default function CoverPdf({ form, theme }: Props) {
             <Text style={[styles.totalLabel, { color: P }]}>
               お見積もり総額
             </Text>
-            <Text style={[styles.totalValue, { color: P }]}>
-              ¥{formatPrice(total)}
-            </Text>
-            <Text style={styles.totalNote}>
-              {plan?.recommended && form.plans.length > 1
-                ? `（${plan.name} / 税込）`
-                : '（税込）'}
-            </Text>
+            <View style={styles.totalValueWrap}>
+              <Text style={[styles.totalValue, { color: P }]}>
+                ¥{formatPrice(total)}
+              </Text>
+              <Text style={styles.totalNote}>
+                {plan?.recommended && form.plans.length > 1
+                  ? `(${plan.name} / 税込)`
+                  : '(税込)'}
+              </Text>
+            </View>
           </>
-        )}
-
-        <View style={styles.divider} />
-
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>制作期間</Text>
-          <Text style={styles.infoValue}>{period}</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>総ページ数</Text>
-          <Text style={styles.infoValue}>{totalPages}ページ</Text>
-        </View>
-        {form.deliveryDate && (
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>納品希望日</Text>
-            <Text style={styles.infoValue}>{form.deliveryDate}</Text>
-          </View>
         )}
       </View>
 
