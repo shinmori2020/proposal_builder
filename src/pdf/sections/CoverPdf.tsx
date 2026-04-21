@@ -13,105 +13,131 @@ interface Props {
 const styles = StyleSheet.create({
   cover: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    padding: 40,
-    color: PC.white,
+    paddingVertical: 60,
+    paddingHorizontal: 55,
+    backgroundColor: PC.white,
+  },
+
+  /* ヘッダー */
+  topBar: {
+    height: 2,
+    marginBottom: 10,
   },
   subtitle: {
-    fontSize: 8,
-    letterSpacing: 4,
-    opacity: 0.6,
-    marginBottom: 12,
-    color: PC.white,
+    fontSize: 9,
+    letterSpacing: 5,
+    color: PC.ink.faint,
+    marginBottom: 10,
   },
   title: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: 800,
-    marginBottom: 6,
-    color: PC.white,
+    color: PC.ink.primary,
+    marginBottom: 14,
   },
-  client: {
-    fontSize: 12,
-    opacity: 0.85,
-    color: PC.white,
+  bottomBar: {
+    height: 0.8,
+    marginBottom: 40,
   },
-  date: {
-    marginTop: 16,
+
+  /* 提出先情報 */
+  metaRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  metaLabel: {
     fontSize: 10,
-    opacity: 0.5,
-    color: PC.white,
+    fontWeight: 600,
+    color: PC.ink.muted,
+    width: 90,
+    letterSpacing: 2,
   },
+  metaValue: {
+    fontSize: 11,
+    color: PC.ink.primary,
+    flex: 1,
+  },
+  metaGap: {
+    marginBottom: 40,
+  },
+
+  /* 見積もり情報ボックス */
   infoBox: {
-    marginTop: 30,
-    paddingVertical: 16,
+    paddingVertical: 20,
     paddingHorizontal: 28,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.35)',
+    borderWidth: 1.5,
     borderStyle: 'solid',
-    borderRadius: 6,
-    minWidth: 280,
+    borderRadius: 4,
   },
   totalLabel: {
     fontSize: 9,
-    letterSpacing: 2,
+    letterSpacing: 3,
     textAlign: 'center',
-    opacity: 0.75,
-    marginBottom: 4,
-    color: PC.white,
+    marginBottom: 6,
+    fontWeight: 600,
   },
   totalValue: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 800,
     textAlign: 'center',
-    color: PC.white,
   },
   totalNote: {
-    fontSize: 8,
+    fontSize: 9,
     textAlign: 'center',
-    opacity: 0.6,
     marginTop: 2,
-    color: PC.white,
+    color: PC.ink.soft,
   },
   hidePriceText: {
-    fontSize: 11,
+    fontSize: 12,
     textAlign: 'center',
-    color: PC.white,
-    opacity: 0.85,
-    paddingVertical: 4,
+    color: PC.ink.body,
+    paddingVertical: 8,
   },
   divider: {
-    height: 1,
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    marginVertical: 10,
+    height: 0.8,
+    backgroundColor: PC.line.subtle,
+    marginVertical: 14,
   },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 3,
+    paddingVertical: 3,
   },
   infoLabel: {
-    fontSize: 9,
-    opacity: 0.7,
-    color: PC.white,
+    fontSize: 10,
+    color: PC.ink.muted,
+    fontWeight: 600,
   },
   infoValue: {
-    fontSize: 9,
+    fontSize: 10,
+    color: PC.ink.primary,
     fontWeight: 600,
-    color: PC.white,
+  },
+
+  /* フッター */
+  footerWrap: {
+    marginTop: 'auto',
+    paddingTop: 30,
+    borderTopWidth: 0.8,
+    borderTopStyle: 'solid',
+    borderTopColor: PC.line.subtle,
+    alignItems: 'flex-end',
   },
   logo: {
-    maxHeight: 40,
+    maxHeight: 36,
     maxWidth: 140,
-    marginTop: 30,
     objectFit: 'contain',
+    marginBottom: 5,
   },
   company: {
-    marginTop: 4,
     fontSize: 10,
-    opacity: 0.65,
-    color: PC.white,
+    color: PC.ink.primary,
+    fontWeight: 600,
+  },
+  companyUrl: {
+    fontSize: 9,
+    color: PC.ink.soft,
+    marginTop: 1,
   },
 });
 
@@ -122,7 +148,6 @@ export default function CoverPdf({ form, theme }: Props) {
     day: 'numeric',
   });
 
-  // おすすめプランを優先、なければ先頭のプランを使用
   const plan = form.plans.find((p) => p.recommended) || form.plans[0];
   const total = plan ? calcPlan(plan).total : 0;
   const totalPages = form.pages.reduce(
@@ -131,28 +156,54 @@ export default function CoverPdf({ form, theme }: Props) {
   );
   const period = totalWeeksLabel(form.schedule);
   const hp = form.hidePrices;
+  const P = theme.primary;
 
   return (
-    <View style={[styles.cover, { backgroundColor: theme.primary }]}>
+    <View style={styles.cover}>
+      {/* ヘッダー */}
+      <View style={[styles.topBar, { backgroundColor: P }]} />
       <Text style={styles.subtitle}>WEB SITE PROPOSAL</Text>
       <Text style={styles.title}>
         {form.projectName || 'Webサイト制作のご提案'}
       </Text>
-      {form.clientName && (
-        <Text style={styles.client}>{form.clientName} 様</Text>
-      )}
-      <Text style={styles.date}>{today}</Text>
+      <View style={[styles.bottomBar, { backgroundColor: P }]} />
+
+      {/* 提出先情報 */}
+      <View>
+        {form.clientName && (
+          <View style={styles.metaRow}>
+            <Text style={styles.metaLabel}>提 出 先</Text>
+            <Text style={styles.metaValue}>{form.clientName} 様</Text>
+          </View>
+        )}
+        <View style={styles.metaRow}>
+          <Text style={styles.metaLabel}>提 案 日</Text>
+          <Text style={styles.metaValue}>{today}</Text>
+        </View>
+        {form.companyName && (
+          <View style={styles.metaRow}>
+            <Text style={styles.metaLabel}>提 案 者</Text>
+            <Text style={styles.metaValue}>{form.companyName}</Text>
+          </View>
+        )}
+      </View>
+
+      <View style={styles.metaGap} />
 
       {/* 見積もり情報ボックス */}
-      <View style={styles.infoBox}>
+      <View style={[styles.infoBox, { borderColor: P }]}>
         {hp ? (
           <Text style={styles.hidePriceText}>
             お見積もり総額は別途ご案内いたします
           </Text>
         ) : (
           <>
-            <Text style={styles.totalLabel}>お見積もり総額</Text>
-            <Text style={styles.totalValue}>¥{formatPrice(total)}</Text>
+            <Text style={[styles.totalLabel, { color: P }]}>
+              お見積もり総額
+            </Text>
+            <Text style={[styles.totalValue, { color: P }]}>
+              ¥{formatPrice(total)}
+            </Text>
             <Text style={styles.totalNote}>
               {plan?.recommended && form.plans.length > 1
                 ? `（${plan.name} / 税込）`
@@ -179,10 +230,18 @@ export default function CoverPdf({ form, theme }: Props) {
         )}
       </View>
 
-      {form.companyLogo && <Image src={form.companyLogo} style={styles.logo} />}
-      {form.companyName && (
-        <Text style={styles.company}>{form.companyName}</Text>
-      )}
+      {/* 右下フッター */}
+      <View style={styles.footerWrap}>
+        {form.companyLogo && (
+          <Image src={form.companyLogo} style={styles.logo} />
+        )}
+        {form.companyName && (
+          <Text style={styles.company}>{form.companyName}</Text>
+        )}
+        {form.companyUrl && (
+          <Text style={styles.companyUrl}>{form.companyUrl}</Text>
+        )}
+      </View>
     </View>
   );
 }
