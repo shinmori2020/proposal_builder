@@ -52,6 +52,7 @@ function HidePricesView({
 }) {
   return (
     <View
+      wrap={false}
       style={{
         paddingVertical: 18,
         paddingHorizontal: 14,
@@ -149,6 +150,7 @@ function MultiPlanCards({ plans, P }: { plans: Plan[]; P: string }) {
         return (
           <View
             key={pi}
+            wrap={false}
             style={{
               flex: 1,
               borderWidth: plan.recommended ? 2 : 1,
@@ -281,6 +283,7 @@ function SinglePlanTable({
     <View>
       {/* ヘッダー */}
       <View
+        wrap={false}
         style={{
           flexDirection: 'row',
           backgroundColor: P,
@@ -356,6 +359,7 @@ function SinglePlanTable({
       {plan.items.map((it, i) => (
         <View
           key={i}
+          wrap={false}
           style={{
             flexDirection: 'row',
             backgroundColor: i % 2 === 0 ? PC.white : PC.surface.panel,
@@ -408,41 +412,15 @@ function SinglePlanTable({
         </View>
       ))}
 
-      {/* 小計行 */}
-      <View
-        style={{
-          flexDirection: 'row',
-          paddingTop: 4,
-        }}
-      >
-        <Text
+      {/* 合計ブロック（小計・割引・消費税・合計）は一体で表示させる */}
+      <View wrap={false}>
+        {/* 小計行 */}
+        <View
           style={{
-            flex: 1,
-            textAlign: 'right',
-            paddingHorizontal: 4,
-            fontSize: 9,
-            fontWeight: 600,
-            color: PC.ink.body,
+            flexDirection: 'row',
+            paddingTop: 4,
           }}
         >
-          小計
-        </Text>
-        <Text
-          style={{
-            width: 75,
-            textAlign: 'right',
-            paddingHorizontal: 4,
-            fontSize: 9,
-            color: PC.ink.primary,
-          }}
-        >
-          ¥{formatPrice(sub)}
-        </Text>
-      </View>
-
-      {/* 割引行 */}
-      {disc > 0 && (
-        <View style={{ flexDirection: 'row', paddingTop: 2 }}>
           <Text
             style={{
               flex: 1,
@@ -450,10 +428,10 @@ function SinglePlanTable({
               paddingHorizontal: 4,
               fontSize: 9,
               fontWeight: 600,
-              color: PC.delete,
+              color: PC.ink.body,
             }}
           >
-            {plan.discount?.label || '割引'}
+            小計
           </Text>
           <Text
             style={{
@@ -461,74 +439,103 @@ function SinglePlanTable({
               textAlign: 'right',
               paddingHorizontal: 4,
               fontSize: 9,
-              fontWeight: 600,
-              color: PC.delete,
+              color: PC.ink.primary,
             }}
           >
-            -¥{formatPrice(disc)}
+            ¥{formatPrice(sub)}
           </Text>
         </View>
-      )}
 
-      {/* 消費税行 */}
-      <View style={{ flexDirection: 'row', paddingTop: 2 }}>
-        <Text
-          style={{
-            flex: 1,
-            textAlign: 'right',
-            paddingHorizontal: 4,
-            fontSize: 9,
-            color: PC.ink.body,
-          }}
-        >
-          消費税
-        </Text>
-        <Text
-          style={{
-            width: 75,
-            textAlign: 'right',
-            paddingHorizontal: 4,
-            fontSize: 9,
-            color: PC.ink.primary,
-          }}
-        >
-          ¥{formatPrice(tax)}
-        </Text>
-      </View>
+        {/* 割引行 */}
+        {disc > 0 && (
+          <View style={{ flexDirection: 'row', paddingTop: 2 }}>
+            <Text
+              style={{
+                flex: 1,
+                textAlign: 'right',
+                paddingHorizontal: 4,
+                fontSize: 9,
+                fontWeight: 600,
+                color: PC.delete,
+              }}
+            >
+              {plan.discount?.label || '割引'}
+            </Text>
+            <Text
+              style={{
+                width: 75,
+                textAlign: 'right',
+                paddingHorizontal: 4,
+                fontSize: 9,
+                fontWeight: 600,
+                color: PC.delete,
+              }}
+            >
+              -¥{formatPrice(disc)}
+            </Text>
+          </View>
+        )}
 
-      {/* 合計行 */}
-      <View
-        style={{
-          flexDirection: 'row',
-          marginTop: 4,
-          paddingVertical: 6,
-          backgroundColor: L,
-        }}
-      >
-        <Text
+        {/* 消費税行 */}
+        <View style={{ flexDirection: 'row', paddingTop: 2 }}>
+          <Text
+            style={{
+              flex: 1,
+              textAlign: 'right',
+              paddingHorizontal: 4,
+              fontSize: 9,
+              color: PC.ink.body,
+            }}
+          >
+            消費税
+          </Text>
+          <Text
+            style={{
+              width: 75,
+              textAlign: 'right',
+              paddingHorizontal: 4,
+              fontSize: 9,
+              color: PC.ink.primary,
+            }}
+          >
+            ¥{formatPrice(tax)}
+          </Text>
+        </View>
+
+        {/* 合計行 */}
+        <View
           style={{
-            flex: 1,
-            textAlign: 'right',
-            paddingHorizontal: 4,
-            fontSize: 11,
-            fontWeight: 800,
-            color: P,
+            flexDirection: 'row',
+            marginTop: 4,
+            paddingVertical: 6,
+            backgroundColor: L,
           }}
         >
-          合計（税込）
-        </Text>
-        <Text
-          style={{
-            width: 75,
-            textAlign: 'right',
-            paddingHorizontal: 4,
-            fontSize: 11,
-            fontWeight: 800,
-            color: P,
-          }}
-        >
-          ¥{formatPrice(total)}
-        </Text>
+          <Text
+            style={{
+              flex: 1,
+              textAlign: 'right',
+              paddingHorizontal: 4,
+              fontSize: 11,
+              fontWeight: 800,
+              color: P,
+            }}
+          >
+            合計（税込）
+          </Text>
+          <Text
+            style={{
+              width: 75,
+              textAlign: 'right',
+              paddingHorizontal: 4,
+              fontSize: 11,
+              fontWeight: 800,
+              color: P,
+            }}
+          >
+            ¥{formatPrice(total)}
+          </Text>
+        </View>
       </View>
     </View>
   );
