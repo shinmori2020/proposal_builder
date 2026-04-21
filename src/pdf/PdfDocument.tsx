@@ -8,6 +8,7 @@ import SummaryPdf from './sections/SummaryPdf';
 import FlowPdf from './sections/FlowPdf';
 import FeaturesPdf from './sections/FeaturesPdf';
 import SitemapPdf from './sections/SitemapPdf';
+import EstimatePdf from './sections/EstimatePdf';
 import SchedulePdf from './sections/SchedulePdf';
 import TermsPdf from './sections/TermsPdf';
 import NotesPdf from './sections/NotesPdf';
@@ -33,7 +34,7 @@ export default function PdfDocument({ form, theme }: Props) {
         <FlowPdf form={form} theme={theme} />
         <FeaturesPdf form={form} theme={theme} />
         <SitemapPdf form={form} theme={theme} />
-        {/* Phase 4: EstimatePdf */}
+        <EstimatePdf form={form} theme={theme} />
         <SchedulePdf form={form} theme={theme} />
         <TermsPdf form={form} theme={theme} />
         <NotesPdf form={form} theme={theme} />
