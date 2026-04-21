@@ -5,7 +5,10 @@ import { pdfStyles } from './pdfStyles';
 import CoverPdf from './sections/CoverPdf';
 import OverviewPdf from './sections/OverviewPdf';
 import SummaryPdf from './sections/SummaryPdf';
+import FlowPdf from './sections/FlowPdf';
 import FeaturesPdf from './sections/FeaturesPdf';
+import SitemapPdf from './sections/SitemapPdf';
+import SchedulePdf from './sections/SchedulePdf';
 import TermsPdf from './sections/TermsPdf';
 import NotesPdf from './sections/NotesPdf';
 import FooterPdf from './sections/FooterPdf';
@@ -27,11 +30,11 @@ export default function PdfDocument({ form, theme }: Props) {
       <Page size="A4" style={pdfStyles.contentPage}>
         <OverviewPdf form={form} theme={theme} />
         <SummaryPdf form={form} theme={theme} />
-        {/* Phase 3: FlowPdf */}
+        <FlowPdf form={form} theme={theme} />
         <FeaturesPdf form={form} theme={theme} />
-        {/* Phase 3: SitemapPdf */}
+        <SitemapPdf form={form} theme={theme} />
         {/* Phase 4: EstimatePdf */}
-        {/* Phase 3: SchedulePdf */}
+        <SchedulePdf form={form} theme={theme} />
         <TermsPdf form={form} theme={theme} />
         <NotesPdf form={form} theme={theme} />
         <FooterPdf form={form} />
