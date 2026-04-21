@@ -57,6 +57,7 @@ export default function SchedulePdf({ form, theme }: Props) {
           return (
             <View
               key={i}
+              wrap={false}
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',

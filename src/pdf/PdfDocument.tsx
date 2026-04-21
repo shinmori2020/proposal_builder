@@ -20,18 +20,26 @@ interface Props {
 export default function PdfDocument({ form, theme }: Props) {
   return (
     <Document>
-      {/* 表紙（1ページ目: 提案概要・制作概要・見積もり総額を含む） */}
+      {/* ページ1: 表紙（提案概要・制作概要・見積もり総額） */}
       <Page size="A4" style={pdfStyles.coverPage}>
         <CoverPdf form={form} theme={theme} />
       </Page>
 
-      {/* 本文（2ページ目以降、自動改ページ） */}
+      {/* ページ2: 制作フロー + 実装機能 + サイトマップ + 制作スケジュール */}
       <Page size="A4" style={pdfStyles.contentPage}>
         <FlowPdf form={form} theme={theme} />
         <FeaturesPdf form={form} theme={theme} />
         <SitemapPdf form={form} theme={theme} />
-        <EstimatePdf form={form} theme={theme} />
         <SchedulePdf form={form} theme={theme} />
+      </Page>
+
+      {/* ページ3: お見積もり（長くなる可能性があるので独立ページ） */}
+      <Page size="A4" style={pdfStyles.contentPage}>
+        <EstimatePdf form={form} theme={theme} />
+      </Page>
+
+      {/* ページ4: 契約条件・備考・フッター */}
+      <Page size="A4" style={pdfStyles.contentPage}>
         <TermsPdf form={form} theme={theme} />
         <NotesPdf form={form} theme={theme} />
         <FooterPdf form={form} />
