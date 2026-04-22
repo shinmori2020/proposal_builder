@@ -1,5 +1,5 @@
 import { View, Text } from '@react-pdf/renderer';
-import { ProposalForm, Plan } from '@/lib/types';
+import { ProposalForm, Plan, EstimateItem } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { pdfStyles } from '../pdfStyles';
 import { PC } from '../pdfColors';
@@ -8,6 +8,25 @@ import { calcPlan, formatPrice } from '@/lib/calculations';
 interface Props {
   form: ProposalForm;
   theme: Theme;
+}
+
+/**
+ * 表示対象の項目だけを取得（名前と単価がどちらも空の行は除外）
+ */
+function getVisibleItems(items: EstimateItem[]): EstimateItem[] {
+  return items.filter((it) => it.name.trim() !== '' || it.price !== 0);
+}
+
+/**
+ * 配列を N 件ずつのチャンクに分割
+ */
+function chunk<T>(arr: T[], size: number): T[][] {
+  if (arr.length === 0) return [[]];
+  const result: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size));
+  }
+  return result;
 }
 
 export default function EstimatePdf({ form, theme }: Props) {
@@ -95,47 +114,50 @@ function HidePricesView({
         含まれる作業項目：
       </Text>
 
-      {plans.map((plan, pi) => (
-        <View key={pi} style={{ marginBottom: plans.length > 1 ? 6 : 0 }}>
-          {plans.length > 1 && (
-            <Text
-              style={{
-                fontSize: 9,
-                fontWeight: 800,
-                color: P,
-                marginBottom: 3,
-              }}
-            >
-              {plan.recommended ? '★ ' : ''}
-              {plan.name}
-            </Text>
-          )}
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              gap: 3,
-            }}
-          >
-            {plan.items.map((it, i) => (
+      {plans.map((plan, pi) => {
+        const visible = getVisibleItems(plan.items);
+        return (
+          <View key={pi} style={{ marginBottom: plans.length > 1 ? 6 : 0 }}>
+            {plans.length > 1 && (
               <Text
-                key={i}
                 style={{
-                  paddingVertical: 1,
-                  paddingHorizontal: 6,
-                  borderRadius: 8,
-                  fontSize: 8,
-                  fontWeight: 600,
-                  backgroundColor: L,
+                  fontSize: 9,
+                  fontWeight: 800,
                   color: P,
+                  marginBottom: 3,
                 }}
               >
-                {it.name}
+                {plan.recommended ? '★ ' : ''}
+                {plan.name}
               </Text>
-            ))}
+            )}
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                gap: 3,
+              }}
+            >
+              {visible.map((it, i) => (
+                <Text
+                  key={i}
+                  style={{
+                    paddingVertical: 1,
+                    paddingHorizontal: 6,
+                    borderRadius: 8,
+                    fontSize: 8,
+                    fontWeight: 600,
+                    backgroundColor: L,
+                    color: P,
+                  }}
+                >
+                  {it.name}
+                </Text>
+              ))}
+            </View>
           </View>
-        </View>
-      ))}
+        );
+      })}
     </View>
   );
 }
@@ -145,6 +167,7 @@ function MultiPlanCards({ plans, P }: { plans: Plan[]; P: string }) {
   return (
     <View style={{ flexDirection: 'row', gap: 6 }}>
       {plans.map((plan, pi) => {
+        const visible = getVisibleItems(plan.items);
         const { sub, disc, total } = calcPlan(plan);
 
         return (
@@ -187,7 +210,7 @@ function MultiPlanCards({ plans, P }: { plans: Plan[]; P: string }) {
                 {plan.name}
               </Text>
               <View style={{ marginBottom: 6 }}>
-                {plan.items.map((it, i) => (
+                {visible.map((it, i) => (
                   <View
                     key={i}
                     style={{
@@ -269,151 +292,47 @@ function SinglePlanTable({
   L: string;
 }) {
   const { sub, disc, tax, total } = calcPlan(plan);
+  const visibleItems = getVisibleItems(plan.items);
 
-  const cellBase = {
-    paddingVertical: 3,
-    paddingHorizontal: 4,
-    fontSize: 9,
-    borderBottomWidth: 0.5,
-    borderBottomColor: PC.line.muted,
-    borderBottomStyle: 'solid' as const,
-  };
+  // 1ページに収まる行数で分割（1行 ~14pt、A4 の安全な最大で 20行前後）
+  const CHUNK_SIZE = 18;
+  const chunks = chunk(visibleItems, CHUNK_SIZE);
 
   return (
     <View>
-      {/* ヘッダー */}
-      <View
-        wrap={false}
-        style={{
-          flexDirection: 'row',
-          backgroundColor: P,
-        }}
-      >
-        <Text
-          style={{
-            flex: 2,
-            paddingVertical: 4,
-            paddingHorizontal: 4,
-            color: PC.white,
-            fontSize: 9,
-            fontWeight: 800,
-          }}
-        >
-          項目
-        </Text>
-        <Text
-          style={{
-            width: 40,
-            paddingVertical: 4,
-            paddingHorizontal: 4,
-            color: PC.white,
-            fontSize: 9,
-            fontWeight: 800,
-            textAlign: 'center',
-          }}
-        >
-          単位
-        </Text>
-        <Text
-          style={{
-            width: 35,
-            paddingVertical: 4,
-            paddingHorizontal: 4,
-            color: PC.white,
-            fontSize: 9,
-            fontWeight: 800,
-            textAlign: 'center',
-          }}
-        >
-          数量
-        </Text>
-        <Text
-          style={{
-            width: 65,
-            paddingVertical: 4,
-            paddingHorizontal: 4,
-            color: PC.white,
-            fontSize: 9,
-            fontWeight: 800,
-            textAlign: 'right',
-          }}
-        >
-          単価
-        </Text>
-        <Text
-          style={{
-            width: 75,
-            paddingVertical: 4,
-            paddingHorizontal: 4,
-            color: PC.white,
-            fontSize: 9,
-            fontWeight: 800,
-            textAlign: 'right',
-          }}
-        >
-          小計
-        </Text>
-      </View>
+      {/* 各チャンク（ヘッダー付き） */}
+      {chunks.map((items, chunkIdx) => (
+        <View key={chunkIdx} wrap={false} style={{ marginTop: chunkIdx > 0 ? 8 : 0 }}>
+          {/* 継続ページの表示 */}
+          {chunkIdx > 0 && (
+            <Text
+              style={{
+                fontSize: 9,
+                fontWeight: 600,
+                color: PC.ink.soft,
+                marginBottom: 3,
+              }}
+            >
+              お見積もり（つづき）
+            </Text>
+          )}
 
-      {/* データ */}
-      {plan.items.map((it, i) => (
-        <View
-          key={i}
-          wrap={false}
-          style={{
-            flexDirection: 'row',
-            backgroundColor: i % 2 === 0 ? PC.white : PC.surface.panel,
-          }}
-        >
-          <Text style={{ ...cellBase, flex: 2, color: PC.ink.primary }}>
-            {it.name || '—'}
-          </Text>
-          <Text
-            style={{
-              ...cellBase,
-              width: 40,
-              textAlign: 'center',
-              color: PC.ink.primary,
-            }}
-          >
-            {it.unit}
-          </Text>
-          <Text
-            style={{
-              ...cellBase,
-              width: 35,
-              textAlign: 'center',
-              color: PC.ink.primary,
-            }}
-          >
-            {it.qty}
-          </Text>
-          <Text
-            style={{
-              ...cellBase,
-              width: 65,
-              textAlign: 'right',
-              color: PC.ink.primary,
-            }}
-          >
-            ¥{formatPrice(it.price)}
-          </Text>
-          <Text
-            style={{
-              ...cellBase,
-              width: 75,
-              textAlign: 'right',
-              fontWeight: 600,
-              color: PC.ink.primary,
-            }}
-          >
-            ¥{formatPrice(it.qty * it.price)}
-          </Text>
+          {/* ヘッダー行 */}
+          <TableHeaderRow P={P} />
+
+          {/* データ行 */}
+          {items.map((it, i) => (
+            <TableBodyRow
+              key={i}
+              item={it}
+              zebra={(chunkIdx * CHUNK_SIZE + i) % 2 === 0}
+            />
+          ))}
         </View>
       ))}
 
-      {/* 合計ブロック（小計・割引・消費税・合計）は一体で表示させる */}
-      <View wrap={false}>
+      {/* 合計ブロック（前の行から離れすぎないように minPresenceAhead） */}
+      <View wrap={false} minPresenceAhead={80}>
         {/* 小計行 */}
         <View
           style={{
@@ -537,6 +456,155 @@ function SinglePlanTable({
           </Text>
         </View>
       </View>
+    </View>
+  );
+}
+
+function TableHeaderRow({ P }: { P: string }) {
+  return (
+    <View
+      wrap={false}
+      style={{
+        flexDirection: 'row',
+        backgroundColor: P,
+      }}
+    >
+      <Text
+        style={{
+          flex: 2,
+          paddingVertical: 4,
+          paddingHorizontal: 4,
+          color: PC.white,
+          fontSize: 9,
+          fontWeight: 800,
+        }}
+      >
+        項目
+      </Text>
+      <Text
+        style={{
+          width: 40,
+          paddingVertical: 4,
+          paddingHorizontal: 4,
+          color: PC.white,
+          fontSize: 9,
+          fontWeight: 800,
+          textAlign: 'center',
+        }}
+      >
+        単位
+      </Text>
+      <Text
+        style={{
+          width: 35,
+          paddingVertical: 4,
+          paddingHorizontal: 4,
+          color: PC.white,
+          fontSize: 9,
+          fontWeight: 800,
+          textAlign: 'center',
+        }}
+      >
+        数量
+      </Text>
+      <Text
+        style={{
+          width: 65,
+          paddingVertical: 4,
+          paddingHorizontal: 4,
+          color: PC.white,
+          fontSize: 9,
+          fontWeight: 800,
+          textAlign: 'right',
+        }}
+      >
+        単価
+      </Text>
+      <Text
+        style={{
+          width: 75,
+          paddingVertical: 4,
+          paddingHorizontal: 4,
+          color: PC.white,
+          fontSize: 9,
+          fontWeight: 800,
+          textAlign: 'right',
+        }}
+      >
+        小計
+      </Text>
+    </View>
+  );
+}
+
+function TableBodyRow({
+  item,
+  zebra,
+}: {
+  item: EstimateItem;
+  zebra: boolean;
+}) {
+  const cellBase = {
+    paddingVertical: 3,
+    paddingHorizontal: 4,
+    fontSize: 9,
+    borderBottomWidth: 0.5,
+    borderBottomColor: PC.line.muted,
+    borderBottomStyle: 'solid' as const,
+  };
+
+  return (
+    <View
+      wrap={false}
+      style={{
+        flexDirection: 'row',
+        backgroundColor: zebra ? PC.white : PC.surface.panel,
+      }}
+    >
+      <Text style={{ ...cellBase, flex: 2, color: PC.ink.primary }}>
+        {item.name || '—'}
+      </Text>
+      <Text
+        style={{
+          ...cellBase,
+          width: 40,
+          textAlign: 'center',
+          color: PC.ink.primary,
+        }}
+      >
+        {item.unit}
+      </Text>
+      <Text
+        style={{
+          ...cellBase,
+          width: 35,
+          textAlign: 'center',
+          color: PC.ink.primary,
+        }}
+      >
+        {item.qty}
+      </Text>
+      <Text
+        style={{
+          ...cellBase,
+          width: 65,
+          textAlign: 'right',
+          color: PC.ink.primary,
+        }}
+      >
+        ¥{formatPrice(item.price)}
+      </Text>
+      <Text
+        style={{
+          ...cellBase,
+          width: 75,
+          textAlign: 'right',
+          fontWeight: 600,
+          color: PC.ink.primary,
+        }}
+      >
+        ¥{formatPrice(item.qty * item.price)}
+      </Text>
     </View>
   );
 }
