@@ -294,15 +294,20 @@ function SinglePlanTable({
   const { sub, disc, tax, total } = calcPlan(plan);
   const visibleItems = getVisibleItems(plan.items);
 
-  // 1ページに収まる行数で分割（1行 ~14pt、A4 の安全な最大で 20行前後）
-  const CHUNK_SIZE = 18;
+  // 1ページあたりの最大行数（A4 の ~80% を目安）
+  const CHUNK_SIZE = 14;
   const chunks = chunk(visibleItems, CHUNK_SIZE);
 
   return (
     <View>
-      {/* 各チャンク（ヘッダー付き） */}
+      {/* 各チャンク（ヘッダー付き、2つ目以降は強制改ページ） */}
       {chunks.map((items, chunkIdx) => (
-        <View key={chunkIdx} wrap={false} style={{ marginTop: chunkIdx > 0 ? 8 : 0 }}>
+        <View
+          key={chunkIdx}
+          wrap={false}
+          break={chunkIdx > 0}
+          style={{ marginTop: chunkIdx > 0 ? 0 : 0 }}
+        >
           {/* 継続ページの表示 */}
           {chunkIdx > 0 && (
             <Text
