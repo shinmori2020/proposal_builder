@@ -64,67 +64,96 @@ export default function PagesTab({ form, setForm, theme }: Props) {
   const inputClass =
     'w-full px-3 py-2 border-[1.5px] border-line-input rounded-md text-sm font-inherit outline-none box-border';
 
+  const PAGE_NAME_MAX = 45;
+  const CHILD_NAME_MAX = 40;
+
   return (
     <div className="flex flex-col gap-3.5">
       <p className="text-[#666] text-sm m-0">
         ページ名を入力するとサイトマップが自動生成されます。
+        <span className="ml-1 text-[11px] text-[#999]">
+          （ページ名: {PAGE_NAME_MAX}文字 / 子ページ: {CHILD_NAME_MAX}文字 を超えるとサイトマップで省略表示されます）
+        </span>
       </p>
 
-      {pages.map((pg, i) => (
-        <div
-          key={i}
-          className="bg-surface-panel rounded-[10px] p-3 border border-line-faint"
-        >
-          <div className="flex gap-2 items-center">
-            <span
-              className="font-bold text-sm min-w-[18px]"
-              style={{ color: P }}
-            >
-              {i + 1}.
-            </span>
-            <input
-              value={pg.name}
-              onChange={(e) => updatePageName(i, e.target.value)}
-              className={`${inputClass} flex-1`}
-              placeholder="ページ名"
-            />
-            <button
-              onClick={() => addChild(i)}
-              className="px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-xs cursor-pointer font-semibold flex items-center gap-1 whitespace-nowrap"
-              style={{ borderColor: P, color: P }}
-            >
-              <Plus size={12} color={P} />
-              子
-            </button>
-            <button
-              onClick={() => removePage(i)}
-              className="px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-xs cursor-pointer font-semibold flex items-center"
-              style={{ borderColor: C.delete, color: C.delete }}
-            >
-              <X size={12} color={C.delete} />
-            </button>
-          </div>
-
-          {pg.children.map((c, ci) => (
-            <div key={ci} className="flex gap-2 items-center mt-2 ml-7">
-              <span className="text-ink-softest">└</span>
-              <input
-                value={c}
-                onChange={(e) => updateChild(i, ci, e.target.value)}
-                className={`${inputClass} flex-1 text-[13px]`}
-                placeholder="子ページ"
-              />
+      {pages.map((pg, i) => {
+        const pageOver = pg.name.length > PAGE_NAME_MAX;
+        return (
+          <div
+            key={i}
+            className="bg-surface-panel rounded-[10px] p-3 border border-line-faint"
+          >
+            <div className="flex gap-2 items-center">
+              <span
+                className="font-bold text-sm min-w-[18px]"
+                style={{ color: P }}
+              >
+                {i + 1}.
+              </span>
+              <div className="flex-1 flex flex-col gap-0.5">
+                <input
+                  value={pg.name}
+                  onChange={(e) => updatePageName(i, e.target.value)}
+                  className={inputClass}
+                  placeholder="ページ名"
+                />
+                {pageOver && (
+                  <span className="text-[10px]" style={{ color: C.delete }}>
+                    ⚠ {pg.name.length}文字（{PAGE_NAME_MAX}文字を超過、サイトマップで省略されます）
+                  </span>
+                )}
+              </div>
               <button
-                onClick={() => removeChild(i, ci)}
-                className="px-2 py-0.5 rounded-md border-[1.5px] bg-transparent text-xs cursor-pointer font-semibold flex items-center"
+                onClick={() => addChild(i)}
+                className="px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-xs cursor-pointer font-semibold flex items-center gap-1 whitespace-nowrap"
+                style={{ borderColor: P, color: P }}
+              >
+                <Plus size={12} color={P} />
+                子
+              </button>
+              <button
+                onClick={() => removePage(i)}
+                className="px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-xs cursor-pointer font-semibold flex items-center"
                 style={{ borderColor: C.delete, color: C.delete }}
               >
-                <X size={11} color={C.delete} />
+                <X size={12} color={C.delete} />
               </button>
             </div>
-          ))}
-        </div>
-      ))}
+
+            {pg.children.map((c, ci) => {
+              const childOver = c.length > CHILD_NAME_MAX;
+              return (
+                <div key={ci} className="flex gap-2 items-center mt-2 ml-7">
+                  <span className="text-ink-softest">└</span>
+                  <div className="flex-1 flex flex-col gap-0.5">
+                    <input
+                      value={c}
+                      onChange={(e) => updateChild(i, ci, e.target.value)}
+                      className={`${inputClass} text-[13px]`}
+                      placeholder="子ページ"
+                    />
+                    {childOver && (
+                      <span
+                        className="text-[10px]"
+                        style={{ color: C.delete }}
+                      >
+                        ⚠ {c.length}文字（{CHILD_NAME_MAX}文字を超過、省略されます）
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => removeChild(i, ci)}
+                    className="px-2 py-0.5 rounded-md border-[1.5px] bg-transparent text-xs cursor-pointer font-semibold flex items-center"
+                    style={{ borderColor: C.delete, color: C.delete }}
+                  >
+                    <X size={11} color={C.delete} />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
 
       <button
         onClick={addPage}

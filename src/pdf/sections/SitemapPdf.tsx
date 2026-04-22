@@ -9,6 +9,12 @@ interface Props {
   theme: Theme;
 }
 
+function truncate(text: string, maxLen: number): string {
+  if (!text) return '—';
+  if (text.length > maxLen) return text.slice(0, maxLen) + '…';
+  return text;
+}
+
 export default function SitemapPdf({ form, theme }: Props) {
   const P = theme.primary;
 
@@ -24,125 +30,103 @@ export default function SitemapPdf({ form, theme }: Props) {
       >
         サイトマップ
       </Text>
-      <View style={{ alignItems: 'center' }}>
-        {/* TOP ノード */}
-        <View
+
+      {/* TOP ヘッダー */}
+      <View
+        style={{
+          backgroundColor: P,
+          paddingVertical: 4,
+          paddingHorizontal: 12,
+          borderRadius: 4,
+          alignSelf: 'flex-start',
+          marginBottom: 6,
+        }}
+      >
+        <Text
           style={{
-            backgroundColor: P,
-            paddingVertical: 4,
-            paddingHorizontal: 14,
-            borderRadius: 5,
+            color: PC.white,
+            fontWeight: 800,
+            fontSize: 10,
           }}
         >
-          <Text
-            style={{
-              color: PC.white,
-              fontWeight: 800,
-              fontSize: 10,
-            }}
-          >
-            {form.clientName || 'サイト'} TOP
-          </Text>
-        </View>
+          {form.clientName || 'サイト'} TOP
+        </Text>
+      </View>
 
-        {/* TOP から下への縦線 */}
-        <View style={{ width: 1.5, height: 8, backgroundColor: P }} />
-
-        {/* 横線 + ページノード群 */}
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-            position: 'relative',
-          }}
-        >
-          {/* 複数ページ時の横つなぎ線 */}
-          {form.pages.length > 1 && (
+      {/* ページリスト */}
+      <View
+        style={{
+          borderLeftWidth: 1.5,
+          borderLeftStyle: 'solid',
+          borderLeftColor: P,
+          paddingLeft: 10,
+          marginLeft: 4,
+        }}
+      >
+        {form.pages.map((pg, i) => (
+          <View key={i} style={{ marginBottom: 3 }} wrap={false}>
+            {/* 親ページ */}
             <View
               style={{
-                position: 'absolute',
-                top: 0,
-                left: '10%',
-                right: '10%',
-                height: 1.5,
-                backgroundColor: P,
-              }}
-            />
-          )}
-
-          {form.pages.map((pg, i) => (
-            <View
-              key={i}
-              style={{
+                flexDirection: 'row',
                 alignItems: 'center',
-                marginHorizontal: 2,
-                minWidth: 60,
+                paddingVertical: 2,
               }}
             >
-              {/* 縦線 */}
-              <View style={{ width: 1.5, height: 8, backgroundColor: P }} />
-
-              {/* ページノード */}
               <View
                 style={{
-                  backgroundColor: theme.bg,
-                  borderWidth: 1.5,
-                  borderColor: P,
-                  borderStyle: 'solid',
-                  paddingVertical: 2,
-                  paddingHorizontal: 6,
-                  borderRadius: 4,
+                  width: 4,
+                  height: 4,
+                  backgroundColor: P,
+                  borderRadius: 2,
+                  marginRight: 6,
+                }}
+              />
+              <Text
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: PC.ink.primary,
+                  flex: 1,
+                }}
+              >
+                {truncate(pg.name, 45)}
+              </Text>
+            </View>
+
+            {/* 子ページ */}
+            {pg.children.map((c, ci) => (
+              <View
+                key={ci}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingLeft: 16,
+                  paddingVertical: 1.5,
                 }}
               >
                 <Text
                   style={{
-                    fontSize: 8,
-                    fontWeight: 600,
+                    fontSize: 9,
                     color: P,
+                    marginRight: 4,
                   }}
                 >
-                  {pg.name || '—'}
+                  └
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 9,
+                    color: PC.ink.body,
+                    flex: 1,
+                  }}
+                >
+                  {truncate(c, 40)}
                 </Text>
               </View>
-
-              {/* 子ページ */}
-              {pg.children.map((c, ci) => (
-                <View key={ci} style={{ alignItems: 'center' }}>
-                  <View
-                    style={{
-                      width: 1,
-                      height: 5,
-                      backgroundColor: P,
-                      opacity: 0.4,
-                    }}
-                  />
-                  <View
-                    style={{
-                      backgroundColor: PC.white,
-                      borderWidth: 1,
-                      borderColor: P,
-                      borderStyle: 'solid',
-                      paddingVertical: 1,
-                      paddingHorizontal: 5,
-                      borderRadius: 3,
-                      opacity: 0.85,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 7,
-                        color: P,
-                      }}
-                    >
-                      {c || '—'}
-                    </Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        ))}
       </View>
     </View>
   );
