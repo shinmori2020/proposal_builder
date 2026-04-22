@@ -1,10 +1,17 @@
-import { View, Text, Image } from '@react-pdf/renderer';
+import { View, Text, Image, Link } from '@react-pdf/renderer';
 import { ProposalForm } from '@/lib/types';
 import { PC } from '../pdfColors';
 
 interface Props {
   form: ProposalForm;
 }
+
+/**
+ * 制作者（本提案書ビルダーの制作者）のクレジット。
+ * 著作物としての主張として常時表示。
+ */
+const CREATOR_NAME = 'シン｜WEB制作・コーディング';
+const CREATOR_URL = 'https://coconala.com/users/2033628';
 
 export default function FooterPdf({ form }: Props) {
   return (
@@ -18,6 +25,7 @@ export default function FooterPdf({ form }: Props) {
         alignItems: 'center',
       }}
     >
+      {/* 提案者（クライアント向け）の情報 */}
       {form.companyLogo && (
         <Image
           src={form.companyLogo}
@@ -49,6 +57,48 @@ export default function FooterPdf({ form }: Props) {
       <Text style={{ fontSize: 8, color: PC.ink.soft, marginTop: 2 }}>
         有効期限: 発行日より30日間
       </Text>
+
+      {/* 制作者クレジット（著作権表示） */}
+      <View
+        style={{
+          marginTop: 8,
+          paddingTop: 6,
+          borderTopWidth: 0.5,
+          borderTopStyle: 'solid',
+          borderTopColor: PC.line.subtle,
+          alignItems: 'center',
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 7,
+            color: PC.ink.softer,
+            marginBottom: 1,
+          }}
+        >
+          Produced by
+        </Text>
+        <Text
+          style={{
+            fontSize: 8,
+            color: PC.ink.body,
+            fontWeight: 600,
+            marginBottom: 1,
+          }}
+        >
+          {CREATOR_NAME}
+        </Text>
+        <Link
+          src={CREATOR_URL}
+          style={{
+            fontSize: 7,
+            color: PC.ink.soft,
+            textDecoration: 'none',
+          }}
+        >
+          {CREATOR_URL}
+        </Link>
+      </View>
     </View>
   );
 }
