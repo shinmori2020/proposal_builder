@@ -294,47 +294,67 @@ function SinglePlanTable({
   const { sub, disc, tax, total } = calcPlan(plan);
   const visibleItems = getVisibleItems(plan.items);
 
-  // 1ページあたりの最大行数（A4 の ~80% を目安）
-  const CHUNK_SIZE = 14;
-  const chunks = chunk(visibleItems, CHUNK_SIZE);
+  /**
+   * 動的チャンクサイズ：
+   * - 20件以下は単一チャンク（分割しない）
+   * - それ以上は可能な限り均等に分散（小さな最終チャンクを避ける）
+   */
+  const MAX_SINGLE_CHUNK = 20;
+  const PREFERRED_CHUNK = 18;
+  const totalItems = visibleItems.length;
+  let chunks: EstimateItem[][];
+  if (totalItems <= MAX_SINGLE_CHUNK) {
+    chunks = [visibleItems];
+  } else {
+    const numChunks = Math.ceil(totalItems / PREFERRED_CHUNK);
+    const perChunk = Math.ceil(totalItems / numChunks);
+    chunks = chunk(visibleItems, perChunk);
+  }
+  const isMulti = chunks.length > 1;
 
   return (
     <View>
       {/* 各チャンク（ヘッダー付き、2つ目以降は強制改ページ） */}
-      {chunks.map((items, chunkIdx) => (
-        <View
-          key={chunkIdx}
-          wrap={false}
-          break={chunkIdx > 0}
-          style={{ marginTop: chunkIdx > 0 ? 0 : 0 }}
-        >
-          {/* 継続ページの表示 */}
-          {chunkIdx > 0 && (
-            <Text
-              style={{
-                fontSize: 9,
-                fontWeight: 600,
-                color: PC.ink.soft,
-                marginBottom: 3,
-              }}
-            >
-              お見積もり（つづき）
-            </Text>
-          )}
+      {chunks.map((items, chunkIdx) => {
+        // ゼブラ縞は全チャンクを通して連続させる
+        const priorItems = chunks
+          .slice(0, chunkIdx)
+          .reduce((sum, c) => sum + c.length, 0);
 
-          {/* ヘッダー行 */}
-          <TableHeaderRow P={P} />
+        return (
+          <View
+            key={chunkIdx}
+            wrap={false}
+            break={isMulti && chunkIdx > 0}
+          >
+            {/* 継続ページの表示 */}
+            {chunkIdx > 0 && (
+              <Text
+                style={{
+                  fontSize: 9,
+                  fontWeight: 600,
+                  color: PC.ink.soft,
+                  marginBottom: 3,
+                }}
+              >
+                お見積もり（つづき）
+              </Text>
+            )}
 
-          {/* データ行 */}
-          {items.map((it, i) => (
-            <TableBodyRow
-              key={i}
-              item={it}
-              zebra={(chunkIdx * CHUNK_SIZE + i) % 2 === 0}
-            />
-          ))}
-        </View>
-      ))}
+            {/* ヘッダー行 */}
+            <TableHeaderRow P={P} />
+
+            {/* データ行 */}
+            {items.map((it, i) => (
+              <TableBodyRow
+                key={i}
+                item={it}
+                zebra={(priorItems + i) % 2 === 0}
+              />
+            ))}
+          </View>
+        );
+      })}
 
       {/* 合計ブロック（前の行から離れすぎないように minPresenceAhead） */}
       <View wrap={false} minPresenceAhead={80}>
