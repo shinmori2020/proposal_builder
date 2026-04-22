@@ -1,4 +1,4 @@
-import { Document, Page } from '@react-pdf/renderer';
+import { Document, Page, View } from '@react-pdf/renderer';
 import { ProposalForm } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { pdfStyles } from './pdfStyles';
@@ -33,15 +33,15 @@ export default function PdfDocument({ form, theme }: Props) {
         <SchedulePdf form={form} theme={theme} />
       </Page>
 
-      {/* ページ3: お見積もり（長くなる可能性があるので独立ページ） */}
+      {/* ページ3以降: お見積もり + 契約条件 + 備考 + フッター
+          コンテンツ量によって自動改ページ、Footer は最終ページ最下部に配置 */}
       <Page size="A4" style={pdfStyles.contentPage}>
-        <EstimatePdf form={form} theme={theme} />
-      </Page>
-
-      {/* ページ4: 契約条件・備考・フッター */}
-      <Page size="A4" style={pdfStyles.contentPage}>
-        <TermsPdf form={form} theme={theme} />
-        <NotesPdf form={form} theme={theme} />
+        {/* コンテンツ領域: flex:1 で空白を占有し、Footer を下に押し込む */}
+        <View style={{ flex: 1 }}>
+          <EstimatePdf form={form} theme={theme} />
+          <TermsPdf form={form} theme={theme} />
+          <NotesPdf form={form} theme={theme} />
+        </View>
         <FooterPdf form={form} />
       </Page>
     </Document>
