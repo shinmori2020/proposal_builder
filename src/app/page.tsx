@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { ProposalForm, TabId } from '@/lib/types';
 import { getTheme } from '@/lib/themes';
@@ -19,10 +19,23 @@ import SaveLoadPanel from '@/components/modals/SaveLoadPanel';
 import { exportPreviewToPdf } from '@/lib/pdfExport';
 import { Link } from 'lucide-react';
 
-// PDFViewer は SSR 不可のため動的インポート
+// PDFViewer は SSR 不可のため動的インポート（プレビュータブ用）
 const PDFViewer = dynamic(
   () =>
     import('@react-pdf/renderer').then((mod) => ({ default: mod.PDFViewer })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center w-full h-full text-ink-soft text-sm">
+        プレビューを読み込み中...
+      </div>
+    ),
+  }
+);
+
+// 点滅しない二重バッファ方式プレビュー（ライブプレビュー用）
+const PdfLivePreview = dynamic(
+  () => import('@/components/preview/PdfLivePreview'),
   {
     ssr: false,
     loading: () => (
@@ -47,6 +60,12 @@ export default function Home() {
     const timer = setTimeout(() => setPreviewForm(form), 500);
     return () => clearTimeout(timer);
   }, [form]);
+
+  // PdfDocument 要素を useMemo で安定化（previewForm/theme 変化時のみ再生成）
+  const previewDocument = useMemo(
+    () => <PdfDocument form={previewForm} theme={theme} />,
+    [previewForm, theme]
+  );
 
   const handlePrint = async () => {
     const filename =
@@ -116,7 +135,7 @@ export default function Home() {
             }}
             showToolbar={true}
           >
-            <PdfDocument form={previewForm} theme={theme} />
+            {previewDocument}
           </PDFViewer>
         </div>
       ) : (
@@ -145,19 +164,17 @@ export default function Home() {
             )}
           </div>
 
-          {/* 右側: PDFViewer ライブプレビュー */}
+          {/* 右側: 点滅しない二重バッファ方式のライブプレビュー */}
           <div className="border-l-2 border-line-faint bg-surface-preview flex flex-col max-h-[calc(100vh-105px)]">
             <span className="text-xs font-semibold text-ink-soft flex items-center gap-1.5 px-3.5 pt-2">
               <Link size={14} color="#999" />
               ライブプレビュー（実際の PDF 表示）
             </span>
             <div className="flex-1 p-2">
-              <PDFViewer
-                style={{ width: '100%', height: '100%', border: 'none' }}
-                showToolbar={false}
-              >
-                <PdfDocument form={previewForm} theme={theme} />
-              </PDFViewer>
+              <PdfLivePreview
+                document={previewDocument}
+                style={{ width: '100%', height: '100%' }}
+              />
             </div>
           </div>
         </div>
