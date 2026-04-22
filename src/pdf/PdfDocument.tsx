@@ -2,6 +2,7 @@ import { Document, Page, View } from '@react-pdf/renderer';
 import { ProposalForm } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { pdfStyles } from './pdfStyles';
+import { registerPdfFonts } from './fonts';
 import CoverPdf from './sections/CoverPdf';
 import FlowPdf from './sections/FlowPdf';
 import FeaturesPdf from './sections/FeaturesPdf';
@@ -11,6 +12,9 @@ import SchedulePdf from './sections/SchedulePdf';
 import TermsPdf from './sections/TermsPdf';
 import NotesPdf from './sections/NotesPdf';
 import FooterPdf from './sections/FooterPdf';
+
+// モジュールロード時にフォント登録（PDFViewer でも pdf() でも同じ関数経由）
+registerPdfFonts();
 
 interface Props {
   form: ProposalForm;
