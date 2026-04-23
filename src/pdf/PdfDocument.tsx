@@ -1,8 +1,9 @@
-import { Document, Page, View } from '@react-pdf/renderer';
+import { Document, Page, View, Text } from '@react-pdf/renderer';
 import { ProposalForm } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { pdfStyles } from './pdfStyles';
 import { registerPdfFonts } from './fonts';
+import { PC } from './pdfColors';
 import CoverPdf from './sections/CoverPdf';
 import FlowPdf from './sections/FlowPdf';
 import FeaturesPdf from './sections/FeaturesPdf';
@@ -21,12 +22,34 @@ interface Props {
   theme: Theme;
 }
 
+/**
+ * 全ページに表示するページ番号（右下、ページ全体で通し番号）
+ */
+function PageNumber() {
+  return (
+    <Text
+      fixed
+      style={{
+        position: 'absolute',
+        bottom: 16,
+        right: 20,
+        fontSize: 8,
+        color: PC.ink.soft,
+      }}
+      render={({ pageNumber, totalPages }) =>
+        `${pageNumber} / ${totalPages}`
+      }
+    />
+  );
+}
+
 export default function PdfDocument({ form, theme }: Props) {
   return (
     <Document>
       {/* ページ1: 表紙（提案概要・制作概要・見積もり総額） */}
       <Page size="A4" style={pdfStyles.coverPage}>
         <CoverPdf form={form} theme={theme} />
+        <PageNumber />
       </Page>
 
       {/* ページ2: 制作フロー + 実装機能 + サイトマップ + 制作スケジュール */}
@@ -35,6 +58,7 @@ export default function PdfDocument({ form, theme }: Props) {
         <FeaturesPdf form={form} theme={theme} />
         <SitemapPdf form={form} theme={theme} />
         <SchedulePdf form={form} theme={theme} />
+        <PageNumber />
       </Page>
 
       {/* ページ3以降: お見積もり + 契約条件 + 備考 + フッター
@@ -47,6 +71,7 @@ export default function PdfDocument({ form, theme }: Props) {
           <NotesPdf form={form} theme={theme} />
         </View>
         <FooterPdf form={form} />
+        <PageNumber />
       </Page>
     </Document>
   );
