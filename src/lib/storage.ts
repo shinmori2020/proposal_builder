@@ -1,8 +1,10 @@
-import { ProposalForm } from './types';
+import { ProposalForm, Page, Plan, SchedulePhase } from './types';
 
 const STORAGE_KEY = 'proposal-projects';
 const DRAFT_KEY = 'proposal-draft';
+const CUSTOM_TEMPLATES_KEY = 'proposal-custom-templates';
 const MAX_SAVED = 20;
+const MAX_CUSTOM_TEMPLATES = 30;
 
 export interface SavedProject {
   id: string;
@@ -93,4 +95,74 @@ export function clearDraft(): void {
   }
 }
 
-export { MAX_SAVED };
+/* ========== カスタムテンプレート ========== */
+
+export interface CustomTemplate {
+  id: string;
+  name: string;
+  createdAt: string;
+  data: {
+    siteType: string;
+    overview: string;
+    purpose: string;
+    features: string[];
+    pages: Page[];
+    plans: Plan[];
+    schedule: SchedulePhase[];
+  };
+}
+
+export function loadCustomTemplates(): CustomTemplate[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(CUSTOM_TEMPLATES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveCustomTemplates(templates: CustomTemplate[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(CUSTOM_TEMPLATES_KEY, JSON.stringify(templates));
+  } catch {
+    // silently fail
+  }
+}
+
+/** 現在のフォーム内容からカスタムテンプレートを作成して保存 */
+export function addCustomTemplate(
+  name: string,
+  form: ProposalForm
+): CustomTemplate[] {
+  const trimmed = name.trim();
+  if (!trimmed) return loadCustomTemplates();
+
+  const template: CustomTemplate = {
+    id: Date.now().toString(),
+    name: trimmed,
+    createdAt: new Date().toISOString(),
+    data: {
+      siteType: form.siteType,
+      overview: form.overview,
+      purpose: form.purpose,
+      features: [...form.features],
+      pages: form.pages.map((p) => ({ ...p, children: [...p.children] })),
+      plans: JSON.parse(JSON.stringify(form.plans)),
+      schedule: form.schedule.map((s) => ({ ...s })),
+    },
+  };
+  const existing = loadCustomTemplates();
+  const updated = [template, ...existing].slice(0, MAX_CUSTOM_TEMPLATES);
+  saveCustomTemplates(updated);
+  return updated;
+}
+
+export function deleteCustomTemplate(id: string): CustomTemplate[] {
+  const updated = loadCustomTemplates().filter((t) => t.id !== id);
+  saveCustomTemplates(updated);
+  return updated;
+}
+
+export { MAX_SAVED, MAX_CUSTOM_TEMPLATES };

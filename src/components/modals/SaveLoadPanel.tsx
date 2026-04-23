@@ -12,7 +12,7 @@ import {
   SavedProject,
   MAX_SAVED,
 } from '@/lib/storage';
-import { Save, X, Pencil, Check } from 'lucide-react';
+import { Save, X, Pencil, Check, Search } from 'lucide-react';
 
 interface Props {
   form: ProposalForm;
@@ -27,7 +27,15 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
   const [msg, setMsg] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const P = theme.primary;
+
+  // 検索クエリで絞り込み
+  const filteredProjects = searchQuery.trim()
+    ? projects.filter((p) =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
+      )
+    : projects;
 
   useEffect(() => {
     setProjects(loadProjects());
@@ -127,16 +135,49 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
 
         {/* 保存済み一覧 */}
         <div className="px-6 pb-5">
-          <p className="text-[13px] font-semibold text-ink-soft mb-2.5">
-            保存済み（{projects.length}件）
-          </p>
+          <div className="flex items-center justify-between mb-2.5 gap-2">
+            <p className="text-[13px] font-semibold text-ink-soft m-0 shrink-0">
+              保存済み（
+              {searchQuery.trim()
+                ? `${filteredProjects.length}/${projects.length}`
+                : projects.length}
+              件）
+            </p>
+            {projects.length > 0 && (
+              <div
+                className="flex items-center gap-1.5 px-2.5 py-1 border-[1.5px] border-line-input rounded-md bg-white flex-1 max-w-[220px]"
+              >
+                <Search size={12} color="#888" />
+                <input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="案件名で検索..."
+                  className="flex-1 border-none outline-none text-[12px] font-inherit bg-transparent"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="w-4 h-4 border-none bg-transparent cursor-pointer flex items-center justify-center p-0"
+                    title="クリア"
+                  >
+                    <X size={11} color="#888" />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
           {projects.length === 0 && (
             <p className="text-ink-softest text-[13px] text-center py-5">
               保存された案件はありません
             </p>
           )}
+          {projects.length > 0 && filteredProjects.length === 0 && (
+            <p className="text-ink-softest text-[13px] text-center py-5">
+              「{searchQuery}」に一致する案件はありません
+            </p>
+          )}
           <div className="flex flex-col gap-2">
-            {projects.map((p) => {
+            {filteredProjects.map((p) => {
               const isEditing = editingId === p.id;
               return (
                 <div

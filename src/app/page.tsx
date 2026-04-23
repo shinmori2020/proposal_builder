@@ -18,7 +18,7 @@ import TemplateSelector from '@/components/modals/TemplateSelector';
 import SaveLoadPanel from '@/components/modals/SaveLoadPanel';
 import RestoreDraftDialog from '@/components/modals/RestoreDraftDialog';
 import { exportPreviewToPdf } from '@/lib/pdfExport';
-import { loadDraft, clearDraft } from '@/lib/storage';
+import { loadDraft, clearDraft, CustomTemplate } from '@/lib/storage';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { Link } from 'lucide-react';
 
@@ -138,6 +138,22 @@ export default function Home() {
     }));
   };
 
+  const applyCustomTemplate = (tpl: CustomTemplate) => {
+    setForm((prev) => ({
+      ...prev,
+      siteType: tpl.data.siteType,
+      overview: tpl.data.overview,
+      purpose: tpl.data.purpose,
+      features: [...tpl.data.features],
+      pages: tpl.data.pages.map((p) => ({
+        ...p,
+        children: [...p.children],
+      })),
+      plans: JSON.parse(JSON.stringify(tpl.data.plans)),
+      schedule: tpl.data.schedule.map((s) => ({ ...s })),
+    }));
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       {draftToRestore && (
@@ -151,7 +167,9 @@ export default function Home() {
 
       {showTemplate && (
         <TemplateSelector
-          onSelect={applyTemplate}
+          form={form}
+          onSelectBuiltIn={applyTemplate}
+          onSelectCustom={applyCustomTemplate}
           onClose={() => setShowTemplate(false)}
           theme={theme}
         />
