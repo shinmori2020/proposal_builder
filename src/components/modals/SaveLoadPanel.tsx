@@ -8,10 +8,11 @@ import {
   loadProjects,
   saveProjects,
   makeSavedProject,
+  renameProject,
   SavedProject,
   MAX_SAVED,
 } from '@/lib/storage';
-import { Save, X } from 'lucide-react';
+import { Save, X, Pencil, Check } from 'lucide-react';
 
 interface Props {
   form: ProposalForm;
@@ -24,6 +25,8 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
   const [projects, setProjects] = useState<SavedProject[]>([]);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
   const P = theme.primary;
 
   useEffect(() => {
@@ -58,6 +61,24 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
       projectName: project.data.projectName + '（コピー）',
     });
     onClose();
+  };
+
+  const startEdit = (project: SavedProject) => {
+    setEditingId(project.id);
+    setEditName(project.name);
+  };
+
+  const confirmEdit = () => {
+    if (!editingId) return;
+    const updated = renameProject(editingId, editName);
+    setProjects(updated);
+    setEditingId(null);
+    setEditName('');
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditName('');
   };
 
   return (
@@ -115,43 +136,88 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
             </p>
           )}
           <div className="flex flex-col gap-2">
-            {projects.map((p) => (
-              <div
-                key={p.id}
-                className="py-3 px-3.5 border-[1.5px] border-line-subtle rounded-[10px] flex justify-between items-center"
-              >
-                <div>
-                  <div className="font-semibold text-sm text-[#333]">
-                    {p.name}
+            {projects.map((p) => {
+              const isEditing = editingId === p.id;
+              return (
+                <div
+                  key={p.id}
+                  className="py-3 px-3.5 border-[1.5px] border-line-subtle rounded-[10px] flex justify-between items-center gap-2"
+                >
+                  <div className="flex-1 min-w-0">
+                    {isEditing ? (
+                      <input
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') confirmEdit();
+                          if (e.key === 'Escape') cancelEdit();
+                        }}
+                        autoFocus
+                        className="w-full px-2 py-1 border-[1.5px] border-line-input rounded-md text-sm outline-none"
+                        style={{ borderColor: P }}
+                      />
+                    ) : (
+                      <div className="font-semibold text-sm text-[#333] truncate">
+                        {p.name}
+                      </div>
+                    )}
+                    <div className="text-[11px] text-[#999] mt-0.5">
+                      {new Date(p.savedAt).toLocaleString('ja-JP')}
+                    </div>
                   </div>
-                  <div className="text-[11px] text-[#999] mt-0.5">
-                    {new Date(p.savedAt).toLocaleString('ja-JP')}
+                  <div className="flex gap-1.5 shrink-0">
+                    {isEditing ? (
+                      <>
+                        <button
+                          onClick={confirmEdit}
+                          className="py-1 px-2 border-[1.5px] rounded-md bg-transparent text-[11px] cursor-pointer font-semibold flex items-center gap-1"
+                          style={{ borderColor: P, color: P }}
+                        >
+                          <Check size={12} color={P} />
+                          保存
+                        </button>
+                        <button
+                          onClick={cancelEdit}
+                          className="py-1 px-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-[11px] cursor-pointer font-semibold text-ink-soft"
+                        >
+                          取消
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => handleLoad(p)}
+                          className="py-1 px-2.5 border-[1.5px] rounded-md bg-transparent text-[11px] cursor-pointer font-semibold"
+                          style={{ borderColor: P, color: P }}
+                        >
+                          読込
+                        </button>
+                        <button
+                          onClick={() => startEdit(p)}
+                          className="py-1 px-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-[11px] cursor-pointer font-semibold text-ink-soft flex items-center"
+                          title="名前を変更"
+                        >
+                          <Pencil size={11} color="#888" />
+                        </button>
+                        <button
+                          onClick={() => handleDuplicate(p)}
+                          className="py-1 px-2.5 border-[1.5px] border-ink-soft rounded-md bg-transparent text-[11px] cursor-pointer font-semibold text-ink-soft"
+                        >
+                          複製
+                        </button>
+                        <button
+                          onClick={() => handleDelete(p.id)}
+                          className="py-1 px-2.5 border-[1.5px] rounded-md bg-transparent text-[11px] cursor-pointer font-semibold"
+                          style={{ borderColor: C.delete, color: C.delete }}
+                        >
+                          削除
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
-                <div className="flex gap-1.5">
-                  <button
-                    onClick={() => handleLoad(p)}
-                    className="py-1 px-2.5 border-[1.5px] rounded-md bg-transparent text-[11px] cursor-pointer font-semibold"
-                    style={{ borderColor: P, color: P }}
-                  >
-                    読込
-                  </button>
-                  <button
-                    onClick={() => handleDuplicate(p)}
-                    className="py-1 px-2.5 border-[1.5px] border-ink-soft rounded-md bg-transparent text-[11px] cursor-pointer font-semibold text-ink-soft"
-                  >
-                    複製
-                  </button>
-                  <button
-                    onClick={() => handleDelete(p.id)}
-                    className="py-1 px-2.5 border-[1.5px] rounded-md bg-transparent text-[11px] cursor-pointer font-semibold"
-                    style={{ borderColor: C.delete, color: C.delete }}
-                  >
-                    削除
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

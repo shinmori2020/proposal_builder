@@ -16,7 +16,10 @@ import TermsTab from '@/components/tabs/TermsTab';
 import PdfDocument from '@/pdf/PdfDocument';
 import TemplateSelector from '@/components/modals/TemplateSelector';
 import SaveLoadPanel from '@/components/modals/SaveLoadPanel';
+import RestoreDraftDialog from '@/components/modals/RestoreDraftDialog';
 import { exportPreviewToPdf } from '@/lib/pdfExport';
+import { loadDraft, clearDraft } from '@/lib/storage';
+import { useAutoSave } from '@/hooks/useAutoSave';
 import { Link } from 'lucide-react';
 
 // PDFViewer は SSR 不可のため動的インポート（プレビュータブ用）
@@ -51,9 +54,48 @@ export default function Home() {
   // プレビュー用にデバウンスされたフォーム（入力中の高頻度再レンダリングを抑制）
   const [previewForm, setPreviewForm] = useState<ProposalForm>(defaultForm());
   const [activeTab, setActiveTab] = useState<TabId>('basic');
-  const [showTemplate, setShowTemplate] = useState(true);
+  const [showTemplate, setShowTemplate] = useState(false);
   const [showSave, setShowSave] = useState(false);
+
+  // 自動保存・復元用
+  const [draftChecked, setDraftChecked] = useState(false);
+  const [draftToRestore, setDraftToRestore] = useState<{
+    data: ProposalForm;
+    savedAt: string;
+  } | null>(null);
+
   const theme = getTheme(form.themeId);
+
+  // 初回マウント時にドラフトをチェック
+  useEffect(() => {
+    if (draftChecked) return;
+    const draft = loadDraft();
+    if (draft) {
+      // ドラフトあり → 復元ダイアログを表示（テンプレート選択は一旦非表示）
+      setDraftToRestore(draft);
+    } else {
+      // ドラフトなし → 通常の初回起動（テンプレート選択を表示）
+      setShowTemplate(true);
+    }
+    setDraftChecked(true);
+  }, [draftChecked]);
+
+  // フォームを自動保存（復元ダイアログ表示中は保存しない）
+  useAutoSave(form, draftChecked && !draftToRestore);
+
+  const handleRestoreDraft = () => {
+    if (draftToRestore) {
+      setForm(draftToRestore.data);
+      setPreviewForm(draftToRestore.data);
+      setDraftToRestore(null);
+    }
+  };
+
+  const handleDiscardDraft = () => {
+    clearDraft();
+    setDraftToRestore(null);
+    setShowTemplate(true);
+  };
 
   // 500ms デバウンス: 入力が止まってから PDF を再生成
   useEffect(() => {
@@ -98,6 +140,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      {draftToRestore && (
+        <RestoreDraftDialog
+          savedAt={draftToRestore.savedAt}
+          theme={theme}
+          onRestore={handleRestoreDraft}
+          onDiscard={handleDiscardDraft}
+        />
+      )}
+
       {showTemplate && (
         <TemplateSelector
           onSelect={applyTemplate}
