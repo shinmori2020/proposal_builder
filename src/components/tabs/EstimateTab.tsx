@@ -7,7 +7,7 @@ import { C } from '@/lib/colors';
 import { calcPlan, formatPrice, makePlan } from '@/lib/calculations';
 import { formatNumberWithCommas, parseNumberFromString } from '@/lib/formatters';
 import PresetDrawer from '@/components/modals/PresetDrawer';
-import { Star, Copy, X, Plus, Package, Percent } from 'lucide-react';
+import { Star, Copy, X, Plus, Package, Percent, GripVertical } from 'lucide-react';
 
 interface Props {
   form: ProposalForm;
@@ -20,6 +20,8 @@ const UNITS: EstimateItem['unit'][] = ['式', 'ページ', '点', '時間', '月
 export default function EstimateTab({ form, setForm, theme }: Props) {
   const [showPreset, setShowPreset] = useState(false);
   const [activePlanIdx, setActivePlanIdx] = useState(0);
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [dropTargetIdx, setDropTargetIdx] = useState<number | null>(null);
   const P = theme.primary;
 
   const plans = form.plans;
@@ -49,6 +51,21 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
     value: EstimateItem[K]
   ) => {
     setItems(items.map((item, idx) => (idx === i ? { ...item, [key]: value } : item)));
+  };
+
+  /** 指定位置のアイテムをその直後に複製 */
+  const duplicateItem = (i: number) => {
+    const copy: EstimateItem = { ...items[i] };
+    setItems([...items.slice(0, i + 1), copy, ...items.slice(i + 1)]);
+  };
+
+  /** from → to へ並び替え */
+  const moveItem = (from: number, to: number) => {
+    if (from === to) return;
+    const updated = [...items];
+    const [removed] = updated.splice(from, 1);
+    updated.splice(to, 0, removed);
+    setItems(updated);
   };
 
   const updateDiscount = <K extends keyof Plan['discount']>(
@@ -186,62 +203,114 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
       {/* 見積もり項目 */}
       <div
         className="grid gap-[7px] font-semibold text-xs text-ink-body px-1"
-        style={{ gridTemplateColumns: '2fr 65px 55px 95px 32px' }}
+        style={{ gridTemplateColumns: '20px 2fr 60px 50px 95px 28px 28px' }}
       >
+        <span></span>
         <span>項目名</span>
         <span>単位</span>
         <span>数量</span>
         <span>単価</span>
         <span></span>
+        <span></span>
       </div>
 
-      {items.map((item, i) => (
-        <div
-          key={i}
-          className="grid gap-[7px] items-center"
-          style={{ gridTemplateColumns: '2fr 65px 55px 95px 32px' }}
-        >
-          <input
-            value={item.name}
-            onChange={(e) => updateItem(i, 'name', e.target.value)}
-            className={inputClass}
-            placeholder="項目名"
-          />
-          <select
-            value={item.unit}
-            onChange={(e) => updateItem(i, 'unit', e.target.value as EstimateItem['unit'])}
-            className={inputClass}
+      {items.map((item, i) => {
+        const isDraggedOver = dropTargetIdx === i && dragIdx !== null && dragIdx !== i;
+        return (
+          <div
+            key={i}
+            className="grid gap-[7px] items-center transition-colors"
+            style={{
+              gridTemplateColumns: '20px 2fr 60px 50px 95px 28px 28px',
+              opacity: dragIdx === i ? 0.4 : 1,
+              borderTop: isDraggedOver ? `2px solid ${P}` : '2px solid transparent',
+              background: isDraggedOver ? theme.light : 'transparent',
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              if (dragIdx !== null && dragIdx !== i) setDropTargetIdx(i);
+            }}
+            onDragLeave={() => {
+              if (dropTargetIdx === i) setDropTargetIdx(null);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (dragIdx !== null && dragIdx !== i) {
+                moveItem(dragIdx, i);
+              }
+              setDragIdx(null);
+              setDropTargetIdx(null);
+            }}
           >
-            {UNITS.map((u) => (
-              <option key={u}>{u}</option>
-            ))}
-          </select>
-          <input
-            type="number"
-            min={0}
-            value={item.qty}
-            onChange={(e) => updateItem(i, 'qty', Number(e.target.value))}
-            className={`${inputClass} text-center`}
-          />
-          <input
-            type="text"
-            inputMode="numeric"
-            value={item.price === 0 ? '' : formatNumberWithCommas(item.price)}
-            onChange={(e) =>
-              updateItem(i, 'price', parseNumberFromString(e.target.value))
-            }
-            placeholder="0"
-            className={`${inputClass} text-right`}
-          />
-          <button
-            onClick={() => setItems(items.filter((_, idx) => idx !== i))}
-            className="rounded-md border-[1.5px] bg-transparent cursor-pointer flex items-center justify-center py-1"
-            style={{ borderColor: C.delete, color: C.delete }}
-          >
-            <X size={12} color={C.delete} />
-          </button>
-        </div>
-      ))}
+            {/* ドラッグハンドル */}
+            <div
+              draggable
+              onDragStart={() => setDragIdx(i)}
+              onDragEnd={() => {
+                setDragIdx(null);
+                setDropTargetIdx(null);
+              }}
+              className="cursor-grab active:cursor-grabbing flex items-center justify-center h-full"
+              title="ドラッグで並び替え"
+            >
+              <GripVertical size={14} color="#aaa" />
+            </div>
+
+            <input
+              value={item.name}
+              onChange={(e) => updateItem(i, 'name', e.target.value)}
+              className={inputClass}
+              placeholder="項目名"
+            />
+            <select
+              value={item.unit}
+              onChange={(e) =>
+                updateItem(i, 'unit', e.target.value as EstimateItem['unit'])
+              }
+              className={inputClass}
+            >
+              {UNITS.map((u) => (
+                <option key={u}>{u}</option>
+              ))}
+            </select>
+            <input
+              type="number"
+              min={0}
+              value={item.qty}
+              onChange={(e) => updateItem(i, 'qty', Number(e.target.value))}
+              className={`${inputClass} text-center`}
+            />
+            <input
+              type="text"
+              inputMode="numeric"
+              value={item.price === 0 ? '' : formatNumberWithCommas(item.price)}
+              onChange={(e) =>
+                updateItem(i, 'price', parseNumberFromString(e.target.value))
+              }
+              placeholder="0"
+              className={`${inputClass} text-right`}
+            />
+            {/* 複製ボタン */}
+            <button
+              onClick={() => duplicateItem(i)}
+              className="rounded-md border-[1.5px] bg-transparent cursor-pointer flex items-center justify-center py-1"
+              style={{ borderColor: P, color: P }}
+              title="この行を複製"
+            >
+              <Copy size={12} color={P} />
+            </button>
+            {/* 削除ボタン */}
+            <button
+              onClick={() => setItems(items.filter((_, idx) => idx !== i))}
+              className="rounded-md border-[1.5px] bg-transparent cursor-pointer flex items-center justify-center py-1"
+              style={{ borderColor: C.delete, color: C.delete }}
+              title="削除"
+            >
+              <X size={12} color={C.delete} />
+            </button>
+          </div>
+        );
+      })}
 
       <button
         onClick={() =>

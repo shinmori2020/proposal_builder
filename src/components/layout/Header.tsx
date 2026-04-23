@@ -2,7 +2,7 @@
 
 import { ProposalForm } from '@/lib/types';
 import { Theme } from '@/lib/themes';
-import { FileText, EyeOff, Coins, Save, Printer } from 'lucide-react';
+import { FileText, EyeOff, Coins, Save, Printer, Undo2, Redo2 } from 'lucide-react';
 
 interface Props {
   form: ProposalForm;
@@ -10,9 +10,23 @@ interface Props {
   theme: Theme;
   onOpenSave: () => void;
   onPrint: () => void;
+  onUndo: () => void;
+  onRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
 }
 
-export default function Header({ form, setForm, theme, onOpenSave, onPrint }: Props) {
+export default function Header({
+  form,
+  setForm,
+  theme,
+  onOpenSave,
+  onPrint,
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
+}: Props) {
   const toggleHidePrices = () => {
     setForm((prev) => ({ ...prev, hidePrices: !prev.hidePrices }));
   };
@@ -42,6 +56,26 @@ export default function Header({ form, setForm, theme, onOpenSave, onPrint }: Pr
       </div>
 
       <div className="flex gap-1.5">
+        <div className="flex gap-1 mr-1.5">
+          <button
+            onClick={onUndo}
+            disabled={!canUndo}
+            title="元に戻す (Ctrl+Z)"
+            className="w-9 h-9 rounded-[7px] text-white cursor-pointer flex items-center justify-center border-2 border-white/40 disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: 'rgba(255,255,255,0.08)' }}
+          >
+            <Undo2 size={18} />
+          </button>
+          <button
+            onClick={onRedo}
+            disabled={!canRedo}
+            title="やり直す (Ctrl+Shift+Z)"
+            className="w-9 h-9 rounded-[7px] text-white cursor-pointer flex items-center justify-center border-2 border-white/40 disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: 'rgba(255,255,255,0.08)' }}
+          >
+            <Redo2 size={18} />
+          </button>
+        </div>
         <button
           onClick={toggleHidePrices}
           className="px-3.5 py-1.5 rounded-[7px] text-white text-[17px] font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
@@ -56,6 +90,7 @@ export default function Header({ form, setForm, theme, onOpenSave, onPrint }: Pr
         </button>
         <button
           onClick={onOpenSave}
+          title="保存 (Ctrl+S)"
           className="px-3.5 py-1.5 rounded-[7px] text-white text-[17px] font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
           style={{ background: 'rgba(255,255,255,0.08)' }}
         >
@@ -64,6 +99,7 @@ export default function Header({ form, setForm, theme, onOpenSave, onPrint }: Pr
         </button>
         <button
           onClick={onPrint}
+          title="PDF 出力 (Ctrl+P)"
           className="px-3.5 py-1.5 rounded-[7px] text-white text-[17px] font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
           style={{ background: 'rgba(255,255,255,0.08)' }}
         >

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { ProposalForm, TabId } from '@/lib/types';
 import { getTheme } from '@/lib/themes';
@@ -20,6 +20,7 @@ import RestoreDraftDialog from '@/components/modals/RestoreDraftDialog';
 import { exportPreviewToPdf } from '@/lib/pdfExport';
 import { loadDraft, clearDraft, CustomTemplate } from '@/lib/storage';
 import { useAutoSave } from '@/hooks/useAutoSave';
+import { useUndoableForm } from '@/hooks/useUndoableForm';
 import { Link } from 'lucide-react';
 
 // PDFViewer は SSR 不可のため動的インポート（プレビュータブ用）
@@ -83,6 +84,9 @@ export default function Home() {
   // フォームを自動保存（復元ダイアログ表示中は保存しない）
   useAutoSave(form, draftChecked && !draftToRestore);
 
+  // Undo / Redo（600ms デバウンスで連続入力を1ステップにまとめる）
+  const { undo, redo, canUndo, canRedo } = useUndoableForm(form, setForm);
+
   const handleRestoreDraft = () => {
     if (draftToRestore) {
       setForm(draftToRestore.data);
@@ -109,7 +113,7 @@ export default function Home() {
     [previewForm, theme]
   );
 
-  const handlePrint = async () => {
+  const handlePrint = useCallback(async () => {
     const filename =
       form.projectName ||
       form.clientName ||
@@ -121,7 +125,39 @@ export default function Home() {
       console.error('PDF 出力エラー:', err);
       alert('PDF の生成に失敗しました。ブラウザをリロードしてお試しください。');
     }
-  };
+  }, [form, theme]);
+
+  // キーボードショートカット: Ctrl+S / Ctrl+P / Ctrl+Z / Ctrl+Shift+Z
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const mod = e.ctrlKey || e.metaKey;
+      if (!mod) return;
+      const key = e.key.toLowerCase();
+
+      if (key === 's' && !e.shiftKey && !e.altKey) {
+        e.preventDefault();
+        setShowSave(true);
+        return;
+      }
+      if (key === 'p' && !e.shiftKey && !e.altKey) {
+        e.preventDefault();
+        handlePrint();
+        return;
+      }
+      if (key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+        return;
+      }
+      if ((key === 'z' && e.shiftKey) || key === 'y') {
+        e.preventDefault();
+        redo();
+        return;
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [handlePrint, undo, redo]);
 
   const applyTemplate = (id: string) => {
     const t = TEMPLATES.find((x) => x.id === id);
@@ -190,6 +226,10 @@ export default function Home() {
         theme={theme}
         onOpenSave={() => setShowSave(true)}
         onPrint={handlePrint}
+        onUndo={undo}
+        onRedo={redo}
+        canUndo={canUndo}
+        canRedo={canRedo}
       />
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} theme={theme} />
 

@@ -47,13 +47,21 @@ export default function PdfDocument({ form, theme }: Props) {
   return (
     <Document>
       {/* ページ1: 表紙（提案概要・制作概要・見積もり総額） */}
-      <Page size="A4" style={pdfStyles.coverPage}>
+      <Page
+        size="A4"
+        style={pdfStyles.coverPage}
+        bookmark={{ title: '表紙・提案サマリー', expanded: true }}
+      >
         <CoverPdf form={form} theme={theme} />
         <PageNumber />
       </Page>
 
       {/* ページ2: 制作フロー + 実装機能 + サイトマップ + 制作スケジュール */}
-      <Page size="A4" style={pdfStyles.contentPage}>
+      <Page
+        size="A4"
+        style={pdfStyles.contentPage}
+        bookmark="制作フロー・機能・サイトマップ"
+      >
         <FlowPdf form={form} theme={theme} />
         <FeaturesPdf form={form} theme={theme} />
         <SitemapPdf form={form} theme={theme} />
@@ -63,7 +71,11 @@ export default function PdfDocument({ form, theme }: Props) {
 
       {/* ページ3以降: お見積もり + 契約条件 + 備考 + フッター
           コンテンツ量によって自動改ページ、Footer は最終ページ最下部に配置 */}
-      <Page size="A4" style={pdfStyles.contentPage}>
+      <Page
+        size="A4"
+        style={pdfStyles.contentPage}
+        bookmark="お見積もり・契約条件"
+      >
         {/* コンテンツ領域: flex:1 で空白を占有し、Footer を下に押し込む */}
         <View style={{ flex: 1 }}>
           <EstimatePdf form={form} theme={theme} />
