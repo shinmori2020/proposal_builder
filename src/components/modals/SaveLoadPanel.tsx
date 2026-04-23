@@ -12,7 +12,9 @@ import {
   SavedProject,
   MAX_SAVED,
 } from '@/lib/storage';
-import { Save, X, Pencil, Check, Search } from 'lucide-react';
+import { exportFormAsJson, importFormFromJson } from '@/lib/jsonTransfer';
+import { Save, X, Pencil, Check, Search, Download, Upload } from 'lucide-react';
+import { useRef } from 'react';
 
 interface Props {
   form: ProposalForm;
@@ -28,6 +30,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const P = theme.primary;
 
   // 検索クエリで絞り込み
@@ -89,6 +92,45 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
     setEditName('');
   };
 
+  const handleExportJson = () => {
+    const filename =
+      form.projectName ||
+      form.clientName ||
+      `提案書_${new Date().toLocaleDateString('ja-JP').replace(/\//g, '-')}`;
+    exportFormAsJson(form, filename);
+    setMsg('JSON をダウンロードしました');
+    setTimeout(() => setMsg(''), 2500);
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImportJson = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    // input をリセット（同じファイルを再選択できるように）
+    e.target.value = '';
+    if (!file) return;
+
+    try {
+      const imported = await importFormFromJson(file);
+      if (
+        confirm(
+          '現在の編集内容を上書きして、JSON ファイルの内容を読み込みますか？'
+        )
+      ) {
+        setForm(imported);
+        setMsg('JSON を読み込みました');
+        setTimeout(() => setMsg(''), 2500);
+        onClose();
+      }
+    } catch (err) {
+      alert(
+        `読み込みに失敗しました: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
+  };
+
   return (
     <div
       onClick={onClose}
@@ -121,8 +163,38 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
             style={{ background: P }}
           >
             <Save size={18} color="#fff" />
-            {saving ? '保存中...' : '現在の内容を保存'}
+            {saving ? '保存中...' : '現在の内容をブラウザに保存'}
           </button>
+
+          {/* JSON エクスポート/インポート */}
+          <div className="flex gap-2 mt-2">
+            <button
+              onClick={handleExportJson}
+              className="flex-1 py-2 border-[1.5px] rounded-md bg-transparent text-[12px] cursor-pointer font-semibold flex items-center justify-center gap-1.5"
+              style={{ borderColor: P, color: P }}
+              title="現在の内容を JSON ファイルとしてダウンロード（バックアップ・他PCへ移行用）"
+            >
+              <Download size={13} color={P} />
+              JSON ダウンロード
+            </button>
+            <button
+              onClick={handleImportClick}
+              className="flex-1 py-2 border-[1.5px] rounded-md bg-transparent text-[12px] cursor-pointer font-semibold flex items-center justify-center gap-1.5"
+              style={{ borderColor: P, color: P }}
+              title="JSON ファイルを読み込んで現在の内容を置き換え"
+            >
+              <Upload size={13} color={P} />
+              JSON 読込
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json,application/json"
+              className="hidden"
+              onChange={handleImportJson}
+            />
+          </div>
+
           {msg && (
             <div
               className="text-center font-semibold text-[13px] mt-2"
