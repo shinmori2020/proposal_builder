@@ -4,6 +4,7 @@ import { Theme } from '@/lib/themes';
 import { PC } from '../pdfColors';
 import { calcPlan, formatPrice } from '@/lib/calculations';
 import { totalWeeksLabel } from '@/lib/schedule';
+import { formatDeliveryDate } from '@/lib/formatters';
 
 interface Props {
   form: ProposalForm;
@@ -177,12 +178,14 @@ export default function CoverPdf({ form, theme }: Props) {
   });
 
   const plan = form.plans.find((p) => p.recommended) || form.plans[0];
-  const total = plan ? calcPlan(plan).total : 0;
+  const taxRate = form.taxRate ?? 10;
+  const total = plan ? calcPlan(plan, taxRate).total : 0;
   const totalPages = form.pages.reduce(
     (s, p) => s + 1 + p.children.length,
     0
   );
   const period = totalWeeksLabel(form.schedule);
+  const deliveryText = formatDeliveryDate(form.deliveryDate);
   const hp = form.hidePrices;
   const P = theme.primary;
 
@@ -264,10 +267,10 @@ export default function CoverPdf({ form, theme }: Props) {
             <Text style={styles.summaryLabel}>制作期間</Text>
             <Text style={styles.summaryValue}>{period}</Text>
           </View>
-          {form.deliveryDate && (
+          {deliveryText && (
             <View style={styles.summaryItem}>
               <Text style={styles.summaryLabel}>納品希望日</Text>
-              <Text style={styles.summaryValue}>{form.deliveryDate}</Text>
+              <Text style={styles.summaryValue}>{deliveryText}</Text>
             </View>
           )}
         </View>

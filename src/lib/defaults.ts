@@ -38,5 +38,6 @@ export function defaultForm(): ProposalForm {
     },
     themeId: 'green',
     hidePrices: false,
+    taxRate: 10,
   };
 }

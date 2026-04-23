@@ -4,6 +4,7 @@ import { ProposalForm } from '@/lib/types';
 import { Theme, THEMES } from '@/lib/themes';
 import { SITE_TYPES, FEATURES_ALL } from '@/lib/constants';
 import { C } from '@/lib/colors';
+import { isValidUrl } from '@/lib/formatters';
 import { Tag, FileText, Check } from 'lucide-react';
 
 interface Props {
@@ -115,11 +116,36 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
         <div>
           <label className={labelClass}>納品希望日</label>
           <input
+            type="date"
             value={form.deliveryDate}
             onChange={(e) => update('deliveryDate', e.target.value)}
             className={inputClass}
-            placeholder="2026年6月末"
           />
+        </div>
+      </div>
+
+      {/* 消費税率 */}
+      <div className="grid grid-cols-2 gap-3.5">
+        <div>
+          <label className={labelClass}>消費税率</label>
+          <div className="flex items-center gap-1.5">
+            <input
+              type="number"
+              min={0}
+              max={30}
+              step={0.5}
+              value={form.taxRate ?? 10}
+              onChange={(e) =>
+                update('taxRate', Math.max(0, Number(e.target.value)))
+              }
+              className={inputClass}
+              style={{ width: 80 }}
+            />
+            <span className="text-sm text-[#666]">%</span>
+            <span className="text-[11px] text-ink-soft ml-1">
+              （通常 10%、軽減税率 8% 等）
+            </span>
+          </div>
         </div>
       </div>
 
@@ -190,6 +216,14 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
             className={inputClass}
             placeholder="https://..."
           />
+          {form.companyUrl && !isValidUrl(form.companyUrl) && (
+            <span
+              className="text-[10px] block mt-0.5"
+              style={{ color: C.delete }}
+            >
+              ⚠ http:// または https:// から始めてください
+            </span>
+          )}
         </div>
       </div>
 

@@ -5,6 +5,7 @@ import { ProposalForm, Plan, EstimateItem } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { C } from '@/lib/colors';
 import { calcPlan, formatPrice, makePlan } from '@/lib/calculations';
+import { formatNumberWithCommas, parseNumberFromString } from '@/lib/formatters';
 import PresetDrawer from '@/components/modals/PresetDrawer';
 import { Star, Copy, X, Plus, Package, Percent } from 'lucide-react';
 
@@ -25,7 +26,8 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
   const plan = plans[activePlanIdx] || plans[0];
   const items = plan.items;
   const disc = plan.discount;
-  const { sub, disc: discAmt, tax } = calcPlan(plan);
+  const taxRate = form.taxRate ?? 10;
+  const { sub, disc: discAmt, tax } = calcPlan(plan, taxRate);
 
   const update = <K extends keyof ProposalForm>(key: K, value: ProposalForm[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -222,11 +224,13 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
             className={`${inputClass} text-center`}
           />
           <input
-            type="number"
-            min={0}
-            step={1000}
-            value={item.price}
-            onChange={(e) => updateItem(i, 'price', Number(e.target.value))}
+            type="text"
+            inputMode="numeric"
+            value={item.price === 0 ? '' : formatNumberWithCommas(item.price)}
+            onChange={(e) =>
+              updateItem(i, 'price', parseNumberFromString(e.target.value))
+            }
+            placeholder="0"
             className={`${inputClass} text-right`}
           />
           <button
@@ -272,12 +276,25 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
           {disc.type !== 'none' && (
             <>
               <input
-                type="number"
-                min={0}
-                value={disc.value}
-                onChange={(e) => updateDiscount('value', Number(e.target.value))}
+                type="text"
+                inputMode="numeric"
+                value={
+                  disc.value === 0
+                    ? ''
+                    : disc.type === 'fixed'
+                      ? formatNumberWithCommas(disc.value)
+                      : String(disc.value)
+                }
+                onChange={(e) => {
+                  const val =
+                    disc.type === 'fixed'
+                      ? parseNumberFromString(e.target.value)
+                      : Number(e.target.value.replace(/[^0-9.]/g, '')) || 0;
+                  updateDiscount('value', val);
+                }}
+                placeholder="0"
                 className={`${inputClass} text-right`}
-                style={{ width: 80 }}
+                style={{ width: 90 }}
               />
               <span className="text-xs text-[#666]">
                 {disc.type === 'percent' ? '%' : '円'}

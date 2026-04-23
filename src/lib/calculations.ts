@@ -7,7 +7,7 @@ export interface PlanCalculation {
   total: number;
 }
 
-export function calcPlan(plan: Plan): PlanCalculation {
+export function calcPlan(plan: Plan, taxRate: number = 10): PlanCalculation {
   const sub = plan.items.reduce((s, it) => s + it.qty * it.price, 0);
   const d = plan.discount || { type: 'none', value: 0, label: '' };
   const disc =
@@ -17,7 +17,7 @@ export function calcPlan(plan: Plan): PlanCalculation {
         ? d.value
         : 0;
   const after = sub - disc;
-  const tax = Math.floor(after * 0.1);
+  const tax = Math.floor(after * (taxRate / 100));
   return { sub, disc, tax, total: after + tax };
 }
 

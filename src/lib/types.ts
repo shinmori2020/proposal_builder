@@ -56,6 +56,7 @@ export interface ProposalForm {
   contractTerms: ContractTerms;
   themeId: string;
   hidePrices: boolean;
+  taxRate: number;
 }
 
 export type TabId = 'basic' | 'pages' | 'estimate' | 'schedule' | 'terms' | 'preview';

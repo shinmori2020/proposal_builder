@@ -34,6 +34,7 @@ export default function EstimatePdf({ form, theme }: Props) {
   const L = theme.light;
   const hp = form.hidePrices;
   const plans = form.plans || [];
+  const taxRate = form.taxRate ?? 10;
 
   if (plans.length === 0) return null;
 
@@ -51,9 +52,9 @@ export default function EstimatePdf({ form, theme }: Props) {
       {hp ? (
         <HidePricesView plans={plans} P={P} L={L} />
       ) : plans.length > 1 ? (
-        <MultiPlanCards plans={plans} P={P} />
+        <MultiPlanCards plans={plans} P={P} taxRate={taxRate} />
       ) : (
-        <SinglePlanTable plan={plans[0]} P={P} L={L} />
+        <SinglePlanTable plan={plans[0]} P={P} L={L} taxRate={taxRate} />
       )}
     </View>
   );
@@ -163,12 +164,20 @@ function HidePricesView({
 }
 
 /* ========== 複数プラン比較 ========== */
-function MultiPlanCards({ plans, P }: { plans: Plan[]; P: string }) {
+function MultiPlanCards({
+  plans,
+  P,
+  taxRate,
+}: {
+  plans: Plan[];
+  P: string;
+  taxRate: number;
+}) {
   return (
     <View style={{ flexDirection: 'row', gap: 6 }}>
       {plans.map((plan, pi) => {
         const visible = getVisibleItems(plan.items);
-        const { sub, disc, total } = calcPlan(plan);
+        const { sub, disc, total } = calcPlan(plan, taxRate);
 
         return (
           <View
@@ -286,12 +295,14 @@ function SinglePlanTable({
   plan,
   P,
   L,
+  taxRate,
 }: {
   plan: Plan;
   P: string;
   L: string;
+  taxRate: number;
 }) {
-  const { sub, disc, tax, total } = calcPlan(plan);
+  const { sub, disc, tax, total } = calcPlan(plan, taxRate);
   const visibleItems = getVisibleItems(plan.items);
 
   /**
@@ -431,7 +442,7 @@ function SinglePlanTable({
               color: PC.ink.body,
             }}
           >
-            消費税
+            消費税（{taxRate}%）
           </Text>
           <Text
             style={{
