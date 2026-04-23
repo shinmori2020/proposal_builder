@@ -11,6 +11,8 @@ export interface SavedProject {
   name: string;
   data: ProposalForm;
   savedAt: string;
+  /** 分類用タグ。旧データには無いので optional。 */
+  tags?: string[];
 }
 
 export interface Draft {
@@ -59,6 +61,22 @@ export function renameProject(id: string, newName: string): SavedProject[] {
   if (!trimmed) return projects;
   const updated = projects.map((p) =>
     p.id === id ? { ...p, name: trimmed } : p
+  );
+  saveProjects(updated);
+  return updated;
+}
+
+/** プロジェクトのタグを更新（空白/重複を除去して保存） */
+export function updateProjectTags(
+  id: string,
+  tags: string[]
+): SavedProject[] {
+  const projects = loadProjects();
+  const cleaned = Array.from(
+    new Set(tags.map((t) => t.trim()).filter(Boolean))
+  );
+  const updated = projects.map((p) =>
+    p.id === id ? { ...p, tags: cleaned } : p
   );
   saveProjects(updated);
   return updated;

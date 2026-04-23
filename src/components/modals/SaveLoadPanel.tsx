@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ProposalForm } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { C } from '@/lib/colors';
@@ -9,11 +9,21 @@ import {
   saveProjects,
   makeSavedProject,
   renameProject,
+  updateProjectTags,
   SavedProject,
   MAX_SAVED,
 } from '@/lib/storage';
 import { exportFormAsJson, importFormFromJson } from '@/lib/jsonTransfer';
-import { Save, X, Pencil, Check, Search, Download, Upload } from 'lucide-react';
+import {
+  Save,
+  X,
+  Pencil,
+  Check,
+  Search,
+  Download,
+  Upload,
+  Tag,
+} from 'lucide-react';
 import { useRef } from 'react';
 
 interface Props {
@@ -29,16 +39,51 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
   const [msg, setMsg] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
+  const [editTags, setEditTags] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTags, setActiveTags] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const P = theme.primary;
 
-  // 検索クエリで絞り込み
-  const filteredProjects = searchQuery.trim()
-    ? projects.filter((p) =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
+  // 全案件から集めたユニークタグ（使用数付き・ABC順）
+  const tagCounts = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const p of projects) {
+      for (const t of p.tags ?? []) {
+        map.set(t, (map.get(t) ?? 0) + 1);
+      }
+    }
+    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
+  }, [projects]);
+
+  // 検索クエリ + 選択タグ（AND）で絞り込み
+  const filteredProjects = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    return projects.filter((p) => {
+      if (q && !p.name.toLowerCase().includes(q)) return false;
+      if (activeTags.length > 0) {
+        const pt = p.tags ?? [];
+        if (!activeTags.every((t) => pt.includes(t))) return false;
+      }
+      return true;
+    });
+  }, [projects, searchQuery, activeTags]);
+
+  const toggleTag = (tag: string) => {
+    setActiveTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const parseTags = (input: string): string[] =>
+    Array.from(
+      new Set(
+        input
+          .split(/[,、\s]+/)
+          .map((t) => t.replace(/^#/, '').trim())
+          .filter(Boolean)
       )
-    : projects;
+    );
 
   useEffect(() => {
     setProjects(loadProjects());
@@ -77,19 +122,23 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
   const startEdit = (project: SavedProject) => {
     setEditingId(project.id);
     setEditName(project.name);
+    setEditTags((project.tags ?? []).map((t) => `#${t}`).join(' '));
   };
 
   const confirmEdit = () => {
     if (!editingId) return;
-    const updated = renameProject(editingId, editName);
+    let updated = renameProject(editingId, editName);
+    updated = updateProjectTags(editingId, parseTags(editTags));
     setProjects(updated);
     setEditingId(null);
     setEditName('');
+    setEditTags('');
   };
 
   const cancelEdit = () => {
     setEditingId(null);
     setEditName('');
+    setEditTags('');
   };
 
   const handleExportJson = () => {
@@ -210,7 +259,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
           <div className="flex items-center justify-between mb-2.5 gap-2">
             <p className="text-[13px] font-semibold text-ink-soft m-0 shrink-0">
               保存済み（
-              {searchQuery.trim()
+              {searchQuery.trim() || activeTags.length > 0
                 ? `${filteredProjects.length}/${projects.length}`
                 : projects.length}
               件）
@@ -238,6 +287,43 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
               </div>
             )}
           </div>
+
+          {/* タグフィルターバー（AND 絞り込み） */}
+          {tagCounts.length > 0 && (
+            <div className="flex items-center gap-1.5 flex-wrap mb-2.5">
+              <Tag size={12} color="#888" />
+              {tagCounts.map(([tag, count]) => {
+                const isActive = activeTags.includes(tag);
+                return (
+                  <button
+                    key={tag}
+                    onClick={() => toggleTag(tag)}
+                    className="py-0.5 px-2 rounded-full text-[11px] cursor-pointer font-semibold border-[1.5px] transition-colors"
+                    style={{
+                      borderColor: isActive ? P : C.line.default,
+                      background: isActive ? theme.light : '#fff',
+                      color: isActive ? P : '#666',
+                    }}
+                    title={`${count}件`}
+                  >
+                    #{tag}
+                    <span className="ml-1 text-[10px] opacity-60">
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+              {activeTags.length > 0 && (
+                <button
+                  onClick={() => setActiveTags([])}
+                  className="py-0.5 px-2 rounded-full text-[11px] cursor-pointer font-semibold text-ink-soft border-none bg-transparent underline"
+                >
+                  フィルタ解除
+                </button>
+              )}
+            </div>
+          )}
+
           {projects.length === 0 && (
             <p className="text-ink-softest text-[13px] text-center py-5">
               保存された案件はありません
@@ -245,36 +331,74 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
           )}
           {projects.length > 0 && filteredProjects.length === 0 && (
             <p className="text-ink-softest text-[13px] text-center py-5">
-              「{searchQuery}」に一致する案件はありません
+              条件に一致する案件はありません
             </p>
           )}
           <div className="flex flex-col gap-2">
             {filteredProjects.map((p) => {
               const isEditing = editingId === p.id;
+              const pTags = p.tags ?? [];
               return (
                 <div
                   key={p.id}
-                  className="py-3 px-3.5 border-[1.5px] border-line-subtle rounded-[10px] flex justify-between items-center gap-2"
+                  className="py-3 px-3.5 border-[1.5px] border-line-subtle rounded-[10px] flex justify-between items-start gap-2"
                 >
                   <div className="flex-1 min-w-0">
                     {isEditing ? (
-                      <input
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') confirmEdit();
-                          if (e.key === 'Escape') cancelEdit();
-                        }}
-                        autoFocus
-                        className="w-full px-2 py-1 border-[1.5px] border-line-input rounded-md text-sm outline-none"
-                        style={{ borderColor: P }}
-                      />
-                    ) : (
-                      <div className="font-semibold text-sm text-[#333] truncate">
-                        {p.name}
+                      <div className="flex flex-col gap-1.5">
+                        <input
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') confirmEdit();
+                            if (e.key === 'Escape') cancelEdit();
+                          }}
+                          autoFocus
+                          placeholder="案件名"
+                          className="w-full px-2 py-1 border-[1.5px] border-line-input rounded-md text-sm outline-none"
+                          style={{ borderColor: P }}
+                        />
+                        <input
+                          value={editTags}
+                          onChange={(e) => setEditTags(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') confirmEdit();
+                            if (e.key === 'Escape') cancelEdit();
+                          }}
+                          placeholder="タグ（スペース/カンマ区切り・例: A社 コーポレート）"
+                          className="w-full px-2 py-1 border-[1.5px] border-line-input rounded-md text-[12px] outline-none"
+                        />
                       </div>
+                    ) : (
+                      <>
+                        <div className="font-semibold text-sm text-[#333] truncate">
+                          {p.name}
+                        </div>
+                        {pTags.length > 0 && (
+                          <div className="flex gap-1 flex-wrap mt-1">
+                            {pTags.map((t) => {
+                              const isActive = activeTags.includes(t);
+                              return (
+                                <button
+                                  key={t}
+                                  onClick={() => toggleTag(t)}
+                                  className="py-[1px] px-1.5 rounded-full text-[10px] cursor-pointer font-semibold border"
+                                  style={{
+                                    borderColor: isActive ? P : C.line.soft,
+                                    background: isActive ? theme.light : '#f7f7f7',
+                                    color: isActive ? P : '#666',
+                                  }}
+                                  title="クリックで絞り込み"
+                                >
+                                  #{t}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </>
                     )}
-                    <div className="text-[11px] text-[#999] mt-0.5">
+                    <div className="text-[11px] text-[#999] mt-1">
                       {new Date(p.savedAt).toLocaleString('ja-JP')}
                     </div>
                   </div>
@@ -308,7 +432,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                         <button
                           onClick={() => startEdit(p)}
                           className="py-1 px-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-[11px] cursor-pointer font-semibold text-ink-soft flex items-center"
-                          title="名前を変更"
+                          title="名前とタグを編集"
                         >
                           <Pencil size={11} color="#888" />
                         </button>
