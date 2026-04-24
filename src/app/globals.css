@@ -42,6 +42,19 @@ body {
     color-mix(in srgb, var(--theme-primary, #888) 22%, transparent);
 }
 
+/* select のカスタム矢印: ブラウザ標準矢印を消して SVG chevron を右に余白付きで配置。
+   すべての <select> が共通 focus-ring クラスを持つ前提で、自動的に適用される。 */
+select.focus-ring {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 11px;
+  padding-right: 26px;
+}
+
 /* 警告ピル: 入力バリデーションの注意表示で使用 */
 .warn-pill {
   display: inline-flex;
