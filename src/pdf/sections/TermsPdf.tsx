@@ -95,9 +95,6 @@ function TermsBlock({
         paddingVertical: 5,
         paddingHorizontal: 8,
         backgroundColor: PC.surface.panel,
-        borderLeftWidth: 3,
-        borderLeftColor: color,
-        borderLeftStyle: 'solid',
         borderRadius: 4,
       }}
     >
