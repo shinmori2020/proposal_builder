@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     borderTopStyle: 'solid',
     borderTopColor: PC.line.subtle,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     gap: 10,
   },
