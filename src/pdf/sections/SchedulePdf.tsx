@@ -70,8 +70,8 @@ export default function SchedulePdf({ form, theme }: Props) {
                   fontSize: 8,
                   color: PC.ink.body,
                   textAlign: 'right',
-                  width: 90,
-                  marginRight: 5,
+                  width: 65,
+                  marginRight: 6,
                 }}
               >
                 {item.phase || '—'}

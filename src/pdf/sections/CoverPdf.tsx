@@ -78,19 +78,12 @@ const styles = StyleSheet.create({
     lineHeight: 1.7,
     marginBottom: 3,
   },
-  purposeLabel: {
-    fontSize: 10,
-    fontWeight: 600,
-    marginTop: 6,
-  },
-
-  /* 制作概要 - 2カラム */
+  /* 制作概要 - 縦並び */
   summaryGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: 'column',
   },
   summaryItem: {
-    width: '50%',
+    width: '100%',
     flexDirection: 'row',
     paddingVertical: 3,
   },
@@ -220,7 +213,7 @@ export default function CoverPdf({ form, theme }: Props) {
       </View>
 
       {/* 提案概要 */}
-      {(form.overview || form.purpose) && (
+      {form.overview && (
         <View style={styles.section}>
           <Text
             style={[
@@ -230,17 +223,22 @@ export default function CoverPdf({ form, theme }: Props) {
           >
             提案概要
           </Text>
-          {form.overview && (
-            <Text style={styles.paragraph}>{form.overview}</Text>
-          )}
-          {form.purpose && (
-            <>
-              <Text style={[styles.purposeLabel, { color: P }]}>
-                制作方針
-              </Text>
-              <Text style={styles.paragraph}>{form.purpose}</Text>
-            </>
-          )}
+          <Text style={styles.paragraph}>{form.overview}</Text>
+        </View>
+      )}
+
+      {/* 制作方針・目的 */}
+      {form.purpose && (
+        <View style={styles.section}>
+          <Text
+            style={[
+              styles.sectionHeading,
+              { color: P, borderBottomColor: P },
+            ]}
+          >
+            制作方針・目的
+          </Text>
+          <Text style={styles.paragraph}>{form.purpose}</Text>
         </View>
       )}
 
