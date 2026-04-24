@@ -54,15 +54,8 @@ export default function SitemapPdf({ form, theme }: Props) {
       </View>
 
       {/* ページリスト */}
-      <View
-        style={{
-          borderLeftWidth: 1.5,
-          borderLeftStyle: 'solid',
-          borderLeftColor: P,
-          paddingLeft: 10,
-          marginLeft: 4,
-        }}
-      >
+      <View>
+
         {form.pages.map((pg, i) => (
           <View key={i} style={{ marginBottom: 3 }} wrap={false}>
             {/* 親ページ */}
