@@ -63,7 +63,7 @@ export default function TermsTab({ form, setForm, theme }: Props) {
     return (
       <div className="mb-[18px]">
         <label
-          className="block text-[13px] font-semibold text-ink-label mb-2 flex items-center gap-1"
+          className="block text-label font-semibold text-ink-label mb-2 flex items-center gap-1"
         >
           {IconComponent && <IconComponent size={15} color={P} />}
           {title}
@@ -93,10 +93,10 @@ export default function TermsTab({ form, setForm, theme }: Props) {
                     {isSelected && <Check size={10} color="#fff" />}
                   </div>
                   <div>
-                    <div className="font-semibold text-[13px]">
+                    <div className="font-semibold text-label">
                       {item.label}
                     </div>
-                    <div className="text-[11px] text-[#666] mt-0.5 leading-[1.5]">
+                    <div className="text-meta text-[#666] mt-0.5 leading-[1.5]">
                       {item.text}
                     </div>
                   </div>
@@ -111,7 +111,7 @@ export default function TermsTab({ form, setForm, theme }: Props) {
 
   return (
     <div className={sectionStack}>
-      <p className="text-[#666] text-[13px] m-0">
+      <p className="text-[#666] text-label m-0">
         選択した条件がプレビューに反映されます。
       </p>
 
@@ -123,7 +123,7 @@ export default function TermsTab({ form, setForm, theme }: Props) {
       {/* その他（複数選択可） */}
       <div className="mb-[18px]">
         <label
-          className="block text-[13px] font-semibold text-ink-label mb-2 flex items-center gap-1"
+          className="block text-label font-semibold text-ink-label mb-2 flex items-center gap-1"
         >
           <FileText size={15} color={P} />
           その他（複数選択可）
@@ -153,10 +153,10 @@ export default function TermsTab({ form, setForm, theme }: Props) {
                     {isActive && <Check size={10} color="#fff" />}
                   </div>
                   <div>
-                    <div className="font-semibold text-[13px]">
+                    <div className="font-semibold text-label">
                       {item.label}
                     </div>
-                    <div className="text-[11px] text-[#666] mt-0.5">
+                    <div className="text-meta text-[#666] mt-0.5">
                       {item.text}
                     </div>
                   </div>

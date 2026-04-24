@@ -51,11 +51,11 @@ export default function PresetDrawer({ onAdd, onClose, theme }: Props) {
 
       {/* ドロワー本体 */}
       <div
-        className="w-[420px] bg-white flex flex-col h-full"
-        style={{ boxShadow: '-8px 0 30px rgba(0,0,0,0.15)' }}
+        className="w-[420px] bg-white flex flex-col h-full border-l border-line-subtle"
+        style={{ boxShadow: '-4px 0 20px rgba(0,0,0,0.08)' }}
       >
         {/* ヘッダー */}
-        <div className="px-5 py-4 border-b-2 border-line-muted flex justify-between items-center">
+        <div className="px-5 py-4 border-b border-line-subtle flex justify-between items-center">
           <h2 className="m-0 text-[17px] font-extrabold" style={{ color: P }}>
             項目プリセット
           </h2>
@@ -77,7 +77,7 @@ export default function PresetDrawer({ onAdd, onClose, theme }: Props) {
               <button
                 key={c.category}
                 onClick={() => setActiveCategory(c.category)}
-                className="py-1 px-2.5 rounded-[14px] text-[11px] cursor-pointer flex items-center gap-1 border-[1.5px]"
+                className="py-1 px-2.5 rounded-[14px] text-meta cursor-pointer flex items-center gap-1 border-[1.5px]"
                 style={{
                   borderColor: isActive ? P : C.line.soft,
                   background: isActive ? theme.light : '#fff',
@@ -112,10 +112,10 @@ export default function PresetDrawer({ onAdd, onClose, theme }: Props) {
                     }}
                   >
                     <div>
-                      <div className="font-semibold text-[13px] text-[#333]">
+                      <div className="font-semibold text-label text-[#333]">
                         {item.name}
                       </div>
-                      <div className="text-[11px] text-ink-soft mt-px">
+                      <div className="text-meta text-ink-soft mt-px">
                         {item.qty}
                         {item.unit} × ¥{formatPrice(item.price)} ={' '}
                         <strong style={{ color: P }}>
@@ -124,7 +124,7 @@ export default function PresetDrawer({ onAdd, onClose, theme }: Props) {
                       </div>
                     </div>
                     <span
-                      className="text-[11px] font-bold flex items-center gap-0.5"
+                      className="text-meta font-bold flex items-center gap-0.5"
                       style={{ color: isAdded ? P : C.ink.softer }}
                     >
                       {isAdded ? (

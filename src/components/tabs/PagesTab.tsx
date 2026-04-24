@@ -69,7 +69,7 @@ export default function PagesTab({ form, setForm, theme }: Props) {
     <div className={sectionStack}>
       <p className="text-[#666] text-sm m-0">
         ページ名を入力するとサイトマップが自動生成されます。
-        <span className="ml-1 text-[11px] text-[#999]">
+        <span className="ml-1 text-meta text-[#999]">
           （ページ名: {PAGE_NAME_MAX}文字 / 子ページ: {CHILD_NAME_MAX}文字 を超えるとサイトマップで省略表示されます）
         </span>
       </p>
@@ -127,7 +127,7 @@ export default function PagesTab({ form, setForm, theme }: Props) {
                     <input
                       value={c}
                       onChange={(e) => updateChild(i, ci, e.target.value)}
-                      className={`${inputClass} text-[13px]`}
+                      className={`${inputClass} text-label`}
                       placeholder="子ページ"
                     />
                     {childOver && (

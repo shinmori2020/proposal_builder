@@ -3,6 +3,19 @@
 @theme inline {
   --font-sans: var(--font-noto-sans-jp);
 
+  /* タイポグラフィスケール（セマンティック）
+     - text-micro: 10px  警告/チャート内の極小ラベル
+     - text-meta:  11px  チップ/日時/注釈
+     - text-xs:    12px  ボタン/ヒント（Tailwind デフォルト）
+     - text-label: 13px  フォームラベル/セクション見出し
+     - text-sm:    14px  入力/本文（Tailwind デフォルト） */
+  --text-micro: 10px;
+  --text-micro--line-height: 1.4;
+  --text-meta: 11px;
+  --text-meta--line-height: 1.4;
+  --text-label: 13px;
+  --text-label--line-height: 1.5;
+
   /* テキスト階層 */
   --color-ink-label: #444;
   --color-ink-body: #555;

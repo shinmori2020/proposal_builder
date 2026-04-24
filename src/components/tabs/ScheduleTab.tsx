@@ -60,14 +60,14 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
           {hasStart && (
             <button
               onClick={() => update('scheduleStart', '')}
-              className="px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-[11px] cursor-pointer font-semibold flex items-center gap-1"
+              className="px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-meta cursor-pointer font-semibold flex items-center gap-1"
               style={{ borderColor: C.delete, color: C.delete }}
             >
               <X size={12} color={C.delete} />
               クリア
             </button>
           )}
-          <span className="text-[11px] text-[#999]">
+          <span className="text-meta text-[#999]">
             日付入力でガントチャートに反映
           </span>
         </div>
@@ -104,7 +104,7 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
                   onChange={(v) => updateItem(i, 'weeks', v)}
                   style={{ width: 62 }}
                 />
-                <span className="text-[11px] text-[#666] min-w-[14px]">週</span>
+                <span className="text-meta text-[#666] min-w-[14px]">週</span>
               </div>
               <div className="flex items-center gap-1">
                 <NumberStepper
@@ -115,7 +115,7 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
                   onChange={(v) => updateItem(i, 'extraDays', v)}
                   style={{ width: 62 }}
                 />
-                <span className="text-[11px] text-[#666] min-w-[14px]">日</span>
+                <span className="text-meta text-[#666] min-w-[14px]">日</span>
               </div>
               <button
                 onClick={() => setItems(items.filter((_, idx) => idx !== i))}
@@ -126,12 +126,12 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
               </button>
             </div>
             <div className="flex justify-between mt-1 pl-1">
-              <span className="text-[10px] text-[#999]">
+              <span className="text-micro text-[#999]">
                 {formatDuration(item)}（{itemDays(item)}日間）
               </span>
               {dateLabel && (
                 <span
-                  className="text-[10px] font-medium"
+                  className="text-micro font-medium"
                   style={{ color: P }}
                 >
                   {dateLabel}
@@ -153,7 +153,7 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
 
       {/* ガントチャート */}
       <div className="mt-1.5">
-        <p className="font-semibold text-[13px] text-ink-body mb-1.5">
+        <p className="font-semibold text-label text-ink-body mb-1.5">
           ガントチャート（{totalWeeksLabel(items)}
           {hasStart && startD
             ? ` ・ ${formatDateFull(startD)}〜${formatDateFull(
@@ -180,7 +180,7 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
                   className="flex items-center gap-2 h-[26px]"
                 >
                   <span
-                    className="text-[11px] text-ink-body text-right"
+                    className="text-meta text-ink-body text-right"
                     style={{ minWidth: 120 }}
                   >
                     {item.phase || '—'}

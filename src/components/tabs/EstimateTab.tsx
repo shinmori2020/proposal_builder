@@ -106,7 +106,7 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
   };
 
   const smallBtn =
-    'px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-[11px] cursor-pointer font-semibold flex items-center gap-1 transition-colors';
+    'px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-meta cursor-pointer font-semibold flex items-center gap-1 transition-colors';
 
   return (
     <div className="flex flex-col gap-3">
@@ -126,7 +126,7 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
             <button
               key={i}
               onClick={() => setActivePlanIdx(i)}
-              className="py-1.5 px-3.5 rounded-lg text-[13px] cursor-pointer flex items-center gap-1"
+              className="py-1.5 px-3.5 rounded-lg text-label cursor-pointer flex items-center gap-1"
               style={{
                 border: isActive ? `2px solid ${P}` : `1.5px solid ${C.line.soft}`,
                 background: isActive ? theme.light : '#fff',
@@ -159,7 +159,7 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
         />
         <button
           onClick={toggleRecommended}
-          className="py-1 px-2.5 rounded-md text-[11px] cursor-pointer font-semibold flex items-center gap-1 whitespace-nowrap border-[1.5px]"
+          className="py-1 px-2.5 rounded-md text-meta cursor-pointer font-semibold flex items-center gap-1 whitespace-nowrap border-[1.5px]"
           style={{
             borderColor: plan.recommended ? P : C.line.default,
             background: plan.recommended ? theme.light : '#fff',
@@ -192,7 +192,7 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
       {/* プリセット追加ボタン */}
       <button
         onClick={() => setShowPreset(true)}
-        className="py-2.5 px-[18px] rounded-[10px] text-[13px] cursor-pointer font-semibold flex items-center justify-center gap-2 border-2 border-dashed"
+        className="py-2.5 px-[18px] rounded-[10px] text-label cursor-pointer font-semibold flex items-center justify-center gap-2 border-2 border-dashed"
         style={{ borderColor: P, background: theme.bg, color: P }}
       >
         <Package size={16} color={P} />
@@ -323,7 +323,7 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
       {/* 割引・値引き */}
       <div className="bg-surface-muted rounded-[10px] p-3 border border-line-subtle">
         <label
-          className="block text-[13px] font-semibold text-ink-label mb-2 flex items-center gap-1"
+          className="block text-label font-semibold text-ink-label mb-2 flex items-center gap-1"
         >
           <Percent size={15} color={P} />
           割引・値引き
@@ -382,15 +382,15 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
         className="mt-1 pt-2.5 flex flex-col gap-1 items-end"
         style={{ borderTop: `2px solid ${P}` }}
       >
-        <div className="text-[13px] text-ink-body">
+        <div className="text-label text-ink-body">
           小計: <strong>¥{formatPrice(sub)}</strong>
         </div>
         {discAmt > 0 && (
-          <div className="text-[13px]" style={{ color: C.delete }}>
+          <div className="text-label" style={{ color: C.delete }}>
             {disc.label || '割引'}: <strong>-¥{formatPrice(discAmt)}</strong>
           </div>
         )}
-        <div className="text-[13px] text-ink-body">
+        <div className="text-label text-ink-body">
           消費税: <strong>¥{formatPrice(tax)}</strong>
         </div>
         <div

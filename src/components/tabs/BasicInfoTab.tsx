@@ -56,22 +56,30 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
       {/* テーマカラー */}
       <div>
         <label className={labelClass}>テーマカラー</label>
-        <div className="flex flex-wrap gap-2 mt-1">
-          {THEMES.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => update('themeId', t.id)}
-              className="w-[30px] h-[30px] rounded-full cursor-pointer flex items-center justify-center transition-transform"
-              style={{
-                background: t.primary,
-                border: form.themeId === t.id ? '3px solid #333' : '3px solid transparent',
-                transform: form.themeId === t.id ? 'scale(1.15)' : 'scale(1)',
-              }}
-              title={t.label}
-            >
-              {form.themeId === t.id && <Check size={11} color="#fff" />}
-            </button>
-          ))}
+        <div className="flex flex-wrap gap-3 mt-1">
+          {THEMES.map((t) => {
+            const isSelected = form.themeId === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => update('themeId', t.id)}
+                className="w-8 h-8 rounded-full cursor-pointer flex items-center justify-center transition-all"
+                style={{
+                  background: t.primary,
+                  boxShadow: isSelected
+                    ? `0 0 0 2px #fff, 0 0 0 4px ${t.primary}`
+                    : 'none',
+                  transform: isSelected ? 'scale(1.05)' : 'scale(1)',
+                }}
+                title={t.label}
+                aria-pressed={isSelected}
+              >
+                {isSelected && (
+                  <Check size={14} color="#fff" strokeWidth={3} />
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -136,7 +144,7 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
               style={{ width: 92 }}
             />
             <span className="text-sm text-[#666]">%</span>
-            <span className="text-[11px] text-ink-soft ml-1">
+            <span className="text-meta text-ink-soft ml-1">
               （通常 10%、軽減税率 8% 等）
             </span>
           </div>
@@ -239,7 +247,7 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
             </div>
           ) : (
             <label
-              className="py-2 px-4 rounded-lg cursor-pointer text-[13px] font-semibold flex items-center gap-1.5 border-2 border-dashed"
+              className="py-2 px-4 rounded-lg cursor-pointer text-label font-semibold flex items-center gap-1.5 border-2 border-dashed"
               style={{ borderColor: P, background: theme.bg, color: P }}
             >
               <FileText size={15} color={P} />
@@ -252,7 +260,7 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
               />
             </label>
           )}
-          <span className="text-[11px] text-[#999]">
+          <span className="text-meta text-[#999]">
             表紙・フッターに表示されます
           </span>
         </div>

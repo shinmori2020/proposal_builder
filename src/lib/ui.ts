@@ -14,14 +14,14 @@ export const inputClass =
 /** 幅いっぱい版（フォーム入力で通常こちら） */
 export const inputFull = `${inputClass} w-full`;
 
-export const labelClass = 'block text-[13px] font-semibold text-ink-label mb-2';
+export const labelClass = 'block text-label font-semibold text-ink-label mb-2';
 
 /** タブ直下のセクション間を揃えるフレックス縦並び */
 export const sectionStack = 'flex flex-col gap-4';
 
 /** 小さめボタン（アイコン併記ラベル付き・サイドアクション等） */
 export const btnSm =
-  'px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-[11px] cursor-pointer font-semibold flex items-center gap-1 transition-colors';
+  'px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-meta cursor-pointer font-semibold flex items-center gap-1 transition-colors';
 
 /** 標準ボタン（タブ内で一般的な操作） */
 export const btnMd =

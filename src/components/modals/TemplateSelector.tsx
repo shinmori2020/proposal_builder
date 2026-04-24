@@ -88,9 +88,9 @@ export default function TemplateSelector({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl max-w-[720px] w-full max-h-[90vh] overflow-auto shadow-2xl"
+        className="bg-white rounded-xl max-w-[720px] w-full max-h-[90vh] overflow-auto shadow-xl border border-line-subtle"
       >
-        <div className="p-5 pb-3.5 border-b-2 border-line-muted">
+        <div className="p-5 pb-3.5 border-b border-line-subtle">
           <h2 className="m-0 text-xl font-extrabold" style={{ color: P }}>
             業種テンプレートを選択
           </h2>
@@ -98,7 +98,7 @@ export default function TemplateSelector({
 
         {/* 標準テンプレート */}
         <div className="px-4 pt-4">
-          <p className="text-[11px] font-semibold text-ink-soft mb-2 tracking-wide">
+          <p className="text-meta font-semibold text-ink-soft mb-2 tracking-wide">
             標準テンプレート
           </p>
           <div className="grid grid-cols-2 gap-3">
@@ -150,13 +150,13 @@ export default function TemplateSelector({
 
         {/* カスタムテンプレート */}
         <div className="px-4 pt-5">
-          <p className="text-[11px] font-semibold text-ink-soft mb-2 tracking-wide flex items-center gap-1.5">
+          <p className="text-meta font-semibold text-ink-soft mb-2 tracking-wide flex items-center gap-1.5">
             <Star size={12} color={P} fill={P} />
             自分のテンプレート ({customTemplates.length}件)
           </p>
 
           {customTemplates.length === 0 && !showCreateForm && (
-            <p className="text-ink-softest text-[12px] text-center py-3 bg-surface-muted rounded-md">
+            <p className="text-ink-softest text-xs text-center py-3 bg-surface-muted rounded-md">
               まだカスタムテンプレートはありません
             </p>
           )}
@@ -193,12 +193,12 @@ export default function TemplateSelector({
                       </div>
                       <div className="min-w-0 flex-1">
                         <div
-                          className="font-bold text-[13px] truncate"
+                          className="font-bold text-label truncate"
                           style={{ color: isSelected ? P : '#333' }}
                         >
                           {t.name}
                         </div>
-                        <div className="text-[10px] text-ink-soft">
+                        <div className="text-micro text-ink-soft">
                           {new Date(t.createdAt).toLocaleDateString('ja-JP')}
                         </div>
                       </div>
@@ -266,7 +266,7 @@ export default function TemplateSelector({
             ) : (
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="w-full py-2.5 border-2 border-dashed rounded-lg bg-transparent text-[13px] font-semibold cursor-pointer flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 border-2 border-dashed rounded-lg bg-transparent text-label font-semibold cursor-pointer flex items-center justify-center gap-1.5"
                 style={{ borderColor: P, color: P }}
               >
                 <Plus size={15} color={P} />

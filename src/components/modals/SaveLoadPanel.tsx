@@ -188,10 +188,10 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl max-w-[540px] w-full max-h-[80vh] overflow-auto shadow-2xl"
+        className="bg-white rounded-xl max-w-[540px] w-full max-h-[80vh] overflow-auto shadow-xl border border-line-subtle"
       >
         {/* ヘッダー */}
-        <div className="px-6 py-5 pb-3.5 border-b-2 border-line-muted flex justify-between items-center">
+        <div className="px-6 py-5 pb-3.5 border-b border-line-subtle flex justify-between items-center">
           <h2 className="m-0 text-lg font-extrabold" style={{ color: P }}>
             案件の保存・読み込み
           </h2>
@@ -219,7 +219,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
           <div className="flex gap-2 mt-2">
             <button
               onClick={handleExportJson}
-              className="flex-1 py-2 border-[1.5px] rounded-md bg-transparent text-[12px] cursor-pointer font-semibold flex items-center justify-center gap-1.5"
+              className="flex-1 py-2 border-[1.5px] rounded-md bg-transparent text-xs cursor-pointer font-semibold flex items-center justify-center gap-1.5"
               style={{ borderColor: P, color: P }}
               title="現在の内容を JSON ファイルとしてダウンロード（バックアップ・他PCへ移行用）"
             >
@@ -228,7 +228,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
             </button>
             <button
               onClick={handleImportClick}
-              className="flex-1 py-2 border-[1.5px] rounded-md bg-transparent text-[12px] cursor-pointer font-semibold flex items-center justify-center gap-1.5"
+              className="flex-1 py-2 border-[1.5px] rounded-md bg-transparent text-xs cursor-pointer font-semibold flex items-center justify-center gap-1.5"
               style={{ borderColor: P, color: P }}
               title="JSON ファイルを読み込んで現在の内容を置き換え"
             >
@@ -246,7 +246,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
 
           {msg && (
             <div
-              className="text-center font-semibold text-[13px] mt-2"
+              className="text-center font-semibold text-label mt-2"
               style={{ color: P }}
             >
               {msg}
@@ -257,7 +257,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
         {/* 保存済み一覧 */}
         <div className="px-6 pb-5">
           <div className="flex items-center justify-between mb-2.5 gap-2">
-            <p className="text-[13px] font-semibold text-ink-soft m-0 shrink-0">
+            <p className="text-label font-semibold text-ink-soft m-0 shrink-0">
               保存済み（
               {searchQuery.trim() || activeTags.length > 0
                 ? `${filteredProjects.length}/${projects.length}`
@@ -273,7 +273,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="案件名で検索..."
-                  className="flex-1 border-none outline-none text-[12px] font-inherit bg-transparent"
+                  className="flex-1 border-none outline-none text-xs font-inherit bg-transparent"
                 />
                 {searchQuery && (
                   <button
@@ -298,7 +298,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                   <button
                     key={tag}
                     onClick={() => toggleTag(tag)}
-                    className="py-0.5 px-2 rounded-full text-[11px] cursor-pointer font-semibold border-[1.5px] transition-colors"
+                    className="py-0.5 px-2 rounded-full text-meta cursor-pointer font-semibold border-[1.5px] transition-colors"
                     style={{
                       borderColor: isActive ? P : C.line.default,
                       background: isActive ? theme.light : '#fff',
@@ -307,7 +307,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                     title={`${count}件`}
                   >
                     #{tag}
-                    <span className="ml-1 text-[10px] opacity-60">
+                    <span className="ml-1 text-micro opacity-60">
                       {count}
                     </span>
                   </button>
@@ -316,7 +316,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
               {activeTags.length > 0 && (
                 <button
                   onClick={() => setActiveTags([])}
-                  className="py-0.5 px-2 rounded-full text-[11px] cursor-pointer font-semibold text-ink-soft border-none bg-transparent underline"
+                  className="py-0.5 px-2 rounded-full text-meta cursor-pointer font-semibold text-ink-soft border-none bg-transparent underline"
                 >
                   フィルタ解除
                 </button>
@@ -325,12 +325,12 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
           )}
 
           {projects.length === 0 && (
-            <p className="text-ink-softest text-[13px] text-center py-5">
+            <p className="text-ink-softest text-label text-center py-5">
               保存された案件はありません
             </p>
           )}
           {projects.length > 0 && filteredProjects.length === 0 && (
-            <p className="text-ink-softest text-[13px] text-center py-5">
+            <p className="text-ink-softest text-label text-center py-5">
               条件に一致する案件はありません
             </p>
           )}
@@ -366,7 +366,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                             if (e.key === 'Escape') cancelEdit();
                           }}
                           placeholder="タグ（スペース/カンマ区切り・例: A社 コーポレート）"
-                          className="focus-ring w-full px-2 py-1 border-[1.5px] border-line-input rounded-md text-[12px] outline-none"
+                          className="focus-ring w-full px-2 py-1 border-[1.5px] border-line-input rounded-md text-xs outline-none"
                         />
                       </div>
                     ) : (
@@ -382,7 +382,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                                 <button
                                   key={t}
                                   onClick={() => toggleTag(t)}
-                                  className="py-[1px] px-1.5 rounded-full text-[10px] cursor-pointer font-semibold border"
+                                  className="py-[1px] px-1.5 rounded-full text-micro cursor-pointer font-semibold border"
                                   style={{
                                     borderColor: isActive ? P : C.line.soft,
                                     background: isActive ? theme.light : '#f7f7f7',
@@ -398,7 +398,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                         )}
                       </>
                     )}
-                    <div className="text-[11px] text-[#999] mt-1">
+                    <div className="text-meta text-[#999] mt-1">
                       {new Date(p.savedAt).toLocaleString('ja-JP')}
                     </div>
                   </div>
@@ -407,7 +407,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                       <>
                         <button
                           onClick={confirmEdit}
-                          className="py-1 px-2 border-[1.5px] rounded-md bg-transparent text-[11px] cursor-pointer font-semibold flex items-center gap-1"
+                          className="py-1 px-2 border-[1.5px] rounded-md bg-transparent text-meta cursor-pointer font-semibold flex items-center gap-1"
                           style={{ borderColor: P, color: P }}
                         >
                           <Check size={12} color={P} />
@@ -415,7 +415,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                         </button>
                         <button
                           onClick={cancelEdit}
-                          className="py-1 px-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-[11px] cursor-pointer font-semibold text-ink-soft"
+                          className="py-1 px-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-meta cursor-pointer font-semibold text-ink-soft"
                         >
                           取消
                         </button>
@@ -424,27 +424,27 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                       <>
                         <button
                           onClick={() => handleLoad(p)}
-                          className="py-1 px-2.5 border-[1.5px] rounded-md bg-transparent text-[11px] cursor-pointer font-semibold"
+                          className="py-1 px-2.5 border-[1.5px] rounded-md bg-transparent text-meta cursor-pointer font-semibold"
                           style={{ borderColor: P, color: P }}
                         >
                           読込
                         </button>
                         <button
                           onClick={() => startEdit(p)}
-                          className="py-1 px-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-[11px] cursor-pointer font-semibold text-ink-soft flex items-center"
+                          className="py-1 px-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-meta cursor-pointer font-semibold text-ink-soft flex items-center"
                           title="名前とタグを編集"
                         >
                           <Pencil size={11} color="#888" />
                         </button>
                         <button
                           onClick={() => handleDuplicate(p)}
-                          className="py-1 px-2.5 border-[1.5px] border-ink-soft rounded-md bg-transparent text-[11px] cursor-pointer font-semibold text-ink-soft"
+                          className="py-1 px-2.5 border-[1.5px] border-ink-soft rounded-md bg-transparent text-meta cursor-pointer font-semibold text-ink-soft"
                         >
                           複製
                         </button>
                         <button
                           onClick={() => handleDelete(p.id)}
-                          className="py-1 px-2.5 border-[1.5px] rounded-md bg-transparent text-[11px] cursor-pointer font-semibold"
+                          className="py-1 px-2.5 border-[1.5px] rounded-md bg-transparent text-meta cursor-pointer font-semibold"
                           style={{ borderColor: C.delete, color: C.delete }}
                         >
                           削除
