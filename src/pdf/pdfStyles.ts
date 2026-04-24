@@ -19,8 +19,8 @@ export const pdfStyles = StyleSheet.create({
     fontSize: 10,
     color: PC.ink.primary,
     lineHeight: 1.6,
-    paddingTop: 55,
-    paddingBottom: 50,
+    paddingTop: 45,
+    paddingBottom: 70,
     paddingHorizontal: 40,
   },
 

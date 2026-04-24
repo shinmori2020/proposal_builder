@@ -88,10 +88,11 @@ function Credit({ left = 40 }: { left?: number }) {
 }
 
 /**
- * 全ページ上部に固定表示する提案者情報ヘッダー。
+ * 全ページ下部（Credit の上）に固定表示する提案者情報。
+ * 以前は上部ヘッダーだったが、Produced by と揃えるため下部に移動。
  * horizontal はページの paddingHorizontal に揃える（表紙=50, コンテンツ=40）。
  */
-function ContentHeader({
+function ProposerInfo({
   form,
   horizontal = 40,
 }: {
@@ -104,13 +105,13 @@ function ContentHeader({
       fixed
       style={{
         position: 'absolute',
-        top: 22,
+        bottom: 40,
         left: horizontal,
         right: horizontal,
-        paddingBottom: 5,
-        borderBottomWidth: 0.5,
-        borderBottomStyle: 'solid',
-        borderBottomColor: PC.line.faint,
+        paddingTop: 5,
+        borderTopWidth: 0.5,
+        borderTopStyle: 'solid',
+        borderTopColor: PC.line.faint,
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
@@ -148,7 +149,7 @@ export default function PdfDocument({ form, theme }: Props) {
         bookmark={{ title: '表紙・提案サマリー', expanded: true }}
       >
         <CoverPdf form={form} theme={theme} />
-        <ContentHeader form={form} horizontal={50} />
+        <ProposerInfo form={form} horizontal={50} />
         <Credit left={50} />
         <PageNumber />
       </Page>
@@ -159,7 +160,7 @@ export default function PdfDocument({ form, theme }: Props) {
         style={pdfStyles.contentPage}
         bookmark="制作フロー・機能・サイトマップ"
       >
-        <ContentHeader form={form} />
+        <ProposerInfo form={form} />
         <FlowPdf form={form} theme={theme} />
         <FeaturesPdf form={form} theme={theme} />
         <SitemapPdf form={form} theme={theme} />
@@ -175,7 +176,7 @@ export default function PdfDocument({ form, theme }: Props) {
         style={pdfStyles.contentPage}
         bookmark="お見積もり・契約条件"
       >
-        <ContentHeader form={form} />
+        <ProposerInfo form={form} />
         <EstimatePdf form={form} theme={theme} />
         <TermsPdf form={form} theme={theme} />
         <NotesPdf form={form} theme={theme} />

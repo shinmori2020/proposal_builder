@@ -14,8 +14,8 @@ interface Props {
 const styles = StyleSheet.create({
   cover: {
     flex: 1,
-    paddingTop: 55,
-    paddingBottom: 50,
+    paddingTop: 50,
+    paddingBottom: 70,
     paddingHorizontal: 50,
     backgroundColor: PC.white,
   },
