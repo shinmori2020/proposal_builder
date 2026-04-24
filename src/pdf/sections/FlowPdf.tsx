@@ -40,7 +40,7 @@ export default function FlowPdf({ form, theme }: Props) {
       <View
         style={{
           flexDirection: 'row',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
           flexWrap: 'wrap',
           paddingVertical: 4,
@@ -53,7 +53,7 @@ export default function FlowPdf({ form, theme }: Props) {
           return (
             <View
               key={i}
-              style={{ flexDirection: 'row', alignItems: 'center' }}
+              style={{ flexDirection: 'row', alignItems: 'flex-start' }}
             >
               <View
                 style={{
@@ -106,9 +106,15 @@ export default function FlowPdf({ form, theme }: Props) {
                 </Text>
               </View>
 
-              {/* 矢印（最後以外） */}
+              {/* 矢印（最後以外）— 円と同じ 32px 高の箱の中央に配置して揃える */}
               {i < items.length - 1 && (
-                <View style={{ marginBottom: 20 }}>
+                <View
+                  style={{
+                    height: 32,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
                   <Svg width="14" height="8" viewBox="0 0 18 9">
                     <Path
                       d="M0 4.5h14m-3-3l3 3-3 3"
