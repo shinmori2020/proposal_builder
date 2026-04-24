@@ -88,10 +88,16 @@ function Credit({ left = 40 }: { left?: number }) {
 }
 
 /**
- * コンテンツページ（2ページ目以降）の上部に固定表示する提案者情報ヘッダー。
- * 表紙は独自のプロミネントなレイアウトを持つため非表示。
+ * 全ページ上部に固定表示する提案者情報ヘッダー。
+ * horizontal はページの paddingHorizontal に揃える（表紙=50, コンテンツ=40）。
  */
-function ContentHeader({ form }: { form: ProposalForm }) {
+function ContentHeader({
+  form,
+  horizontal = 40,
+}: {
+  form: ProposalForm;
+  horizontal?: number;
+}) {
   if (!form.companyLogo && !form.companyName && !form.companyUrl) return null;
   return (
     <View
@@ -99,8 +105,8 @@ function ContentHeader({ form }: { form: ProposalForm }) {
       style={{
         position: 'absolute',
         top: 14,
-        left: 40,
-        right: 40,
+        left: horizontal,
+        right: horizontal,
         paddingBottom: 4,
         borderBottomWidth: 0.5,
         borderBottomStyle: 'solid',
@@ -139,6 +145,7 @@ export default function PdfDocument({ form, theme }: Props) {
         style={pdfStyles.coverPage}
         bookmark={{ title: '表紙・提案サマリー', expanded: true }}
       >
+        <ContentHeader form={form} horizontal={50} />
         <CoverPdf form={form} theme={theme} />
         <Credit left={50} />
         <PageNumber />

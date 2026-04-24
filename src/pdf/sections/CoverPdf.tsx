@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet } from '@react-pdf/renderer';
+import { View, Text, StyleSheet } from '@react-pdf/renderer';
 import { ProposalForm } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { PC } from '../pdfColors';
@@ -136,32 +136,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  /* フッター */
-  footerWrap: {
-    marginTop: 'auto',
-    paddingTop: 20,
-    borderTopWidth: 0.8,
-    borderTopStyle: 'solid',
-    borderTopColor: PC.line.subtle,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    gap: 10,
-  },
-  logo: {
-    maxHeight: 24,
-    maxWidth: 110,
-    objectFit: 'contain',
-  },
-  company: {
-    fontSize: 10,
-    color: PC.ink.primary,
-    fontWeight: 600,
-  },
-  companyUrl: {
-    fontSize: 8,
-    color: PC.ink.soft,
-  },
 });
 
 export default function CoverPdf({ form, theme }: Props) {
@@ -304,18 +278,6 @@ export default function CoverPdf({ form, theme }: Props) {
         )}
       </View>
 
-      {/* 右下フッター */}
-      <View style={styles.footerWrap}>
-        {form.companyLogo && (
-          <Image src={form.companyLogo} style={styles.logo} />
-        )}
-        {form.companyName && (
-          <Text style={styles.company}>{form.companyName}</Text>
-        )}
-        {form.companyUrl && (
-          <Text style={styles.companyUrl}>{form.companyUrl}</Text>
-        )}
-      </View>
     </View>
   );
 }
