@@ -65,17 +65,27 @@ export default function SchedulePdf({ form, theme }: Props) {
                 marginBottom: 2,
               }}
             >
-              <Text
+              <View
                 style={{
-                  fontSize: 8,
-                  color: PC.ink.body,
-                  textAlign: 'right',
-                  width: 65,
+                  width: 72,
+                  height: 16,
                   marginRight: 6,
+                  backgroundColor: PC.surface.muted,
+                  borderRadius: 2,
+                  justifyContent: 'center',
+                  paddingHorizontal: 6,
                 }}
               >
-                {item.phase || '—'}
-              </Text>
+                <Text
+                  style={{
+                    fontSize: 8,
+                    color: PC.ink.body,
+                    textAlign: 'left',
+                  }}
+                >
+                  {item.phase || '—'}
+                </Text>
+              </View>
               <View
                 style={{
                   flex: 1,
