@@ -79,6 +79,7 @@ export default function SchedulePdf({ form, theme }: Props) {
                 <Text
                   style={{
                     fontSize: 8,
+                    lineHeight: 1,
                     color: PC.ink.body,
                     textAlign: 'left',
                   }}
