@@ -143,13 +143,15 @@ const styles = StyleSheet.create({
     borderTopWidth: 0.8,
     borderTopStyle: 'solid',
     borderTopColor: PC.line.subtle,
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: 10,
   },
   logo: {
-    maxHeight: 32,
-    maxWidth: 130,
+    maxHeight: 24,
+    maxWidth: 110,
     objectFit: 'contain',
-    marginBottom: 4,
   },
   company: {
     fontSize: 10,
@@ -159,7 +161,6 @@ const styles = StyleSheet.create({
   companyUrl: {
     fontSize: 8,
     color: PC.ink.soft,
-    marginTop: 1,
   },
 });
 
