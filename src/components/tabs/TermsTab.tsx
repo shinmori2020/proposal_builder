@@ -3,6 +3,7 @@
 import { ProposalForm, ContractTerms } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { C } from '@/lib/colors';
+import { sectionStack } from '@/lib/ui';
 import {
   CONTRACT_PRESETS,
   ContractPreset,
@@ -109,8 +110,8 @@ export default function TermsTab({ form, setForm, theme }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <p className="text-[#666] text-[13px] m-0 mb-1.5">
+    <div className={sectionStack}>
+      <p className="text-[#666] text-[13px] m-0">
         選択した条件がプレビューに反映されます。
       </p>
 

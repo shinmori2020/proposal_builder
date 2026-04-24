@@ -6,6 +6,7 @@ import { Theme } from '@/lib/themes';
 import { C } from '@/lib/colors';
 import { calcPlan, formatPrice, makePlan } from '@/lib/calculations';
 import { formatNumberWithCommas, parseNumberFromString } from '@/lib/formatters';
+import { inputFull as inputClass } from '@/lib/ui';
 import PresetDrawer from '@/components/modals/PresetDrawer';
 import { Star, Copy, X, Plus, Package, Percent, GripVertical } from 'lucide-react';
 
@@ -103,14 +104,11 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
     updatePlan({ ...plan, recommended: !plan.recommended });
   };
 
-  const inputClass =
-    'w-full px-3 py-2 border-[1.5px] border-line-input rounded-md text-sm font-inherit outline-none box-border';
-
   const smallBtn =
-    'px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-[11px] cursor-pointer font-semibold flex items-center gap-1';
+    'px-2.5 py-1 rounded-md border-[1.5px] bg-transparent text-[11px] cursor-pointer font-semibold flex items-center gap-1 transition-colors';
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col gap-3">
       {showPreset && (
         <PresetDrawer
           onAdd={(item) => setItems([...items, item])}

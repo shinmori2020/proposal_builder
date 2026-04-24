@@ -5,6 +5,7 @@ import { Theme, THEMES } from '@/lib/themes';
 import { SITE_TYPES, FEATURES_ALL } from '@/lib/constants';
 import { C } from '@/lib/colors';
 import { isValidUrl } from '@/lib/formatters';
+import { inputFull as inputClass, labelClass, sectionStack } from '@/lib/ui';
 import { Tag, FileText, Check } from 'lucide-react';
 
 interface Props {
@@ -39,12 +40,8 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
     }
   };
 
-  const labelClass = 'block text-[13px] font-semibold text-ink-label mb-1';
-  const inputClass =
-    'w-full px-3 py-2 border-[1.5px] border-line-input rounded-md text-sm font-inherit outline-none box-border';
-
   return (
-    <div className="flex flex-col gap-5">
+    <div className={sectionStack}>
       {/* 業種テンプレートボタン */}
       <button
         onClick={onOpenTemplate}
@@ -217,10 +214,7 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
             placeholder="https://..."
           />
           {form.companyUrl && !isValidUrl(form.companyUrl) && (
-            <span
-              className="text-[10px] block mt-0.5"
-              style={{ color: C.delete }}
-            >
+            <span className="warn-pill mt-1">
               ⚠ http:// または https:// から始めてください
             </span>
           )}

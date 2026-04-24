@@ -3,6 +3,7 @@
 import { ProposalForm, SchedulePhase } from '@/lib/types';
 import { Theme, shades } from '@/lib/themes';
 import { C } from '@/lib/colors';
+import { inputClass, labelClass, sectionStack } from '@/lib/ui';
 import {
   itemDays,
   totalDays,
@@ -42,16 +43,11 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
     setItems(items.map((item, idx) => (idx === i ? { ...item, [key]: value } : item)));
   };
 
-  const inputClass =
-    'px-3 py-2 border-[1.5px] border-line-input rounded-md text-sm font-inherit outline-none box-border';
-
   return (
-    <div className="flex flex-col gap-3.5">
+    <div className={sectionStack}>
       {/* 制作開始日 */}
       <div>
-        <label className="block text-[13px] font-semibold text-ink-label mb-1">
-          制作開始日（任意）
-        </label>
+        <label className={labelClass}>制作開始日（任意）</label>
         <div className="flex items-center gap-2.5 mt-1">
           <input
             type="date"

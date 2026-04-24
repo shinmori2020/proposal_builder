@@ -3,6 +3,7 @@
 import { ProposalForm, Page } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { C } from '@/lib/colors';
+import { inputFull as inputClass, sectionStack } from '@/lib/ui';
 import { Plus, X } from 'lucide-react';
 
 interface Props {
@@ -61,14 +62,11 @@ export default function PagesTab({ form, setForm, theme }: Props) {
     setPages([...pages, { name: '', children: [] }]);
   };
 
-  const inputClass =
-    'w-full px-3 py-2 border-[1.5px] border-line-input rounded-md text-sm font-inherit outline-none box-border';
-
   const PAGE_NAME_MAX = 45;
   const CHILD_NAME_MAX = 40;
 
   return (
-    <div className="flex flex-col gap-3.5">
+    <div className={sectionStack}>
       <p className="text-[#666] text-sm m-0">
         ページ名を入力するとサイトマップが自動生成されます。
         <span className="ml-1 text-[11px] text-[#999]">
@@ -98,8 +96,8 @@ export default function PagesTab({ form, setForm, theme }: Props) {
                   placeholder="ページ名"
                 />
                 {pageOver && (
-                  <span className="text-[10px]" style={{ color: C.delete }}>
-                    ⚠ {pg.name.length}文字（{PAGE_NAME_MAX}文字を超過、サイトマップで省略されます）
+                  <span className="warn-pill self-start">
+                    ⚠ {pg.name.length}文字（{PAGE_NAME_MAX}文字を超過、省略されます）
                   </span>
                 )}
               </div>
@@ -133,10 +131,7 @@ export default function PagesTab({ form, setForm, theme }: Props) {
                       placeholder="子ページ"
                     />
                     {childOver && (
-                      <span
-                        className="text-[10px]"
-                        style={{ color: C.delete }}
-                      >
+                      <span className="warn-pill self-start">
                         ⚠ {c.length}文字（{CHILD_NAME_MAX}文字を超過、省略されます）
                       </span>
                     )}

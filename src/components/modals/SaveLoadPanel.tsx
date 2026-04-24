@@ -97,7 +97,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
     setProjects(updated);
     setSaving(false);
     setMsg('保存しました');
-    setTimeout(() => setMsg(''), 2000);
+    setTimeout(() => setMsg(''), 3000);
   };
 
   const handleDelete = (id: string) => {
@@ -148,7 +148,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
       `提案書_${new Date().toLocaleDateString('ja-JP').replace(/\//g, '-')}`;
     exportFormAsJson(form, filename);
     setMsg('JSON をダウンロードしました');
-    setTimeout(() => setMsg(''), 2500);
+    setTimeout(() => setMsg(''), 3000);
   };
 
   const handleImportClick = () => {
@@ -170,7 +170,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
       ) {
         setForm(imported);
         setMsg('JSON を読み込みました');
-        setTimeout(() => setMsg(''), 2500);
+        setTimeout(() => setMsg(''), 3000);
         onClose();
       }
     } catch (err) {
@@ -355,7 +355,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                           }}
                           autoFocus
                           placeholder="案件名"
-                          className="w-full px-2 py-1 border-[1.5px] border-line-input rounded-md text-sm outline-none"
+                          className="focus-ring w-full px-2 py-1 border-[1.5px] border-line-input rounded-md text-sm outline-none"
                           style={{ borderColor: P }}
                         />
                         <input
@@ -366,7 +366,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
                             if (e.key === 'Escape') cancelEdit();
                           }}
                           placeholder="タグ（スペース/カンマ区切り・例: A社 コーポレート）"
-                          className="w-full px-2 py-1 border-[1.5px] border-line-input rounded-md text-[12px] outline-none"
+                          className="focus-ring w-full px-2 py-1 border-[1.5px] border-line-input rounded-md text-[12px] outline-none"
                         />
                       </div>
                     ) : (

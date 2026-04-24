@@ -243,7 +243,7 @@ export default function TemplateSelector({
                   }}
                   autoFocus
                   placeholder="テンプレート名 (例: 飲食店標準プラン)"
-                  className="flex-1 px-3 py-2 border-[1.5px] border-line-input rounded-md text-sm outline-none"
+                  className="focus-ring flex-1 px-3 py-2 border-[1.5px] border-line-input rounded-md text-sm outline-none"
                 />
                 <button
                   onClick={handleCreateTemplate}

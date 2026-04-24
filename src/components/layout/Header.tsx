@@ -61,7 +61,7 @@ export default function Header({
             onClick={onUndo}
             disabled={!canUndo}
             title="元に戻す (Ctrl+Z)"
-            className="w-9 h-9 rounded-[7px] text-white cursor-pointer flex items-center justify-center border-2 border-white/40 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-9 h-9 rounded-[7px] text-white cursor-pointer flex items-center justify-center border-2 border-white/40 transition-opacity hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed disabled:border-white/20 disabled:hover:bg-transparent"
             style={{ background: 'rgba(255,255,255,0.08)' }}
           >
             <Undo2 size={18} />
@@ -70,7 +70,7 @@ export default function Header({
             onClick={onRedo}
             disabled={!canRedo}
             title="やり直す (Ctrl+Shift+Z)"
-            className="w-9 h-9 rounded-[7px] text-white cursor-pointer flex items-center justify-center border-2 border-white/40 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-9 h-9 rounded-[7px] text-white cursor-pointer flex items-center justify-center border-2 border-white/40 transition-opacity hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed disabled:border-white/20 disabled:hover:bg-transparent"
             style={{ background: 'rgba(255,255,255,0.08)' }}
           >
             <Redo2 size={18} />

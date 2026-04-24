@@ -34,6 +34,29 @@ body {
   color: #333;
 }
 
+/* フォーカスリング: テーマカラーに応じて枠線と薄い影を付ける。
+   --theme-primary は page.tsx のルート <div> に inline で設定される。 */
+.focus-ring:focus {
+  border-color: var(--theme-primary, #888);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--theme-primary, #888) 22%, transparent);
+}
+
+/* 警告ピル: 入力バリデーションの注意表示で使用 */
+.warn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fef2f2;
+  color: #c33;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 @media print {
   @page {
     size: A4;
