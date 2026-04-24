@@ -48,15 +48,16 @@ function PageNumber() {
 /**
  * 全ページ左下に固定表示する制作者クレジット。
  * 著作物としての主張として常時表示。
+ * left は content 領域の左端に揃える（表紙=50, コンテンツ=40）。
  */
-function Credit() {
+function Credit({ left = 40 }: { left?: number }) {
   return (
     <View
       fixed
       style={{
         position: 'absolute',
         bottom: 16,
-        left: 20,
+        left,
         flexDirection: 'row',
         alignItems: 'baseline',
         gap: 4,
@@ -139,7 +140,7 @@ export default function PdfDocument({ form, theme }: Props) {
         bookmark={{ title: '表紙・提案サマリー', expanded: true }}
       >
         <CoverPdf form={form} theme={theme} />
-        <Credit />
+        <Credit left={50} />
         <PageNumber />
       </Page>
 
