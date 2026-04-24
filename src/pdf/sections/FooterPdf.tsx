@@ -25,7 +25,7 @@ export default function FooterPdf({ form }: Props) {
         alignItems: 'center',
       }}
     >
-      {/* 提案者（クライアント向け）の情報 */}
+      {/* 提案者（クライアント向け）の情報: ロゴ / 会社名 + URL の2段 */}
       {form.companyLogo && (
         <Image
           src={form.companyLogo}
@@ -37,28 +37,34 @@ export default function FooterPdf({ form }: Props) {
           }}
         />
       )}
-      {form.companyName && (
-        <Text
+      {(form.companyName || form.companyUrl) && (
+        <View
           style={{
-            fontSize: 8,
-            fontWeight: 600,
-            color: PC.ink.body,
-            marginBottom: 1,
+            flexDirection: 'row',
+            alignItems: 'baseline',
+            gap: 8,
           }}
         >
-          {form.companyName}
-        </Text>
+          {form.companyName && (
+            <Text
+              style={{
+                fontSize: 8,
+                fontWeight: 600,
+                color: PC.ink.body,
+              }}
+            >
+              {form.companyName}
+            </Text>
+          )}
+          {form.companyUrl && (
+            <Text style={{ fontSize: 8, color: PC.ink.soft }}>
+              {form.companyUrl}
+            </Text>
+          )}
+        </View>
       )}
-      {form.companyUrl && (
-        <Text style={{ fontSize: 8, color: PC.ink.soft, marginBottom: 1 }}>
-          {form.companyUrl}
-        </Text>
-      )}
-      <Text style={{ fontSize: 8, color: PC.ink.soft, marginTop: 2 }}>
-        有効期限: 発行日より30日間
-      </Text>
 
-      {/* 制作者クレジット（著作権表示） */}
+      {/* 制作者クレジット（著作権表示）: 横1列 */}
       <View
         style={{
           marginTop: 8,
@@ -66,24 +72,17 @@ export default function FooterPdf({ form }: Props) {
           borderTopWidth: 0.5,
           borderTopStyle: 'solid',
           borderTopColor: PC.line.subtle,
-          alignItems: 'center',
+          flexDirection: 'row',
+          alignItems: 'baseline',
+          gap: 5,
         }}
       >
-        <Text
-          style={{
-            fontSize: 7,
-            color: PC.ink.softer,
-            marginBottom: 1,
-          }}
-        >
-          Produced by
-        </Text>
+        <Text style={{ fontSize: 7, color: PC.ink.softer }}>Produced by</Text>
         <Text
           style={{
             fontSize: 8,
             color: PC.ink.body,
             fontWeight: 600,
-            marginBottom: 1,
           }}
         >
           {CREATOR_NAME}

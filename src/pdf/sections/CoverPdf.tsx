@@ -205,6 +205,10 @@ export default function CoverPdf({ form, theme }: Props) {
           <Text style={styles.metaLabel}>提 案 日</Text>
           <Text style={styles.metaValue}>{today}</Text>
         </View>
+        <View style={styles.metaRow}>
+          <Text style={styles.metaLabel}>有 効 期 限</Text>
+          <Text style={styles.metaValue}>発行日より30日間</Text>
+        </View>
         {form.companyName && (
           <View style={styles.metaRow}>
             <Text style={styles.metaLabel}>提 案 者</Text>
