@@ -33,7 +33,7 @@ function PageNumber() {
       fixed
       style={{
         position: 'absolute',
-        bottom: 16,
+        bottom: 22,
         right: 20,
         fontSize: 8,
         color: PC.ink.soft,
@@ -56,7 +56,7 @@ function Credit({ left = 40 }: { left?: number }) {
       fixed
       style={{
         position: 'absolute',
-        bottom: 16,
+        bottom: 22,
         left,
         flexDirection: 'row',
         alignItems: 'baseline',
@@ -104,10 +104,10 @@ function ContentHeader({
       fixed
       style={{
         position: 'absolute',
-        top: 14,
+        top: 22,
         left: horizontal,
         right: horizontal,
-        paddingBottom: 4,
+        paddingBottom: 5,
         borderBottomWidth: 0.5,
         borderBottomStyle: 'solid',
         borderBottomColor: PC.line.faint,
@@ -139,14 +139,16 @@ function ContentHeader({
 export default function PdfDocument({ form, theme }: Props) {
   return (
     <Document>
-      {/* ページ1: 表紙（提案概要・制作概要・見積もり総額） */}
+      {/* ページ1: 表紙（提案概要・制作概要・見積もり総額）
+          ContentHeader は fixed だが、CoverPdf の flex:1 + 白背景 View に
+          隠れるため、後ろに配置して最前面に描画する */}
       <Page
         size="A4"
         style={pdfStyles.coverPage}
         bookmark={{ title: '表紙・提案サマリー', expanded: true }}
       >
-        <ContentHeader form={form} horizontal={50} />
         <CoverPdf form={form} theme={theme} />
+        <ContentHeader form={form} horizontal={50} />
         <Credit left={50} />
         <PageNumber />
       </Page>
