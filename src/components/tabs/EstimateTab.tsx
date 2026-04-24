@@ -7,6 +7,7 @@ import { C } from '@/lib/colors';
 import { calcPlan, formatPrice, makePlan } from '@/lib/calculations';
 import { formatNumberWithCommas, parseNumberFromString } from '@/lib/formatters';
 import { inputFull as inputClass } from '@/lib/ui';
+import NumberStepper from '@/components/ui/NumberStepper';
 import PresetDrawer from '@/components/modals/PresetDrawer';
 import { Star, Copy, X, Plus, Package, Percent, GripVertical } from 'lucide-react';
 
@@ -201,7 +202,7 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
       {/* 見積もり項目 */}
       <div
         className="grid gap-[7px] font-semibold text-xs text-ink-body px-1"
-        style={{ gridTemplateColumns: '20px 2fr 72px 50px 95px 28px 28px' }}
+        style={{ gridTemplateColumns: '20px 2fr 88px 68px 95px 28px 28px' }}
       >
         <span></span>
         <span>項目名</span>
@@ -219,7 +220,7 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
             key={i}
             className="grid gap-[7px] items-center transition-colors"
             style={{
-              gridTemplateColumns: '20px 2fr 72px 50px 95px 28px 28px',
+              gridTemplateColumns: '20px 2fr 88px 68px 95px 28px 28px',
               opacity: dragIdx === i ? 0.4 : 1,
               borderTop: isDraggedOver ? `2px solid ${P}` : '2px solid transparent',
               background: isDraggedOver ? theme.light : 'transparent',
@@ -271,12 +272,10 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
                 <option key={u}>{u}</option>
               ))}
             </select>
-            <input
-              type="number"
+            <NumberStepper
               min={0}
               value={item.qty}
-              onChange={(e) => updateItem(i, 'qty', Number(e.target.value))}
-              className={`${inputClass} text-center`}
+              onChange={(v) => updateItem(i, 'qty', v)}
             />
             <input
               type="text"

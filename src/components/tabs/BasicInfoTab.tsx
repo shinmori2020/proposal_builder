@@ -6,6 +6,7 @@ import { SITE_TYPES, FEATURES_ALL } from '@/lib/constants';
 import { C } from '@/lib/colors';
 import { isValidUrl } from '@/lib/formatters';
 import { inputFull as inputClass, labelClass, sectionStack } from '@/lib/ui';
+import NumberStepper from '@/components/ui/NumberStepper';
 import { Tag, FileText, Check } from 'lucide-react';
 
 interface Props {
@@ -126,17 +127,13 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
         <div>
           <label className={labelClass}>消費税率</label>
           <div className="flex items-center gap-1.5">
-            <input
-              type="number"
+            <NumberStepper
               min={0}
               max={30}
               step={0.5}
               value={form.taxRate ?? 10}
-              onChange={(e) =>
-                update('taxRate', Math.max(0, Number(e.target.value)))
-              }
-              className={inputClass}
-              style={{ width: 80 }}
+              onChange={(v) => update('taxRate', v)}
+              style={{ width: 92 }}
             />
             <span className="text-sm text-[#666]">%</span>
             <span className="text-[11px] text-ink-soft ml-1">

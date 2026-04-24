@@ -4,6 +4,7 @@ import { ProposalForm, SchedulePhase } from '@/lib/types';
 import { Theme, shades } from '@/lib/themes';
 import { C } from '@/lib/colors';
 import { inputClass, labelClass, sectionStack } from '@/lib/ui';
+import NumberStepper from '@/components/ui/NumberStepper';
 import {
   itemDays,
   totalDays,
@@ -95,34 +96,24 @@ export default function ScheduleTab({ form, setForm, theme }: Props) {
                 className={`${inputClass} flex-1`}
                 placeholder="フェーズ名"
               />
-              <div className="flex items-center gap-0.5">
-                <input
-                  type="number"
+              <div className="flex items-center gap-1">
+                <NumberStepper
                   min={0}
                   step={1}
                   value={item.weeks || 0}
-                  onChange={(e) => updateItem(i, 'weeks', Number(e.target.value))}
-                  className={`${inputClass} text-center`}
-                  style={{ width: 48 }}
+                  onChange={(v) => updateItem(i, 'weeks', v)}
+                  style={{ width: 62 }}
                 />
                 <span className="text-[11px] text-[#666] min-w-[14px]">週</span>
               </div>
-              <div className="flex items-center gap-0.5">
-                <input
-                  type="number"
+              <div className="flex items-center gap-1">
+                <NumberStepper
                   min={0}
                   max={6}
                   step={1}
                   value={item.extraDays || 0}
-                  onChange={(e) =>
-                    updateItem(
-                      i,
-                      'extraDays',
-                      Math.min(6, Math.max(0, Number(e.target.value)))
-                    )
-                  }
-                  className={`${inputClass} text-center`}
-                  style={{ width: 48 }}
+                  onChange={(v) => updateItem(i, 'extraDays', v)}
+                  style={{ width: 62 }}
                 />
                 <span className="text-[11px] text-[#666] min-w-[14px]">日</span>
               </div>

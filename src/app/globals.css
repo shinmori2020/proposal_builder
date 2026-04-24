@@ -42,6 +42,27 @@ body {
     color-mix(in srgb, var(--theme-primary, #888) 22%, transparent);
 }
 
+/* ネイティブ数値スピナーを全廃（カスタム NumberStepper を使用） */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* 数値ステッパーの wrapper: 入力とボタンを1つの枠でまとめ、フォーカス時にテーマ色リング */
+.stepper-wrap {
+  border: 1.5px solid var(--color-line-input);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.stepper-wrap:focus-within {
+  border-color: var(--theme-primary, #888);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--theme-primary, #888) 22%, transparent);
+}
+
 /* select のカスタム矢印: ブラウザ標準矢印を消して SVG chevron を右に余白付きで配置。
    すべての <select> が共通 focus-ring クラスを持つ前提で、自動的に適用される。 */
 select.focus-ring {
