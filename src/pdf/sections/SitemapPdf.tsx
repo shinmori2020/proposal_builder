@@ -31,28 +31,6 @@ export default function SitemapPdf({ form, theme }: Props) {
         サイトマップ
       </Text>
 
-      {/* TOP ヘッダー */}
-      <View
-        style={{
-          backgroundColor: P,
-          paddingVertical: 4,
-          paddingHorizontal: 12,
-          borderRadius: 4,
-          alignSelf: 'flex-start',
-          marginBottom: 6,
-        }}
-      >
-        <Text
-          style={{
-            color: PC.white,
-            fontWeight: 800,
-            fontSize: 10,
-          }}
-        >
-          {form.clientName || 'サイト'} TOP
-        </Text>
-      </View>
-
       {/* ページリスト */}
       <View>
 
