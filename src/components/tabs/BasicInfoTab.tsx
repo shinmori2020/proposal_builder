@@ -16,6 +16,9 @@ interface Props {
   onOpenTemplate: () => void;
 }
 
+/** 備考欄の文字数上限。PDF体裁を保つため 800 文字でハード制限。 */
+const NOTES_MAX = 800;
+
 export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: Props) {
   const P = theme.primary;
 
@@ -272,8 +275,24 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
         <textarea
           value={form.notes}
           onChange={(e) => update('notes', e.target.value)}
-          className={`${inputClass} min-h-[40px] resize-y`}
+          maxLength={NOTES_MAX}
+          placeholder="特記事項があれば記入してください（800文字以内）"
+          className={`${inputClass} min-h-[60px] resize-y`}
         />
+        {(() => {
+          const len = form.notes.length;
+          const warn = len >= NOTES_MAX * 0.8 && len < NOTES_MAX;
+          const full = len >= NOTES_MAX;
+          const color = full ? C.delete : warn ? '#d97706' : '#999';
+          return (
+            <div
+              className="text-meta text-right mt-1 font-semibold"
+              style={{ color }}
+            >
+              {len} / {NOTES_MAX} 文字
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
