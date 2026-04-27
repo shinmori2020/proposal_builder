@@ -274,22 +274,46 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
         <label className={labelClass}>備考・特記事項</label>
         <textarea
           value={form.notes}
-          onChange={(e) => update('notes', e.target.value)}
+          onChange={(e) =>
+            update('notes', e.target.value.slice(0, NOTES_MAX))
+          }
           maxLength={NOTES_MAX}
           placeholder="特記事項があれば記入してください（800文字以内）"
           className={`${inputClass} min-h-[60px] resize-y`}
         />
         {(() => {
           const len = form.notes.length;
-          const warn = len >= NOTES_MAX * 0.8 && len < NOTES_MAX;
-          const full = len >= NOTES_MAX;
-          const color = full ? C.delete : warn ? '#d97706' : '#999';
+          const warn = len >= NOTES_MAX * 0.8 && len <= NOTES_MAX;
+          const over = len > NOTES_MAX;
+          const color = over
+            ? C.delete
+            : len === NOTES_MAX
+              ? C.delete
+              : warn
+                ? '#d97706'
+                : '#999';
           return (
-            <div
-              className="text-meta text-right mt-1 font-semibold"
-              style={{ color }}
-            >
-              {len} / {NOTES_MAX} 文字
+            <div className="flex justify-between items-center mt-1 gap-2">
+              {over ? (
+                <button
+                  onClick={() =>
+                    update('notes', form.notes.slice(0, NOTES_MAX))
+                  }
+                  className="text-meta px-2 py-0.5 rounded-md border-[1.5px] cursor-pointer font-semibold"
+                  style={{ borderColor: C.delete, color: C.delete }}
+                  title="現在の内容を800文字までに切り詰めます"
+                >
+                  800文字に切り詰める
+                </button>
+              ) : (
+                <span />
+              )}
+              <span
+                className="text-meta font-semibold"
+                style={{ color }}
+              >
+                {len} / {NOTES_MAX} 文字
+              </span>
             </div>
           );
         })()}
