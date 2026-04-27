@@ -191,7 +191,7 @@ function MultiPlanCards({
   taxRate: number;
 }) {
   return (
-    <View style={{ flexDirection: 'row', gap: 8 }}>
+    <View style={{ flexDirection: 'column', gap: 12 }}>
       {plans.map((plan, pi) => {
         const visible = getVisibleItems(plan.items);
         const { sub, disc, total } = calcPlan(plan, taxRate);
@@ -201,7 +201,6 @@ function MultiPlanCards({
           <View
             key={pi}
             style={{
-              flex: 1,
               borderWidth: recommended ? 2 : 1,
               borderColor: recommended ? P : PC.line.soft,
               borderStyle: 'solid',
