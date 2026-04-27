@@ -19,6 +19,7 @@ import SaveLoadPanel from '@/components/modals/SaveLoadPanel';
 import RestoreDraftDialog from '@/components/modals/RestoreDraftDialog';
 import { exportPreviewToPdf } from '@/lib/pdfExport';
 import { loadDraft, clearDraft, CustomTemplate } from '@/lib/storage';
+import { generateQrDataUrl } from '@/lib/qrcode';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { useUndoableForm } from '@/hooks/useUndoableForm';
 import { Link } from 'lucide-react';
@@ -107,10 +108,24 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [form]);
 
-  // PdfDocument 要素を useMemo で安定化（previewForm/theme 変化時のみ再生成）
+  // 自社 URL から QR コード data URL を生成（companyUrl 変化時のみ）
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    generateQrDataUrl(previewForm.companyUrl).then((url) => {
+      if (!cancelled) setQrDataUrl(url);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [previewForm.companyUrl]);
+
+  // PdfDocument 要素を useMemo で安定化（previewForm/theme/qr 変化時のみ再生成）
   const previewDocument = useMemo(
-    () => <PdfDocument form={previewForm} theme={theme} />,
-    [previewForm, theme]
+    () => (
+      <PdfDocument form={previewForm} theme={theme} qrDataUrl={qrDataUrl} />
+    ),
+    [previewForm, theme, qrDataUrl]
   );
 
   const handlePrint = useCallback(async () => {

@@ -3,6 +3,7 @@ import { ProposalForm } from './types';
 import { Theme } from './themes';
 import PdfDocument from '@/pdf/PdfDocument';
 import { registerPdfFonts } from '@/pdf/fonts';
+import { generateQrDataUrl } from './qrcode';
 
 /**
  * @react-pdf/renderer でプレビュー内容を PDF ファイルとしてダウンロードする。
@@ -15,7 +16,10 @@ export async function exportPreviewToPdf(
 ): Promise<void> {
   registerPdfFonts();
 
-  const blob = await pdf(<PdfDocument form={form} theme={theme} />).toBlob();
+  const qrDataUrl = await generateQrDataUrl(form.companyUrl);
+  const blob = await pdf(
+    <PdfDocument form={form} theme={theme} qrDataUrl={qrDataUrl} />
+  ).toBlob();
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

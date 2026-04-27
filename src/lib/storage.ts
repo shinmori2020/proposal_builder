@@ -3,8 +3,10 @@ import { ProposalForm, Page, Plan, SchedulePhase } from './types';
 const STORAGE_KEY = 'proposal-projects';
 const DRAFT_KEY = 'proposal-draft';
 const CUSTOM_TEMPLATES_KEY = 'proposal-custom-templates';
+const VERSIONS_KEY = 'proposal-versions';
 const MAX_SAVED = 20;
 const MAX_CUSTOM_TEMPLATES = 30;
+const MAX_SNAPSHOTS = 20;
 
 export interface SavedProject {
   id: string;
@@ -183,4 +185,50 @@ export function deleteCustomTemplate(id: string): CustomTemplate[] {
   return updated;
 }
 
-export { MAX_SAVED, MAX_CUSTOM_TEMPLATES };
+/* ========== バージョン履歴（手動保存時のスナップショット） ========== */
+
+export interface VersionSnapshot {
+  id: string;
+  data: ProposalForm;
+  savedAt: string;
+}
+
+export function loadSnapshots(): VersionSnapshot[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(VERSIONS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveSnapshots(snapshots: VersionSnapshot[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(VERSIONS_KEY, JSON.stringify(snapshots));
+  } catch {
+    // quota exceeded - silently fail
+  }
+}
+
+/** 現在のフォーム内容を履歴に追加（最大20件、古いものから破棄） */
+export function pushSnapshot(form: ProposalForm): VersionSnapshot[] {
+  const snap: VersionSnapshot = {
+    id: Date.now().toString(),
+    data: form,
+    savedAt: new Date().toISOString(),
+  };
+  const existing = loadSnapshots();
+  const updated = [snap, ...existing].slice(0, MAX_SNAPSHOTS);
+  saveSnapshots(updated);
+  return updated;
+}
+
+export function deleteSnapshot(id: string): VersionSnapshot[] {
+  const updated = loadSnapshots().filter((s) => s.id !== id);
+  saveSnapshots(updated);
+  return updated;
+}
+
+export { MAX_SAVED, MAX_CUSTOM_TEMPLATES, MAX_SNAPSHOTS };

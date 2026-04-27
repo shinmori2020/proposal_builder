@@ -202,7 +202,7 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
       {/* 見積もり項目 */}
       <div
         className="grid gap-[7px] font-semibold text-xs text-ink-body px-1"
-        style={{ gridTemplateColumns: '20px 2fr 88px 68px 95px 28px 28px' }}
+        style={{ gridTemplateColumns: '32px 2fr 88px 68px 95px 28px 28px' }}
       >
         <span></span>
         <span>項目名</span>
@@ -220,7 +220,7 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
             key={i}
             className="grid gap-[7px] items-center transition-colors"
             style={{
-              gridTemplateColumns: '20px 2fr 88px 68px 95px 28px 28px',
+              gridTemplateColumns: '32px 2fr 88px 68px 95px 28px 28px',
               opacity: dragIdx === i ? 0.4 : 1,
               borderTop: isDraggedOver ? `2px solid ${P}` : '2px solid transparent',
               background: isDraggedOver ? theme.light : 'transparent',
@@ -249,10 +249,10 @@ export default function EstimateTab({ form, setForm, theme }: Props) {
                 setDragIdx(null);
                 setDropTargetIdx(null);
               }}
-              className="cursor-grab active:cursor-grabbing flex items-center justify-center h-full"
+              className="cursor-grab active:cursor-grabbing flex items-center justify-center h-full rounded-md hover:bg-line-divider transition-colors"
               title="ドラッグで並び替え"
             >
-              <GripVertical size={14} color="#aaa" />
+              <GripVertical size={18} color="#888" />
             </div>
 
             <input

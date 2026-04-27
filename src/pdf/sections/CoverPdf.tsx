@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from '@react-pdf/renderer';
+import { View, Text, Image, StyleSheet } from '@react-pdf/renderer';
 import { ProposalForm } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { PC } from '../pdfColors';
@@ -9,6 +9,7 @@ import { formatDeliveryDate } from '@/lib/formatters';
 interface Props {
   form: ProposalForm;
   theme: Theme;
+  qrDataUrl?: string | null;
 }
 
 const styles = StyleSheet.create({
@@ -131,9 +132,35 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  /* QR コード（自社URLへのリンク） */
+  qrSection: {
+    marginTop: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    gap: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: PC.surface.muted,
+    borderRadius: 4,
+  },
+  qrImage: {
+    width: 56,
+    height: 56,
+  },
+  qrLabel: {
+    fontSize: 9,
+    fontWeight: 600,
+    color: PC.ink.body,
+  },
+  qrNote: {
+    fontSize: 7,
+    color: PC.ink.faint,
+    marginTop: 1,
+  },
 });
 
-export default function CoverPdf({ form, theme }: Props) {
+export default function CoverPdf({ form, theme, qrDataUrl }: Props) {
   const today = new Date().toLocaleDateString('ja-JP', {
     year: 'numeric',
     month: 'long',
@@ -272,6 +299,18 @@ export default function CoverPdf({ form, theme }: Props) {
         )}
       </View>
 
+      {/* QR コード: 自社URLへのリンク */}
+      {qrDataUrl && (
+        <View style={styles.qrSection}>
+          <Image src={qrDataUrl} style={styles.qrImage} />
+          <View>
+            <Text style={styles.qrLabel}>お問い合わせ・詳細はこちら</Text>
+            <Text style={styles.qrNote}>
+              スマートフォンでスキャン
+            </Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 }

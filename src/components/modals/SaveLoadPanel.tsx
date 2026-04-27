@@ -10,7 +10,11 @@ import {
   makeSavedProject,
   renameProject,
   updateProjectTags,
+  loadSnapshots,
+  pushSnapshot,
+  deleteSnapshot,
   SavedProject,
+  VersionSnapshot,
   MAX_SAVED,
 } from '@/lib/storage';
 import { exportFormAsJson, importFormFromJson } from '@/lib/jsonTransfer';
@@ -23,6 +27,10 @@ import {
   Download,
   Upload,
   Tag,
+  History,
+  ChevronDown,
+  ChevronUp,
+  RotateCcw,
 } from 'lucide-react';
 import { useRef } from 'react';
 
@@ -42,6 +50,8 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
   const [editTags, setEditTags] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTags, setActiveTags] = useState<string[]>([]);
+  const [snapshots, setSnapshots] = useState<VersionSnapshot[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const P = theme.primary;
 
@@ -87,6 +97,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
 
   useEffect(() => {
     setProjects(loadProjects());
+    setSnapshots(loadSnapshots());
   }, []);
 
   const handleSave = () => {
@@ -95,9 +106,27 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
     const updated = [project, ...projects].slice(0, MAX_SAVED);
     saveProjects(updated);
     setProjects(updated);
+    // 保存と同時に履歴スナップショットを追加（誤上書き救済用）
+    setSnapshots(pushSnapshot(form));
     setSaving(false);
     setMsg('保存しました');
     setTimeout(() => setMsg(''), 3000);
+  };
+
+  const handleRestoreSnapshot = (snap: VersionSnapshot) => {
+    if (
+      confirm(
+        '現在の編集内容を上書きしてこの履歴を復元しますか？\n\n' +
+          `保存日時: ${new Date(snap.savedAt).toLocaleString('ja-JP')}`
+      )
+    ) {
+      setForm(snap.data);
+      onClose();
+    }
+  };
+
+  const handleDeleteSnapshot = (id: string) => {
+    setSnapshots(deleteSnapshot(id));
   };
 
   const handleDelete = (id: string) => {
@@ -456,6 +485,78 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
               );
             })}
           </div>
+        </div>
+
+        {/* バージョン履歴（折りたたみ式） */}
+        <div className="px-6 pb-5 border-t border-line-subtle">
+          <button
+            onClick={() => setShowHistory((v) => !v)}
+            className="w-full py-3 flex items-center justify-between cursor-pointer bg-transparent border-none"
+          >
+            <span className="flex items-center gap-2 text-label font-semibold text-ink-body">
+              <History size={14} color="#666" />
+              バージョン履歴（{snapshots.length}件）
+            </span>
+            {showHistory ? (
+              <ChevronUp size={16} color="#666" />
+            ) : (
+              <ChevronDown size={16} color="#666" />
+            )}
+          </button>
+          {showHistory && (
+            <>
+              {snapshots.length === 0 ? (
+                <p className="text-ink-softest text-label text-center py-4">
+                  履歴はまだありません。「現在の内容をブラウザに保存」を押すと自動的に記録されます。
+                </p>
+              ) : (
+                <div className="flex flex-col gap-1.5">
+                  {snapshots.map((s) => {
+                    const label =
+                      s.data.projectName ||
+                      s.data.clientName ||
+                      '（無題）';
+                    return (
+                      <div
+                        key={s.id}
+                        className="py-2 px-3 border border-line-subtle rounded-md flex justify-between items-center gap-2"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-semibold text-[#333] truncate">
+                            {label}
+                          </div>
+                          <div className="text-meta text-[#999] mt-0.5">
+                            {new Date(s.savedAt).toLocaleString('ja-JP')}
+                          </div>
+                        </div>
+                        <div className="flex gap-1 shrink-0">
+                          <button
+                            onClick={() => handleRestoreSnapshot(s)}
+                            className="py-1 px-2 border-[1.5px] rounded-md bg-transparent text-meta cursor-pointer font-semibold flex items-center gap-1"
+                            style={{ borderColor: P, color: P }}
+                            title="この時点の状態に戻す"
+                          >
+                            <RotateCcw size={10} color={P} />
+                            復元
+                          </button>
+                          <button
+                            onClick={() => handleDeleteSnapshot(s.id)}
+                            className="py-1 px-2 border-[1.5px] rounded-md bg-transparent text-meta cursor-pointer font-semibold"
+                            style={{
+                              borderColor: C.delete,
+                              color: C.delete,
+                            }}
+                          >
+                            削除
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

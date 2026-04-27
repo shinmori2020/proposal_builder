@@ -19,6 +19,8 @@ registerPdfFonts();
 interface Props {
   form: ProposalForm;
   theme: Theme;
+  /** 自社URL から事前生成した QR コードの data URL（任意） */
+  qrDataUrl?: string | null;
 }
 
 const CREATOR_NAME = 'シン｜WEB制作・コーディング';
@@ -137,7 +139,7 @@ function ProposerInfo({
   );
 }
 
-export default function PdfDocument({ form, theme }: Props) {
+export default function PdfDocument({ form, theme, qrDataUrl }: Props) {
   return (
     <Document>
       {/* ページ1: 表紙（提案概要・制作概要・見積もり総額）
@@ -148,7 +150,7 @@ export default function PdfDocument({ form, theme }: Props) {
         style={pdfStyles.coverPage}
         bookmark={{ title: '表紙・提案サマリー', expanded: true }}
       >
-        <CoverPdf form={form} theme={theme} />
+        <CoverPdf form={form} theme={theme} qrDataUrl={qrDataUrl} />
         <ProposerInfo form={form} horizontal={50} />
         <Credit left={50} />
         <PageNumber />
