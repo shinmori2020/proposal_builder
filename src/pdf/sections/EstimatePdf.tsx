@@ -200,7 +200,6 @@ function MultiPlanCards({
         return (
           <View
             key={pi}
-            wrap={false}
             style={{
               flex: 1,
               borderWidth: recommended ? 2 : 1,
@@ -227,61 +226,64 @@ function MultiPlanCards({
               </Text>
             )}
             <View style={{ padding: 10 }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: 800,
-                  color: P,
-                  marginBottom: 6,
-                }}
-              >
-                {plan.name}
-              </Text>
-
-              {/* 合計（左:ラベル / 右:金額 で項目リストと整合） */}
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'baseline',
-                  paddingVertical: 6,
-                  marginBottom: 8,
-                  borderBottomWidth: 1.5,
-                  borderBottomColor: P,
-                  borderBottomStyle: 'solid',
-                }}
-              >
+              {/* プラン名 + 税込合計 + 「含まれる項目」見出しは一塊で */}
+              <View wrap={false}>
                 <Text
                   style={{
-                    fontSize: 9,
-                    fontWeight: 600,
-                    color: PC.ink.muted,
-                  }}
-                >
-                  税込合計
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 16,
+                    fontSize: 12,
                     fontWeight: 800,
                     color: P,
+                    marginBottom: 6,
                   }}
                 >
-                  ¥{formatPrice(total)}
+                  {plan.name}
+                </Text>
+
+                {/* 合計（左:ラベル / 右:金額 で項目リストと整合） */}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'baseline',
+                    paddingVertical: 6,
+                    marginBottom: 8,
+                    borderBottomWidth: 1.5,
+                    borderBottomColor: P,
+                    borderBottomStyle: 'solid',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 600,
+                      color: PC.ink.muted,
+                    }}
+                  >
+                    税込合計
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 800,
+                      color: P,
+                    }}
+                  >
+                    ¥{formatPrice(total)}
+                  </Text>
+                </View>
+
+                {/* 含まれる項目 */}
+                <Text
+                  style={{
+                    fontSize: 8,
+                    fontWeight: 600,
+                    color: PC.ink.muted,
+                    marginBottom: 3,
+                  }}
+                >
+                  含まれる項目
                 </Text>
               </View>
-
-              {/* 含まれる項目 */}
-              <Text
-                style={{
-                  fontSize: 8,
-                  fontWeight: 600,
-                  color: PC.ink.muted,
-                  marginBottom: 3,
-                }}
-              >
-                含まれる項目
-              </Text>
               <View style={{ marginBottom: 4 }}>
                 {visible.map((it, i) => (
                   <View
