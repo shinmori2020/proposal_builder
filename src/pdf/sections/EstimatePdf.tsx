@@ -231,28 +231,30 @@ function MultiPlanCards({
                   fontSize: 12,
                   fontWeight: 800,
                   color: P,
-                  textAlign: 'center',
-                  marginBottom: 4,
+                  marginBottom: 6,
                 }}
               >
                 {plan.name}
               </Text>
 
-              {/* 合計（上部に大きく） */}
+              {/* 合計（左:ラベル / 右:金額 で項目リストと整合） */}
               <View
                 style={{
-                  alignItems: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
                   paddingVertical: 6,
                   marginBottom: 8,
-                  backgroundColor: recommended ? PC.surface.muted : 'transparent',
-                  borderRadius: 4,
+                  borderBottomWidth: 1.5,
+                  borderBottomColor: P,
+                  borderBottomStyle: 'solid',
                 }}
               >
                 <Text
                   style={{
-                    fontSize: 7,
-                    color: PC.ink.soft,
-                    marginBottom: 1,
+                    fontSize: 9,
+                    fontWeight: 600,
+                    color: PC.ink.muted,
                   }}
                 >
                   税込合計
