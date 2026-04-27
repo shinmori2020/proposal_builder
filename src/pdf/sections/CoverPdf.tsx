@@ -144,8 +144,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   qrImage: {
-    width: 96,
-    height: 96,
+    width: 120,
+    height: 120,
   },
   qrLabel: {
     fontSize: 10,
