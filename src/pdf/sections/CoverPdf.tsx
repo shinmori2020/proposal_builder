@@ -132,31 +132,33 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  /* QR コード（自社URLへのリンク） */
+  /* QR コード（自社URLへのリンク）— ページ下部中央 */
   qrSection: {
-    marginTop: 14,
-    flexDirection: 'row',
+    marginTop: 'auto',
+    flexDirection: 'column',
     alignItems: 'center',
-    alignSelf: 'flex-end',
-    gap: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    alignSelf: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     backgroundColor: PC.surface.muted,
     borderRadius: 4,
   },
   qrImage: {
-    width: 56,
-    height: 56,
+    width: 96,
+    height: 96,
   },
   qrLabel: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: 600,
     color: PC.ink.body,
+    textAlign: 'center',
+    marginTop: 6,
   },
   qrNote: {
-    fontSize: 7,
+    fontSize: 8,
     color: PC.ink.faint,
-    marginTop: 1,
+    textAlign: 'center',
+    marginTop: 2,
   },
 });
 
@@ -299,16 +301,12 @@ export default function CoverPdf({ form, theme, qrDataUrl }: Props) {
         )}
       </View>
 
-      {/* QR コード: 自社URLへのリンク */}
+      {/* QR コード: 自社URLへのリンク（ページ下部中央） */}
       {qrDataUrl && (
         <View style={styles.qrSection}>
           <Image src={qrDataUrl} style={styles.qrImage} />
-          <View>
-            <Text style={styles.qrLabel}>お問い合わせ・詳細はこちら</Text>
-            <Text style={styles.qrNote}>
-              スマートフォンでスキャン
-            </Text>
-          </View>
+          <Text style={styles.qrLabel}>お問い合わせ・詳細はこちら</Text>
+          <Text style={styles.qrNote}>スマートフォンでスキャン</Text>
         </View>
       )}
     </View>
