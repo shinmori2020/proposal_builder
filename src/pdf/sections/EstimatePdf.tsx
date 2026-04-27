@@ -69,7 +69,9 @@ export default function EstimatePdf({ form, theme }: Props) {
       {hp ? (
         <HidePricesView plans={plans} P={P} L={L} />
       ) : plans.length > 1 ? (
-        <MultiPlanCards plans={plans} P={P} taxRate={taxRate} />
+        // 複数プラン: 最初のプランのみここで描画。
+        // 残りのプランは PdfDocument が独立した <Page> として描画する
+        <PlanCardPdf plan={plans[0]} theme={theme} taxRate={taxRate} />
       ) : (
         <SinglePlanTable plan={plans[0]} P={P} L={L} taxRate={taxRate} />
       )}
@@ -180,168 +182,188 @@ function HidePricesView({
   );
 }
 
-/* ========== 複数プラン比較 ========== */
-function MultiPlanCards({
-  plans,
-  P,
+/* ========== 単一プランカード（複数プラン比較で1プラン1枚を描画） ========== */
+
+function ItemRow({ item }: { item: EstimateItem }) {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderBottomWidth: 0.5,
+        borderBottomColor: PC.line.divider,
+        borderBottomStyle: 'solid',
+        paddingVertical: 2,
+      }}
+    >
+      <Text style={{ fontSize: 8, color: PC.ink.body, flex: 1, paddingRight: 4 }}>
+        {item.name}
+      </Text>
+      <Text
+        style={{
+          fontSize: 8,
+          fontWeight: 600,
+          color: PC.ink.primary,
+        }}
+      >
+        ¥{formatPrice(item.qty * item.price)}
+      </Text>
+    </View>
+  );
+}
+
+/**
+ * プラン1枚分のカード。多項目の場合は自動で2列レイアウトに切替。
+ * 6項目以上で2列化（左:前半 / 右:後半 の縦読み）
+ */
+export function PlanCardPdf({
+  plan,
+  theme,
   taxRate,
 }: {
-  plans: Plan[];
-  P: string;
+  plan: Plan;
+  theme: Theme;
   taxRate: number;
 }) {
-  return (
-    <View style={{ flexDirection: 'column', gap: 12 }}>
-      {plans.map((plan, pi) => {
-        const visible = getVisibleItems(plan.items);
-        const { sub, disc, total } = calcPlan(plan, taxRate);
-        const recommended = plan.recommended;
+  const P = theme.primary;
+  const visible = getVisibleItems(plan.items);
+  const { sub, disc, total } = calcPlan(plan, taxRate);
+  const recommended = plan.recommended;
+  const useTwoColumns = visible.length >= 6;
+  const half = Math.ceil(visible.length / 2);
+  const leftItems = useTwoColumns ? visible.slice(0, half) : visible;
+  const rightItems = useTwoColumns ? visible.slice(half) : [];
 
-        return (
-          <View
-            key={pi}
-            break={pi > 0}
+  return (
+    <View
+      style={{
+        borderWidth: recommended ? 2 : 1,
+        borderColor: recommended ? P : PC.line.soft,
+        borderStyle: 'solid',
+        borderRadius: 8,
+        overflow: 'hidden',
+        backgroundColor: PC.white,
+      }}
+    >
+      {recommended && (
+        <Text
+          style={{
+            backgroundColor: P,
+            color: PC.white,
+            textAlign: 'center',
+            fontSize: 9,
+            fontWeight: 800,
+            paddingVertical: 4,
+            letterSpacing: 1,
+          }}
+        >
+          ★ おすすめ
+        </Text>
+      )}
+      <View style={{ padding: 10 }}>
+        {/* プラン名 + 税込合計 + 「含まれる項目」見出しは一塊で */}
+        <View wrap={false}>
+          <Text
             style={{
-              borderWidth: recommended ? 2 : 1,
-              borderColor: recommended ? P : PC.line.soft,
-              borderStyle: 'solid',
-              borderRadius: 8,
-              overflow: 'hidden',
-              backgroundColor: PC.white,
+              fontSize: 12,
+              fontWeight: 800,
+              color: P,
+              marginBottom: 6,
             }}
           >
-            {recommended && (
-              <Text
-                style={{
-                  backgroundColor: P,
-                  color: PC.white,
-                  textAlign: 'center',
-                  fontSize: 9,
-                  fontWeight: 800,
-                  paddingVertical: 4,
-                  letterSpacing: 1,
-                }}
-              >
-                ★ おすすめ
-              </Text>
-            )}
-            <View style={{ padding: 10 }}>
-              {/* プラン名 + 税込合計 + 「含まれる項目」見出しは一塊で */}
-              <View wrap={false}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 800,
-                    color: P,
-                    marginBottom: 6,
-                  }}
-                >
-                  {plan.name}
-                </Text>
+            {plan.name}
+          </Text>
 
-                {/* 合計（左:ラベル / 右:金額 で項目リストと整合） */}
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'baseline',
-                    paddingVertical: 6,
-                    marginBottom: 8,
-                    borderBottomWidth: 1.5,
-                    borderBottomColor: P,
-                    borderBottomStyle: 'solid',
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 9,
-                      fontWeight: 600,
-                      color: PC.ink.muted,
-                    }}
-                  >
-                    税込合計
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 800,
-                      color: P,
-                    }}
-                  >
-                    ¥{formatPrice(total)}
-                  </Text>
-                </View>
+          {/* 合計（左:ラベル / 右:金額 で項目リストと整合） */}
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
+              paddingVertical: 6,
+              marginBottom: 8,
+              borderBottomWidth: 1.5,
+              borderBottomColor: P,
+              borderBottomStyle: 'solid',
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 9,
+                fontWeight: 600,
+                color: PC.ink.muted,
+              }}
+            >
+              税込合計
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: 800,
+                color: P,
+              }}
+            >
+              ¥{formatPrice(total)}
+            </Text>
+          </View>
 
-                {/* 含まれる項目 */}
-                <Text
-                  style={{
-                    fontSize: 8,
-                    fontWeight: 600,
-                    color: PC.ink.muted,
-                    marginBottom: 3,
-                  }}
-                >
-                  含まれる項目
-                </Text>
-              </View>
-              <View style={{ marginBottom: 4 }}>
-                {visible.map((it, i) => (
-                  <View
-                    key={i}
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: PC.line.divider,
-                      borderBottomStyle: 'solid',
-                      paddingVertical: 2,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 8,
-                        color: PC.ink.body,
-                        flex: 1,
-                      }}
-                    >
-                      {it.name}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 8,
-                        fontWeight: 600,
-                        color: PC.ink.primary,
-                      }}
-                    >
-                      ¥{formatPrice(it.qty * it.price)}
-                    </Text>
-                  </View>
-                ))}
-              </View>
+          {/* 含まれる項目 */}
+          <Text
+            style={{
+              fontSize: 8,
+              fontWeight: 600,
+              color: PC.ink.muted,
+              marginBottom: 3,
+            }}
+          >
+            含まれる項目
+          </Text>
+        </View>
 
-              {/* 内訳サマリー */}
-              <View
-                style={{
-                  borderTopWidth: 0.8,
-                  borderTopColor: PC.line.subtle,
-                  borderTopStyle: 'solid',
-                  paddingTop: 4,
-                  alignItems: 'flex-end',
-                }}
-              >
-                <Text style={{ fontSize: 7, color: PC.ink.soft }}>
-                  小計: ¥{formatPrice(sub)}
-                </Text>
-                {disc > 0 && (
-                  <Text style={{ fontSize: 7, color: PC.delete }}>
-                    {plan.discount?.label || '割引'}: -¥{formatPrice(disc)}
-                  </Text>
-                )}
-              </View>
+        {/* 項目リスト（多項目時は2列） */}
+        {useTwoColumns ? (
+          <View
+            style={{ flexDirection: 'row', gap: 14, marginBottom: 4 }}
+          >
+            <View style={{ flex: 1 }}>
+              {leftItems.map((it, i) => (
+                <ItemRow key={i} item={it} />
+              ))}
+            </View>
+            <View style={{ flex: 1 }}>
+              {rightItems.map((it, i) => (
+                <ItemRow key={i} item={it} />
+              ))}
             </View>
           </View>
-        );
-      })}
+        ) : (
+          <View style={{ marginBottom: 4 }}>
+            {visible.map((it, i) => (
+              <ItemRow key={i} item={it} />
+            ))}
+          </View>
+        )}
+
+        {/* 内訳サマリー */}
+        <View
+          style={{
+            borderTopWidth: 0.8,
+            borderTopColor: PC.line.subtle,
+            borderTopStyle: 'solid',
+            paddingTop: 4,
+            alignItems: 'flex-end',
+          }}
+        >
+          <Text style={{ fontSize: 7, color: PC.ink.soft }}>
+            小計: ¥{formatPrice(sub)}
+          </Text>
+          {disc > 0 && (
+            <Text style={{ fontSize: 7, color: PC.delete }}>
+              {plan.discount?.label || '割引'}: -¥{formatPrice(disc)}
+            </Text>
+          )}
+        </View>
+      </View>
     </View>
   );
 }

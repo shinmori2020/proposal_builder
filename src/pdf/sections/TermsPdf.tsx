@@ -8,9 +8,12 @@ import { CONTRACT_PRESETS, ContractCategory } from '@/lib/contracts';
 interface Props {
   form: ProposalForm;
   theme: Theme;
+  /** ルート View に break を付けるか（デフォルト true）。
+   *  既に独立した Page の冒頭に置く場合は false で空白ページを回避する。 */
+  breakBefore?: boolean;
 }
 
-export default function TermsPdf({ form, theme }: Props) {
+export default function TermsPdf({ form, theme, breakBefore = true }: Props) {
   const P = theme.primary;
   const terms = form.contractTerms;
 
@@ -34,7 +37,7 @@ export default function TermsPdf({ form, theme }: Props) {
   if (!hasTerms) return null;
 
   return (
-    <View style={pdfStyles.section} break>
+    <View style={pdfStyles.section} break={breakBefore}>
       <Text
         style={[
           pdfStyles.sectionHeading,

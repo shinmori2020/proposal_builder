@@ -8,7 +8,7 @@ import CoverPdf from './sections/CoverPdf';
 import FlowPdf from './sections/FlowPdf';
 import FeaturesPdf from './sections/FeaturesPdf';
 import SitemapPdf from './sections/SitemapPdf';
-import EstimatePdf from './sections/EstimatePdf';
+import EstimatePdf, { PlanCardPdf } from './sections/EstimatePdf';
 import SchedulePdf from './sections/SchedulePdf';
 import TermsPdf from './sections/TermsPdf';
 import NotesPdf from './sections/NotesPdf';
@@ -140,6 +140,11 @@ function ProposerInfo({
 }
 
 export default function PdfDocument({ form, theme, qrDataUrl }: Props) {
+  // 複数プランのとき、プラン2以降は独立した <Page> として描画する
+  const isMultiPriced = !form.hidePrices && form.plans.length > 1;
+  const additionalPlans = isMultiPriced ? form.plans.slice(1) : [];
+  const taxRate = form.taxRate ?? 10;
+
   return (
     <Document>
       {/* ページ1: 表紙（提案概要・制作概要・見積もり総額）
@@ -171,20 +176,59 @@ export default function PdfDocument({ form, theme, qrDataUrl }: Props) {
         <PageNumber />
       </Page>
 
-      {/* ページ3以降: お見積もり + 契約条件 + 備考
-          コンテンツ量によって自動改ページ */}
+      {/* ページ3: お見積もり（単一プラン or プラン1のみ） */}
       <Page
         size="A4"
         style={pdfStyles.contentPage}
-        bookmark="お見積もり・契約条件"
+        bookmark={
+          isMultiPriced ? 'プラン比較・お見積もり' : 'お見積もり・契約条件'
+        }
       >
         <ProposerInfo form={form} />
         <EstimatePdf form={form} theme={theme} />
-        <TermsPdf form={form} theme={theme} />
-        <NotesPdf form={form} theme={theme} />
+        {/* 単一プラン or 金額非表示時は契約条件・備考を同じページ系列で続ける */}
+        {!isMultiPriced && (
+          <>
+            <TermsPdf form={form} theme={theme} />
+            <NotesPdf form={form} theme={theme} />
+          </>
+        )}
         <Credit />
         <PageNumber />
       </Page>
+
+      {/* 複数プラン時: プラン2以降を1プラン1ページで描画 */}
+      {additionalPlans.map((plan, idx) => (
+        <Page
+          key={idx}
+          size="A4"
+          style={pdfStyles.contentPage}
+          bookmark={`${plan.name || `プラン${idx + 2}`}`}
+        >
+          <ProposerInfo form={form} />
+          <View style={pdfStyles.section}>
+            <PlanCardPdf plan={plan} theme={theme} taxRate={taxRate} />
+          </View>
+          <Credit />
+          <PageNumber />
+        </Page>
+      ))}
+
+      {/* 複数プラン時: 契約条件 + 備考を独立ページに
+          独立 Page の冒頭なので TermsPdf の break は無効化（空白ページ回避） */}
+      {isMultiPriced && (
+        <Page
+          size="A4"
+          style={pdfStyles.contentPage}
+          bookmark="契約条件・備考"
+        >
+          <ProposerInfo form={form} />
+          <TermsPdf form={form} theme={theme} breakBefore={false} />
+          <NotesPdf form={form} theme={theme} />
+          <Credit />
+          <PageNumber />
+        </Page>
+      )}
     </Document>
   );
 }
