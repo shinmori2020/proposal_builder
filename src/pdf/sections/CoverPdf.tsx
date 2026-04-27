@@ -25,12 +25,6 @@ const styles = StyleSheet.create({
     height: 2,
     marginBottom: 8,
   },
-  subtitle: {
-    fontSize: 8,
-    letterSpacing: 5,
-    color: PC.ink.faint,
-    marginBottom: 8,
-  },
   title: {
     fontSize: 24,
     fontWeight: 800,
@@ -162,7 +156,6 @@ export default function CoverPdf({ form, theme }: Props) {
     <View style={styles.cover}>
       {/* ヘッダー */}
       <View style={[styles.topBar, { backgroundColor: P }]} />
-      <Text style={styles.subtitle}>WEB SITE PROPOSAL</Text>
       <Text style={styles.title}>
         {form.projectName || 'Webサイト制作のご提案'}
       </Text>
