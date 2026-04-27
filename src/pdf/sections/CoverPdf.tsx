@@ -148,17 +148,19 @@ const styles = StyleSheet.create({
     height: 120,
   },
   qrLabel: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: 600,
     color: PC.ink.body,
     textAlign: 'center',
     marginTop: 6,
+    width: 120,
   },
   qrNote: {
-    fontSize: 8,
+    fontSize: 7,
     color: PC.ink.faint,
     textAlign: 'center',
     marginTop: 2,
+    width: 120,
   },
 });
 
