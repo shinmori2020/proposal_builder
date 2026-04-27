@@ -69,11 +69,11 @@ export default function PagesTab({ form, setForm, theme }: Props) {
     <div className={sectionStack}>
       <p className="text-[#666] text-sm m-0 flex items-center gap-1.5">
         <span>ページ名を入力するとサイトマップが自動生成されます。</span>
-        <span
-          className="inline-flex items-center justify-center w-4 h-4 rounded-full text-ink-soft cursor-help shrink-0"
-          title={`ページ名: ${PAGE_NAME_MAX}文字 / 子ページ: ${CHILD_NAME_MAX}文字 を超えるとサイトマップで省略表示されます`}
-        >
+        <span className="relative group inline-flex items-center justify-center w-4 h-4 cursor-help shrink-0">
           <HelpCircle size={14} color="#888" />
+          <span className="pointer-events-none invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity duration-100 absolute left-1/2 top-full mt-2 -translate-x-1/2 z-10 w-[260px] bg-[#333] text-white text-meta font-normal px-2.5 py-1.5 rounded shadow-lg leading-relaxed">
+            ページ名: {PAGE_NAME_MAX}文字 / 子ページ: {CHILD_NAME_MAX}文字 を超えるとサイトマップで省略表示されます
+          </span>
         </span>
       </p>
 
