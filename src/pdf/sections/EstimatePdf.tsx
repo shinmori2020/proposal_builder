@@ -200,6 +200,7 @@ function MultiPlanCards({
         return (
           <View
             key={pi}
+            break={pi > 0}
             style={{
               borderWidth: recommended ? 2 : 1,
               borderColor: recommended ? P : PC.line.soft,
