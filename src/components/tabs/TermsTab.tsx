@@ -75,11 +75,23 @@ export default function TermsTab({ form, setForm, theme }: Props) {
               <button
                 key={item.id}
                 onClick={() => selectPreset(cat, item)}
-                className="py-2.5 px-3.5 rounded-[9px] cursor-pointer text-left border-[1.5px]"
+                className="py-2.5 px-3.5 rounded-[9px] cursor-pointer text-left border-[1.5px] transition-colors"
                 style={{
                   borderColor: isSelected ? P : C.line.subtle,
                   borderWidth: isSelected ? 2 : 1.5,
                   background: isSelected ? theme.bg : '#fff',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSelected) {
+                    e.currentTarget.style.background = '#fafafa';
+                    e.currentTarget.style.borderColor = '#bbb';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSelected) {
+                    e.currentTarget.style.background = '#fff';
+                    e.currentTarget.style.borderColor = C.line.subtle as string;
+                  }
                 }}
               >
                 <div className="flex items-center gap-2">
@@ -135,11 +147,23 @@ export default function TermsTab({ form, setForm, theme }: Props) {
               <button
                 key={item.id}
                 onClick={() => toggleNote(item.id)}
-                className="py-2.5 px-3.5 rounded-[9px] cursor-pointer text-left border-[1.5px]"
+                className="py-2.5 px-3.5 rounded-[9px] cursor-pointer text-left border-[1.5px] transition-colors"
                 style={{
                   borderColor: isActive ? P : C.line.subtle,
                   borderWidth: isActive ? 2 : 1.5,
                   background: isActive ? theme.bg : '#fff',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = '#fafafa';
+                    e.currentTarget.style.borderColor = '#bbb';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = '#fff';
+                    e.currentTarget.style.borderColor = C.line.subtle as string;
+                  }
                 }}
               >
                 <div className="flex items-center gap-2">

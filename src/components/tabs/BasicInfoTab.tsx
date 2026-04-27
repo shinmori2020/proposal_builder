@@ -186,12 +186,24 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
               <button
                 key={f}
                 onClick={() => toggleFeature(f)}
-                className="py-1.5 px-3 rounded-[18px] text-xs cursor-pointer flex items-center gap-1"
+                className="py-1.5 px-3 rounded-[18px] text-xs cursor-pointer flex items-center gap-1 transition-colors hover:shadow-sm"
                 style={{
                   border: `1.5px solid ${isActive ? P : C.line.default}`,
                   background: isActive ? theme.light : '#fff',
                   color: isActive ? P : '#666',
                   fontWeight: isActive ? 600 : 400,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = '#f5f5f5';
+                    e.currentTarget.style.borderColor = '#aaa';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = '#fff';
+                    e.currentTarget.style.borderColor = C.line.default as string;
+                  }
                 }}
               >
                 {isActive && <Check size={12} color={P} />}

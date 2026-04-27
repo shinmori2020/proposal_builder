@@ -4,7 +4,7 @@ import { ProposalForm, Page } from '@/lib/types';
 import { Theme } from '@/lib/themes';
 import { C } from '@/lib/colors';
 import { inputFull as inputClass, sectionStack } from '@/lib/ui';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, HelpCircle } from 'lucide-react';
 
 interface Props {
   form: ProposalForm;
@@ -67,10 +67,13 @@ export default function PagesTab({ form, setForm, theme }: Props) {
 
   return (
     <div className={sectionStack}>
-      <p className="text-[#666] text-sm m-0">
-        ページ名を入力するとサイトマップが自動生成されます。
-        <span className="ml-1 text-meta text-[#999]">
-          （ページ名: {PAGE_NAME_MAX}文字 / 子ページ: {CHILD_NAME_MAX}文字 を超えるとサイトマップで省略表示されます）
+      <p className="text-[#666] text-sm m-0 flex items-center gap-1.5">
+        <span>ページ名を入力するとサイトマップが自動生成されます。</span>
+        <span
+          className="inline-flex items-center justify-center w-4 h-4 rounded-full text-ink-soft cursor-help shrink-0"
+          title={`ページ名: ${PAGE_NAME_MAX}文字 / 子ページ: ${CHILD_NAME_MAX}文字 を超えるとサイトマップで省略表示されます`}
+        >
+          <HelpCircle size={14} color="#888" />
         </span>
       </p>
 

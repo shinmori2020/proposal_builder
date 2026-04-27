@@ -17,7 +17,12 @@ import {
   VersionSnapshot,
   MAX_SAVED,
 } from '@/lib/storage';
-import { exportFormAsJson, importFormFromJson } from '@/lib/jsonTransfer';
+import {
+  exportFormAsJson,
+  importFormFromJson,
+  exportAllProjectsAsJson,
+  importAllProjectsFromJson,
+} from '@/lib/jsonTransfer';
 import {
   Save,
   X,
@@ -31,6 +36,7 @@ import {
   ChevronDown,
   ChevronUp,
   RotateCcw,
+  Archive,
 } from 'lucide-react';
 import { useRef } from 'react';
 
@@ -53,6 +59,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
   const [snapshots, setSnapshots] = useState<VersionSnapshot[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const bulkInputRef = useRef<HTMLInputElement>(null);
   const P = theme.primary;
 
   // 全案件から集めたユニークタグ（使用数付き・ABC順）
@@ -209,6 +216,64 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
     }
   };
 
+  const handleBulkExport = () => {
+    if (projects.length === 0) {
+      alert('保存済み案件がありません。');
+      return;
+    }
+    exportAllProjectsAsJson(projects);
+    setMsg(`全 ${projects.length} 件をバックアップしました`);
+    setTimeout(() => setMsg(''), 3000);
+  };
+
+  const handleBulkImportClick = () => {
+    bulkInputRef.current?.click();
+  };
+
+  const handleBulkImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    try {
+      const imported = await importAllProjectsFromJson(file);
+      if (imported.length === 0) {
+        alert('バックアップ内に案件がありません。');
+        return;
+      }
+      const choice = confirm(
+        `バックアップから ${imported.length} 件を読み込みます。\n\n` +
+          'OK: 既存の保存案件に追加（重複IDは置き換え）\n' +
+          'キャンセル: 既存をすべて置き換え（既存案件は失われます）'
+      );
+
+      let merged: SavedProject[];
+      if (choice) {
+        // 追加マージ: 同じ id があれば imported 側で上書き
+        const existingMap = new Map(projects.map((p) => [p.id, p]));
+        for (const p of imported) existingMap.set(p.id, p);
+        merged = Array.from(existingMap.values()).slice(0, MAX_SAVED);
+      } else {
+        if (
+          !confirm(
+            `本当に既存の ${projects.length} 件を上書きしますか？この操作は元に戻せません。`
+          )
+        ) {
+          return;
+        }
+        merged = imported.slice(0, MAX_SAVED);
+      }
+      saveProjects(merged);
+      setProjects(merged);
+      setMsg(`${imported.length} 件を読み込みました`);
+      setTimeout(() => setMsg(''), 3000);
+    } catch (err) {
+      alert(
+        `読み込みに失敗しました: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
+  };
+
   return (
     <div
       onClick={onClose}
@@ -273,6 +338,33 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
             />
           </div>
 
+          {/* 全案件の一括バックアップ */}
+          <div className="flex gap-2 mt-2">
+            <button
+              onClick={handleBulkExport}
+              className="flex-1 py-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-xs cursor-pointer font-semibold text-ink-body flex items-center justify-center gap-1.5"
+              title="保存済みの全案件を 1 つの JSON ファイルにバックアップ"
+            >
+              <Archive size={13} color="#666" />
+              全案件バックアップ
+            </button>
+            <button
+              onClick={handleBulkImportClick}
+              className="flex-1 py-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-xs cursor-pointer font-semibold text-ink-body flex items-center justify-center gap-1.5"
+              title="バックアップ JSON を読み込んで保存済み案件を復元"
+            >
+              <Upload size={13} color="#666" />
+              バックアップ復元
+            </button>
+            <input
+              ref={bulkInputRef}
+              type="file"
+              accept=".json,application/json"
+              className="hidden"
+              onChange={handleBulkImport}
+            />
+          </div>
+
           {msg && (
             <div
               className="text-center font-semibold text-label mt-2"
@@ -286,7 +378,7 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
         {/* 保存済み一覧 */}
         <div className="px-6 pb-5">
           <div className="flex items-center justify-between mb-2.5 gap-2">
-            <p className="text-label font-semibold text-ink-soft m-0 shrink-0">
+            <p className="text-label font-bold text-ink-body m-0 shrink-0">
               保存済み（
               {searchQuery.trim() || activeTags.length > 0
                 ? `${filteredProjects.length}/${projects.length}`

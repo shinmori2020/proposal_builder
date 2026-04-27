@@ -38,6 +38,7 @@ export default function EstimatePdf({ form, theme }: Props) {
 
   if (plans.length === 0) return null;
 
+  const isMulti = plans.length > 1 && !hp;
   return (
     <View style={pdfStyles.section}>
       <Text
@@ -46,8 +47,23 @@ export default function EstimatePdf({ form, theme }: Props) {
           { color: P, borderBottomColor: P },
         ]}
       >
-        お見積もり
+        {isMulti ? 'プラン比較・お見積もり' : 'お見積もり'}
       </Text>
+
+      {isMulti && (
+        <Text
+          style={{
+            fontSize: 9,
+            color: PC.ink.body,
+            marginBottom: 8,
+            lineHeight: 1.5,
+          }}
+        >
+          下記からご希望のプランをお選びください。
+          {plans.some((p) => p.recommended) &&
+            ' 当方より「おすすめ」のプランをご提示しております。'}
+        </Text>
+      )}
 
       {hp ? (
         <HidePricesView plans={plans} P={P} L={L} />
@@ -174,10 +190,11 @@ function MultiPlanCards({
   taxRate: number;
 }) {
   return (
-    <View style={{ flexDirection: 'row', gap: 6 }}>
+    <View style={{ flexDirection: 'row', gap: 8 }}>
       {plans.map((plan, pi) => {
         const visible = getVisibleItems(plan.items);
         const { sub, disc, total } = calcPlan(plan, taxRate);
+        const recommended = plan.recommended;
 
         return (
           <View
@@ -185,51 +202,94 @@ function MultiPlanCards({
             wrap={false}
             style={{
               flex: 1,
-              borderWidth: plan.recommended ? 2 : 1,
-              borderColor: plan.recommended ? P : PC.line.soft,
+              borderWidth: recommended ? 2 : 1,
+              borderColor: recommended ? P : PC.line.soft,
               borderStyle: 'solid',
-              borderRadius: 6,
+              borderRadius: 8,
               overflow: 'hidden',
+              backgroundColor: PC.white,
             }}
           >
-            {plan.recommended && (
+            {recommended && (
               <Text
                 style={{
                   backgroundColor: P,
                   color: PC.white,
                   textAlign: 'center',
-                  fontSize: 8,
+                  fontSize: 9,
                   fontWeight: 800,
-                  paddingVertical: 2,
+                  paddingVertical: 4,
+                  letterSpacing: 1,
                 }}
               >
-                おすすめ
+                ★ おすすめ
               </Text>
             )}
-            <View style={{ padding: 8 }}>
+            <View style={{ padding: 10 }}>
               <Text
                 style={{
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: 800,
                   color: P,
                   textAlign: 'center',
-                  marginBottom: 6,
+                  marginBottom: 4,
                 }}
               >
                 {plan.name}
               </Text>
-              <View style={{ marginBottom: 6 }}>
+
+              {/* 合計（上部に大きく） */}
+              <View
+                style={{
+                  alignItems: 'center',
+                  paddingVertical: 6,
+                  marginBottom: 8,
+                  backgroundColor: recommended ? PC.surface.muted : 'transparent',
+                  borderRadius: 4,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 7,
+                    color: PC.ink.soft,
+                    marginBottom: 1,
+                  }}
+                >
+                  税込合計
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 800,
+                    color: P,
+                  }}
+                >
+                  ¥{formatPrice(total)}
+                </Text>
+              </View>
+
+              {/* 含まれる項目 */}
+              <Text
+                style={{
+                  fontSize: 8,
+                  fontWeight: 600,
+                  color: PC.ink.muted,
+                  marginBottom: 3,
+                }}
+              >
+                含まれる項目
+              </Text>
+              <View style={{ marginBottom: 4 }}>
                 {visible.map((it, i) => (
                   <View
                     key={i}
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
-                      fontSize: 8,
                       borderBottomWidth: 0.5,
                       borderBottomColor: PC.line.divider,
                       borderBottomStyle: 'solid',
-                      paddingVertical: 1,
+                      paddingVertical: 2,
                     }}
                   >
                     <Text
@@ -253,10 +313,12 @@ function MultiPlanCards({
                   </View>
                 ))}
               </View>
+
+              {/* 内訳サマリー */}
               <View
                 style={{
-                  borderTopWidth: 1.5,
-                  borderTopColor: P,
+                  borderTopWidth: 0.8,
+                  borderTopColor: PC.line.subtle,
                   borderTopStyle: 'solid',
                   paddingTop: 4,
                   alignItems: 'flex-end',
@@ -270,17 +332,6 @@ function MultiPlanCards({
                     {plan.discount?.label || '割引'}: -¥{formatPrice(disc)}
                   </Text>
                 )}
-                <Text style={{ fontSize: 7, color: PC.ink.soft }}>税込</Text>
-                <Text
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 800,
-                    color: P,
-                    marginTop: 1,
-                  }}
-                >
-                  ¥{formatPrice(total)}
-                </Text>
               </View>
             </View>
           </View>
