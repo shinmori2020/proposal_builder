@@ -46,6 +46,7 @@ export default function EstimatePdf({ form, theme }: Props) {
           pdfStyles.sectionHeading,
           { color: P, borderBottomColor: P },
         ]}
+        minPresenceAhead={400}
       >
         {isMulti ? 'プラン比較・お見積もり' : 'お見積もり'}
       </Text>
