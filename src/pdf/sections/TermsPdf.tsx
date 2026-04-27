@@ -34,13 +34,12 @@ export default function TermsPdf({ form, theme }: Props) {
   if (!hasTerms) return null;
 
   return (
-    <View style={pdfStyles.section}>
+    <View style={pdfStyles.section} break>
       <Text
         style={[
           pdfStyles.sectionHeading,
           { color: P, borderBottomColor: P },
         ]}
-        minPresenceAhead={60}
       >
         契約条件
       </Text>
