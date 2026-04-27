@@ -40,6 +40,7 @@ export default function TermsPdf({ form, theme }: Props) {
           pdfStyles.sectionHeading,
           { color: P, borderBottomColor: P },
         ]}
+        minPresenceAhead={60}
       >
         契約条件
       </Text>
@@ -91,8 +92,9 @@ function TermsBlock({
 }) {
   return (
     <View
+      wrap={false}
       style={{
-        paddingVertical: 5,
+        paddingVertical: 4,
         paddingHorizontal: 8,
         backgroundColor: PC.surface.panel,
         borderRadius: 4,
@@ -103,12 +105,14 @@ function TermsBlock({
           fontWeight: 600,
           fontSize: 9,
           color,
-          marginBottom: 2,
+          marginBottom: 1,
         }}
       >
         {label}
       </Text>
-      <Text style={{ fontSize: 9, color: PC.ink.label }}>{text}</Text>
+      <Text style={{ fontSize: 8.5, color: PC.ink.label, lineHeight: 1.4 }}>
+        {text}
+      </Text>
     </View>
   );
 }
