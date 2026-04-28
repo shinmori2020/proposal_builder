@@ -277,12 +277,12 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-5"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-5"
       style={{ background: 'rgba(0,0,0,0.5)' }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-xl max-w-[540px] w-full max-h-[80vh] overflow-auto shadow-xl border border-line-subtle"
+        className="bg-white rounded-xl w-full max-w-[540px] max-h-[90vh] sm:max-h-[80vh] overflow-auto shadow-xl border border-line-subtle"
       >
         {/* ヘッダー */}
         <div className="px-6 py-5 pb-3.5 border-b border-line-subtle flex justify-between items-center">

@@ -87,7 +87,7 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
       </div>
 
       {/* クライアント名・案件名 */}
-      <div className="grid grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         <div>
           <label className={labelClass}>クライアント名</label>
           <input
@@ -109,7 +109,7 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
       </div>
 
       {/* サイト種別・納品希望日 */}
-      <div className="grid grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         <div>
           <label className={labelClass}>サイト種別</label>
           <select
@@ -134,7 +134,7 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
       </div>
 
       {/* 消費税率 */}
-      <div className="grid grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         <div>
           <label className={labelClass}>消費税率</label>
           <div className="flex items-center gap-1.5">
@@ -215,7 +215,7 @@ export default function BasicInfoTab({ form, setForm, theme, onOpenTemplate }: P
       </div>
 
       {/* 自社名・自社URL */}
-      <div className="grid grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         <div>
           <label className={labelClass}>自社名</label>
           <input

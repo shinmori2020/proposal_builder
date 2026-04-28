@@ -21,10 +21,10 @@ export default function RestoreDraftDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-5"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-5"
       style={{ background: 'rgba(0,0,0,0.5)' }}
     >
-      <div className="bg-white rounded-xl max-w-[460px] w-full shadow-xl border border-line-subtle">
+      <div className="bg-white rounded-xl w-full max-w-[460px] shadow-xl border border-line-subtle">
         <div className="p-5 pb-3 border-b border-line-subtle flex items-center gap-2">
           <RefreshCw size={20} color={P} />
           <h2 className="m-0 text-lg font-extrabold" style={{ color: P }}>

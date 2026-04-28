@@ -8,6 +8,7 @@ import { defaultForm } from '@/lib/defaults';
 import { TEMPLATES } from '@/lib/templates';
 import Header from '@/components/layout/Header';
 import TabNav from '@/components/layout/TabNav';
+import MobileNotice from '@/components/layout/MobileNotice';
 import BasicInfoTab from '@/components/tabs/BasicInfoTab';
 import PagesTab from '@/components/tabs/PagesTab';
 import EstimateTab from '@/components/tabs/EstimateTab';
@@ -249,26 +250,45 @@ export default function Home() {
         canUndo={canUndo}
         canRedo={canRedo}
       />
+      <MobileNotice />
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} theme={theme} />
 
       {activeTab === 'preview' ? (
-        /* プレビュータブ: 大画面 PDF Viewer */
-        <div className="flex-1 w-full px-5 py-3">
-          <PDFViewer
-            style={{
-              width: '100%',
-              height: 'calc(100vh - 140px)',
-              border: 'none',
-            }}
-            showToolbar={true}
-          >
-            {previewDocument}
-          </PDFViewer>
-        </div>
+        /* プレビュータブ: PC は PDF Viewer、モバイルはダウンロード誘導 */
+        <>
+          {/* PC (sm+): PDFViewer */}
+          <div className="hidden sm:block flex-1 w-full px-5 py-3">
+            <PDFViewer
+              style={{
+                width: '100%',
+                height: 'calc(100vh - 140px)',
+                border: 'none',
+              }}
+              showToolbar={true}
+            >
+              {previewDocument}
+            </PDFViewer>
+          </div>
+          {/* モバイル: PDFをダウンロードして閲覧する誘導 */}
+          <div className="sm:hidden flex-1 flex flex-col items-center justify-center px-6 py-12 text-center gap-4">
+            <p className="text-sm text-ink-body m-0">
+              スマートフォンではプレビュー表示は最適化されていません。
+              <br />
+              下記から PDF をダウンロードしてご確認ください。
+            </p>
+            <button
+              onClick={handlePrint}
+              className="px-5 py-2.5 rounded-lg border-none text-white text-sm font-bold cursor-pointer flex items-center gap-2"
+              style={{ background: theme.primary }}
+            >
+              PDF をダウンロード
+            </button>
+          </div>
+        </>
       ) : (
-        <div className="grid grid-cols-2 flex-1 min-h-0 w-full print:hidden">
-          {/* 左側: 入力フォーム */}
-          <div className="p-[18px_22px] overflow-y-auto max-h-[calc(100vh-105px)]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 flex-1 min-h-0 w-full print:hidden">
+          {/* 入力フォーム（モバイルは全幅、PC は左側） */}
+          <div className="p-3 sm:p-[18px_22px] overflow-y-auto max-h-[calc(100vh-105px)]">
             {activeTab === 'basic' && (
               <BasicInfoTab
                 form={form}
@@ -291,8 +311,8 @@ export default function Home() {
             )}
           </div>
 
-          {/* 右側: 点滅しない二重バッファ方式のライブプレビュー */}
-          <div className="border-l-2 border-line-faint bg-surface-preview flex flex-col max-h-[calc(100vh-105px)]">
+          {/* ライブプレビュー（モバイル非表示・PC のみ） */}
+          <div className="hidden sm:flex border-l-2 border-line-faint bg-surface-preview flex-col max-h-[calc(100vh-105px)]">
             <span className="text-xs font-semibold text-ink-soft flex items-center gap-1.5 px-3.5 pt-2">
               <Link size={14} color="#999" />
               ライブプレビュー（実際の PDF 表示）

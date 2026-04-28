@@ -83,12 +83,12 @@ export default function TemplateSelector({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-5"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-5"
       style={{ background: 'rgba(0,0,0,0.5)' }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-xl max-w-[720px] w-full max-h-[90vh] overflow-auto shadow-xl border border-line-subtle"
+        className="bg-white rounded-xl w-full max-w-[720px] max-h-[95vh] sm:max-h-[90vh] overflow-auto shadow-xl border border-line-subtle"
       >
         <div className="p-5 pb-3.5 border-b border-line-subtle">
           <h2 className="m-0 text-xl font-extrabold" style={{ color: P }}>

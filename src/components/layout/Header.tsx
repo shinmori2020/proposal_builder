@@ -33,30 +33,32 @@ export default function Header({
 
   return (
     <header
-      className="px-5 py-3 flex justify-between items-center print:hidden"
+      className="px-3 sm:px-5 py-2.5 sm:py-3 flex justify-between items-center gap-2 print:hidden"
       style={{
         background: `linear-gradient(135deg, ${theme.primary} 0%, ${theme.dark} 100%)`,
       }}
     >
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
         <div
-          className="w-[44px] h-[44px] rounded-lg flex items-center justify-center"
+          className="w-9 h-9 sm:w-[44px] sm:h-[44px] rounded-lg flex items-center justify-center shrink-0"
           style={{ background: 'rgba(255,255,255,0.15)' }}
         >
-          <FileText size={26} color="#fff" />
+          <FileText size={22} color="#fff" />
         </div>
-        <div>
-          <h1 className="text-[22px] font-extrabold text-white m-0 leading-tight">
+        <div className="min-w-0">
+          <h1 className="text-base sm:text-[22px] font-extrabold text-white m-0 leading-tight truncate">
             提案書ビルダー
           </h1>
-          <p className="text-[14px] text-white/70 m-0">
+          {/* サブタイトルはモバイルで非表示 */}
+          <p className="hidden sm:block text-[14px] text-white/70 m-0">
             Web制作の提案書をかんたん作成
           </p>
         </div>
       </div>
 
-      <div className="flex gap-1.5">
-        <div className="flex gap-1 mr-1.5">
+      <div className="flex gap-1 sm:gap-1.5 shrink-0">
+        {/* Undo/Redo はモバイルで非表示（PC のショートカット前提） */}
+        <div className="hidden sm:flex gap-1 mr-1.5">
           <button
             onClick={onUndo}
             disabled={!canUndo}
@@ -78,33 +80,38 @@ export default function Header({
         </div>
         <button
           onClick={toggleHidePrices}
-          className="px-3.5 py-1.5 rounded-[7px] text-white text-[17px] font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
+          aria-label={form.hidePrices ? '金額を表示する' : '金額を非表示にする'}
+          className="w-9 h-9 sm:w-auto sm:h-auto sm:px-3.5 sm:py-1.5 rounded-[7px] text-white text-[17px] font-semibold cursor-pointer flex items-center justify-center sm:gap-1.5 border-2 border-white/40"
           style={{
             background: form.hidePrices
               ? 'rgba(255,255,255,0.25)'
               : 'rgba(255,255,255,0.08)',
           }}
         >
-          {form.hidePrices ? <EyeOff size={19} /> : <Coins size={19} />}
-          {form.hidePrices ? '金額非表示中' : '金額表示中'}
+          {form.hidePrices ? <EyeOff size={18} /> : <Coins size={18} />}
+          <span className="hidden sm:inline">
+            {form.hidePrices ? '金額非表示中' : '金額表示中'}
+          </span>
         </button>
         <button
           onClick={onOpenSave}
           title="保存 (Ctrl+S)"
-          className="px-3.5 py-1.5 rounded-[7px] text-white text-[17px] font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
+          aria-label="保存"
+          className="w-9 h-9 sm:w-auto sm:h-auto sm:px-3.5 sm:py-1.5 rounded-[7px] text-white text-[17px] font-semibold cursor-pointer flex items-center justify-center sm:gap-1.5 border-2 border-white/40"
           style={{ background: 'rgba(255,255,255,0.08)' }}
         >
-          <Save size={19} />
-          保存
+          <Save size={18} />
+          <span className="hidden sm:inline">保存</span>
         </button>
         <button
           onClick={onPrint}
           title="PDF 出力 (Ctrl+P)"
-          className="px-3.5 py-1.5 rounded-[7px] text-white text-[17px] font-semibold cursor-pointer flex items-center gap-1.5 border-2 border-white/40"
+          aria-label="PDF 出力"
+          className="w-9 h-9 sm:w-auto sm:h-auto sm:px-3.5 sm:py-1.5 rounded-[7px] text-white text-[17px] font-semibold cursor-pointer flex items-center justify-center sm:gap-1.5 border-2 border-white/40"
           style={{ background: 'rgba(255,255,255,0.08)' }}
         >
-          <Printer size={19} />
-          PDF
+          <Printer size={18} />
+          <span className="hidden sm:inline">PDF</span>
         </button>
       </div>
     </header>

@@ -32,7 +32,7 @@ interface Props {
 
 export default function TabNav({ activeTab, onTabChange, theme }: Props) {
   return (
-    <nav className="flex bg-white border-b-2 border-line-faint px-2.5 overflow-x-auto print:hidden">
+    <nav className="flex bg-white border-b-2 border-line-faint px-1.5 sm:px-2.5 overflow-x-auto print:hidden">
       {TABS.map((tab) => {
         const IconComponent = ICON_MAP[tab.icon];
         const isActive = activeTab === tab.id;
@@ -41,7 +41,7 @@ export default function TabNav({ activeTab, onTabChange, theme }: Props) {
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className="px-4 py-3.5 border-none bg-transparent text-[18px] cursor-pointer font-inherit whitespace-nowrap flex items-center gap-2"
+            className="px-2.5 sm:px-4 py-2.5 sm:py-3.5 border-none bg-transparent text-sm sm:text-[18px] cursor-pointer font-inherit whitespace-nowrap flex items-center gap-1.5 sm:gap-2"
             style={{
               borderBottom: isActive
                 ? `3px solid ${theme.primary}`
@@ -52,7 +52,7 @@ export default function TabNav({ activeTab, onTabChange, theme }: Props) {
           >
             {IconComponent && (
               <IconComponent
-                size={21}
+                size={18}
                 color={isActive ? theme.primary : C.ink.softer}
               />
             )}

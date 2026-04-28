@@ -49,9 +49,9 @@ export default function PresetDrawer({ onAdd, onClose, theme }: Props) {
       {/* 左側の余白クリックで閉じる */}
       <div onClick={onClose} className="flex-1" />
 
-      {/* ドロワー本体 */}
+      {/* ドロワー本体（モバイルは全幅） */}
       <div
-        className="w-[420px] bg-white flex flex-col h-full border-l border-line-subtle"
+        className="w-full sm:w-[420px] bg-white flex flex-col h-full border-l border-line-subtle"
         style={{ boxShadow: '-4px 0 20px rgba(0,0,0,0.08)' }}
       >
         {/* ヘッダー */}
