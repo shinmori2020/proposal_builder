@@ -503,14 +503,17 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
             )}
           </div>
 
-          {msg && (
-            <div
-              className="text-center font-semibold text-label mt-2"
-              style={{ color: P }}
-            >
-              {msg}
-            </div>
-          )}
+          {/* メッセージ表示エリア: 高さを常に固定し、出現時のレイアウトシフトを防止 */}
+          <div
+            aria-live="polite"
+            className="text-center font-semibold text-label mt-2 h-5 transition-opacity"
+            style={{
+              color: P,
+              opacity: msg ? 1 : 0,
+            }}
+          >
+            {msg || ' '}
+          </div>
         </div>
 
         {/* 保存済み一覧 */}
