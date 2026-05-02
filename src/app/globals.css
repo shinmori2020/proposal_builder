@@ -47,6 +47,52 @@ body {
   color: #333;
 }
 
+/* スクロールバーをテーマカラーに合わせる
+   --theme-primary は page.tsx のルート <div> に設定されている。
+   color-mix で半透明にして、ホバー時に濃く表示する。 */
+
+/* WebKit / Blink (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(
+    in srgb,
+    var(--theme-primary, #888) 45%,
+    transparent
+  );
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--theme-primary, #888) 75%,
+    transparent
+  );
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--theme-primary, #888) 50%,
+      transparent
+    )
+    transparent;
+}
+
 /* フォーカスリング: テーマカラーに応じて枠線と薄い影を付ける。
    --theme-primary は page.tsx のルート <div> に inline で設定される。 */
 .focus-ring:focus {
