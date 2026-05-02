@@ -27,6 +27,7 @@ import {
   importAllProjectsFromJson,
 } from '@/lib/jsonTransfer';
 import { exportEstimateAsCsv } from '@/lib/csvExport';
+import { exportEstimateAsExcel } from '@/lib/excelExport';
 import { exportBothPdfVersions } from '@/lib/pdfExport';
 import {
   Save,
@@ -221,6 +222,18 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
     setTimeout(() => setMsg(''), 3000);
   };
 
+  const handleExportExcel = async () => {
+    try {
+      await exportEstimateAsExcel(form, baseFilename());
+      setMsg('Excel をダウンロードしました');
+      setTimeout(() => setMsg(''), 3000);
+    } catch (err) {
+      alert(
+        `Excel 生成に失敗しました: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
+  };
+
   const handleExportBothPdfs = async () => {
     setMsg('両バージョン PDF を生成中...');
     try {
@@ -413,16 +426,28 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
             />
           </div>
 
-          {/* 見積もり CSV ダウンロード + 両バージョン PDF */}
+          {/* 見積もり CSV / Excel ダウンロード */}
           <div className="flex gap-2 mt-2">
             <button
               onClick={handleExportCsv}
               className="flex-1 py-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-xs cursor-pointer font-semibold text-ink-body flex items-center justify-center gap-1.5"
-              title="見積もり項目を CSV（Excel 互換）でダウンロード"
+              title="見積もり項目を CSV（Excel 互換、単一シート）でダウンロード"
             >
               <Download size={13} color="#666" />
               見積もり CSV
             </button>
+            <button
+              onClick={handleExportExcel}
+              className="flex-1 py-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-xs cursor-pointer font-semibold text-ink-body flex items-center justify-center gap-1.5"
+              title="見積もりを Excel ファイルでダウンロード（プランごとに別シート）"
+            >
+              <Download size={13} color="#666" />
+              見積もり Excel
+            </button>
+          </div>
+
+          {/* 両バージョン PDF */}
+          <div className="flex gap-2 mt-2">
             <button
               onClick={handleExportBothPdfs}
               className="flex-1 py-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-xs cursor-pointer font-semibold text-ink-body flex items-center justify-center gap-1.5"
