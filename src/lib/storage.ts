@@ -34,12 +34,14 @@ export function loadProjects(): SavedProject[] {
   }
 }
 
-export function saveProjects(projects: SavedProject[]): void {
-  if (typeof window === 'undefined') return;
+export function saveProjects(projects: SavedProject[]): boolean {
+  if (typeof window === 'undefined') return false;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+    return true;
   } catch {
-    // quota exceeded or blocked - silently fail
+    // quota exceeded or blocked
+    return false;
   }
 }
 
@@ -229,6 +231,68 @@ export function deleteSnapshot(id: string): VersionSnapshot[] {
   const updated = loadSnapshots().filter((s) => s.id !== id);
   saveSnapshots(updated);
   return updated;
+}
+
+/* ========== localStorage 容量モニタ ========== */
+
+/** ブラウザの一般的な localStorage 上限（保守的に 5MB） */
+const STORAGE_QUOTA_BYTES = 5 * 1024 * 1024;
+
+export interface StorageUsage {
+  /** 本アプリで使用しているバイト数 */
+  used: number;
+  /** 想定上限バイト数（5MB） */
+  quota: number;
+  /** 使用率 0-100 */
+  percent: number;
+  /** 警告しきい値超過（80%以上） */
+  warning: boolean;
+  /** 上限近接（95%以上） */
+  critical: boolean;
+}
+
+/**
+ * 本アプリが使用している localStorage 容量を概算する。
+ * 文字列の length は UTF-16 単位なので、1 文字 ≒ 2 バイト換算で計算。
+ */
+export function getStorageUsage(): StorageUsage {
+  if (typeof window === 'undefined') {
+    return {
+      used: 0,
+      quota: STORAGE_QUOTA_BYTES,
+      percent: 0,
+      warning: false,
+      critical: false,
+    };
+  }
+  const keys = [STORAGE_KEY, DRAFT_KEY, CUSTOM_TEMPLATES_KEY, VERSIONS_KEY];
+  let used = 0;
+  for (const key of keys) {
+    try {
+      const v = localStorage.getItem(key);
+      if (v) {
+        // key 名 + 値 の文字数 × 2 (UTF-16) でおおよその bytes
+        used += (key.length + v.length) * 2;
+      }
+    } catch {
+      // ignore
+    }
+  }
+  const percent = Math.min(100, Math.round((used / STORAGE_QUOTA_BYTES) * 100));
+  return {
+    used,
+    quota: STORAGE_QUOTA_BYTES,
+    percent,
+    warning: percent >= 80,
+    critical: percent >= 95,
+  };
+}
+
+/** バイト数を人間可読な形式（KB/MB）にフォーマット */
+export function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 export { MAX_SAVED, MAX_CUSTOM_TEMPLATES, MAX_SNAPSHOTS };

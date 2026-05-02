@@ -13,8 +13,11 @@ import {
   loadSnapshots,
   pushSnapshot,
   deleteSnapshot,
+  getStorageUsage,
+  formatBytes,
   SavedProject,
   VersionSnapshot,
+  StorageUsage,
   MAX_SAVED,
 } from '@/lib/storage';
 import {
@@ -23,6 +26,8 @@ import {
   exportAllProjectsAsJson,
   importAllProjectsFromJson,
 } from '@/lib/jsonTransfer';
+import { exportEstimateAsCsv } from '@/lib/csvExport';
+import { exportBothPdfVersions } from '@/lib/pdfExport';
 import {
   Save,
   X,
@@ -58,9 +63,19 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [snapshots, setSnapshots] = useState<VersionSnapshot[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [usage, setUsage] = useState<StorageUsage>({
+    used: 0,
+    quota: 0,
+    percent: 0,
+    warning: false,
+    critical: false,
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bulkInputRef = useRef<HTMLInputElement>(null);
   const P = theme.primary;
+
+  /** 使用量を再計算（保存・削除後など状態変化時に呼ぶ） */
+  const refreshUsage = () => setUsage(getStorageUsage());
 
   // 全案件から集めたユニークタグ（使用数付き・ABC順）
   const tagCounts = useMemo(() => {
@@ -105,16 +120,26 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
   useEffect(() => {
     setProjects(loadProjects());
     setSnapshots(loadSnapshots());
+    setUsage(getStorageUsage());
   }, []);
 
   const handleSave = () => {
     setSaving(true);
     const project = makeSavedProject(form);
     const updated = [project, ...projects].slice(0, MAX_SAVED);
-    saveProjects(updated);
+    const ok = saveProjects(updated);
+    if (!ok) {
+      setSaving(false);
+      alert(
+        'ブラウザの保存容量が不足しているため、保存に失敗しました。\n' +
+          '不要な保存案件・履歴を削除するか、JSON でバックアップしてから整理してください。'
+      );
+      return;
+    }
     setProjects(updated);
     // 保存と同時に履歴スナップショットを追加（誤上書き救済用）
     setSnapshots(pushSnapshot(form));
+    refreshUsage();
     setSaving(false);
     setMsg('保存しました');
     setTimeout(() => setMsg(''), 3000);
@@ -134,12 +159,14 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
 
   const handleDeleteSnapshot = (id: string) => {
     setSnapshots(deleteSnapshot(id));
+    refreshUsage();
   };
 
   const handleDelete = (id: string) => {
     const updated = projects.filter((p) => p.id !== id);
     saveProjects(updated);
     setProjects(updated);
+    refreshUsage();
   };
 
   const handleLoad = (project: SavedProject) => {
@@ -177,14 +204,35 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
     setEditTags('');
   };
 
+  const baseFilename = () =>
+    form.projectName ||
+    form.clientName ||
+    `提案書_${new Date().toLocaleDateString('ja-JP').replace(/\//g, '-')}`;
+
   const handleExportJson = () => {
-    const filename =
-      form.projectName ||
-      form.clientName ||
-      `提案書_${new Date().toLocaleDateString('ja-JP').replace(/\//g, '-')}`;
-    exportFormAsJson(form, filename);
+    exportFormAsJson(form, baseFilename());
     setMsg('JSON をダウンロードしました');
     setTimeout(() => setMsg(''), 3000);
+  };
+
+  const handleExportCsv = () => {
+    exportEstimateAsCsv(form, baseFilename());
+    setMsg('CSV をダウンロードしました');
+    setTimeout(() => setMsg(''), 3000);
+  };
+
+  const handleExportBothPdfs = async () => {
+    setMsg('両バージョン PDF を生成中...');
+    try {
+      await exportBothPdfVersions(form, theme, baseFilename());
+      setMsg('両バージョン PDF をダウンロードしました');
+      setTimeout(() => setMsg(''), 3000);
+    } catch (err) {
+      setMsg('');
+      alert(
+        `PDF 生成に失敗しました: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
   };
 
   const handleImportClick = () => {
@@ -363,6 +411,71 @@ export default function SaveLoadPanel({ form, setForm, theme, onClose }: Props) 
               className="hidden"
               onChange={handleBulkImport}
             />
+          </div>
+
+          {/* 見積もり CSV ダウンロード + 両バージョン PDF */}
+          <div className="flex gap-2 mt-2">
+            <button
+              onClick={handleExportCsv}
+              className="flex-1 py-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-xs cursor-pointer font-semibold text-ink-body flex items-center justify-center gap-1.5"
+              title="見積もり項目を CSV（Excel 互換）でダウンロード"
+            >
+              <Download size={13} color="#666" />
+              見積もり CSV
+            </button>
+            <button
+              onClick={handleExportBothPdfs}
+              className="flex-1 py-2 border-[1.5px] border-ink-soft rounded-md bg-transparent text-xs cursor-pointer font-semibold text-ink-body flex items-center justify-center gap-1.5"
+              title="金額あり版と金額なし版を両方ダウンロード（内部用 + 提示用）"
+            >
+              <Download size={13} color="#666" />
+              両バージョン PDF
+            </button>
+          </div>
+
+          {/* localStorage 使用量バー */}
+          <div className="mt-3 px-1">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-meta text-ink-soft">
+                ブラウザ保存容量
+              </span>
+              <span
+                className="text-meta font-semibold"
+                style={{
+                  color: usage.critical
+                    ? C.delete
+                    : usage.warning
+                      ? '#d97706'
+                      : '#888',
+                }}
+              >
+                {formatBytes(usage.used)} / {formatBytes(usage.quota)}（
+                {usage.percent}%）
+              </span>
+            </div>
+            <div className="h-1.5 bg-line-divider rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${usage.percent}%`,
+                  background: usage.critical
+                    ? C.delete
+                    : usage.warning
+                      ? '#d97706'
+                      : P,
+                }}
+              />
+            </div>
+            {usage.warning && (
+              <p
+                className="text-meta mt-1 m-0"
+                style={{ color: usage.critical ? C.delete : '#d97706' }}
+              >
+                {usage.critical
+                  ? '⚠ 容量がほぼ上限です。不要な案件・履歴を削除してください。'
+                  : '⚠ 容量が逼迫しています。整理をご検討ください。'}
+              </p>
+            )}
           </div>
 
           {msg && (
