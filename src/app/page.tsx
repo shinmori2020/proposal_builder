@@ -69,6 +69,13 @@ export default function Home() {
 
   const theme = getTheme(form.themeId);
 
+  // テーマカラーを document.documentElement の CSS 変数にも反映
+  // （ブラウザレベルのスクロールバー等、ラッパー div の外側にも色を伝播させる）
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.style.setProperty('--theme-primary', theme.primary);
+  }, [theme.primary]);
+
   // 初回マウント時にドラフトをチェック
   useEffect(() => {
     if (draftChecked) return;

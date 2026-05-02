@@ -62,7 +62,7 @@ body {
 ::-webkit-scrollbar-thumb {
   background-color: color-mix(
     in srgb,
-    var(--theme-primary, #888) 45%,
+    var(--theme-primary, #888) 60%,
     transparent
   );
   border-radius: 5px;
@@ -73,7 +73,7 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background-color: color-mix(
     in srgb,
-    var(--theme-primary, #888) 75%,
+    var(--theme-primary, #888) 85%,
     transparent
   );
   background-clip: padding-box;
@@ -87,7 +87,7 @@ body {
   scrollbar-width: thin;
   scrollbar-color: color-mix(
       in srgb,
-      var(--theme-primary, #888) 50%,
+      var(--theme-primary, #888) 65%,
       transparent
     )
     transparent;
