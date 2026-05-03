@@ -2,15 +2,17 @@ import { Font } from '@react-pdf/renderer';
 
 /**
  * Noto Sans JP フォントの登録
- * basePath は next.config.ts で /proposal_builder が設定されているため、
- * dev/prod 両方で /proposal_builder/fonts/... が正しいパスになる
+ *
+ * basePath は next.config.ts でデプロイ環境ごとに設定（Vercel=空 / GH Pages=/proposal_builder）。
+ * 同じ値を NEXT_PUBLIC_BASE_PATH として注入してあるので、それを参照して動的にパスを組む。
  */
 let registered = false;
 
 export function registerPdfFonts() {
   if (registered) return;
 
-  const base = '/proposal_builder/fonts';
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+  const base = `${basePath}/fonts`;
 
   Font.register({
     family: 'Noto Sans JP',
