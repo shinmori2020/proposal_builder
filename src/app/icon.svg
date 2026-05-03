@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 角丸の緑背景（フォレスト・テーマ色） -->
+  <rect width="64" height="64" rx="13" fill="#1a6b4f"/>
+
+  <!-- 書類シルエット（白） -->
+  <path d="M20 14 L40 14 L50 24 L50 50 L20 50 Z" fill="#ffffff"/>
+
+  <!-- 折り目の影 -->
+  <path d="M40 14 L40 24 L50 24 Z" fill="rgba(0,0,0,0.14)"/>
+
+  <!-- 書類内の罫線（テキスト風） -->
+  <g stroke="#1a6b4f" stroke-width="2.5" stroke-linecap="round">
+    <line x1="26" y1="30" x2="44" y2="30"/>
+    <line x1="26" y1="36" x2="44" y2="36"/>
+    <line x1="26" y1="42" x2="38" y2="42"/>
+  </g>
+</svg>
