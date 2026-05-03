@@ -145,8 +145,20 @@ export default function PdfDocument({ form, theme, qrDataUrl }: Props) {
   const additionalPlans = isMultiPriced ? form.plans.slice(1) : [];
   const taxRate = form.taxRate ?? 10;
 
+  // PDF のメタデータ。タイトルはプレビュー上部や PDF プロパティ欄に表示される
+  const docTitle =
+    form.projectName ||
+    form.clientName ||
+    `提案書_${new Date().toLocaleDateString('ja-JP')}`;
+
   return (
-    <Document>
+    <Document
+      title={docTitle}
+      author={form.companyName || undefined}
+      subject="Web制作のご提案"
+      creator={CREATOR_NAME}
+      producer={CREATOR_NAME}
+    >
       {/* ページ1: 表紙（提案概要・制作概要・見積もり総額）
           ContentHeader は fixed だが、CoverPdf の flex:1 + 白背景 View に
           隠れるため、後ろに配置して最前面に描画する */}
